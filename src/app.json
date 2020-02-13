@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/index/main",
+    "pages/about/main",
+    "pages/search/main",
+    "pages/goodsDetails/main",
+    "pages/searchRes/main",
+    "pages/sheep/main",
+    "pages/chicken/main",
+    "pages/other/main",
+    "pages/cattle/main",
+    "pages/viewAtlas/main"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "伊民肉业",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "backgroundColor": "#fafafa",
+    "selectedColor": "#333",
+    "borderStyle": "white",
+
+    "list": [{
+      "text": "首页",
+      "pagePath": "pages/index/main",
+      "iconPath": "static/images/home.png",
+      "selectedIconPath": "static/images/home-active.png"
+    }, {
+      "text": "关于我们",
+      "pagePath": "pages/about/main",
+      "iconPath": "static/images/about.png",
+      "selectedIconPath": "static/images/about-active.png"
+    }],
+
+    "items": [{
+      "name": "首页",
+      "pagePath": "pages/index/main",
+      "icon": "static/images/home.png",
+      "activeIcon": "static/images/home-active.png"
+    }, {
+      "name": "关于我们",
+      "pagePath": "pages/about/main",
+      "icon": "static/images/about.png",
+      "activeIcon": "static/images/about-active.png"
+    }],
+    "position": "bottom"
+  }
+}
