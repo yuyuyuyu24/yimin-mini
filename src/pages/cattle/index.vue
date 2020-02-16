@@ -3,14 +3,14 @@
     <back-top v-if="isBack"></back-top>
     <div class="cattle-title">
       <h2>牛肉</h2>
-      <p>指从牛身上获得的肉，为常见的肉品之一。</p>
+      <p>健康、美味的清真排酸牛肉，值得品尝的好产品。吃放心的牛肉，吃好的牛肉。</p>
     </div>
     <div class="cattle-goods-box">
       <div class="cattle-goods">
         <div v-for="(item,index) in cattleGoods" :key="index" @click="toDetails(item)">
           <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
           <p>{{item.title}}</p>
-          <span class="price"><span class="price-sign">￥</span>{{item.price}}<span class="price-unit">/500克</span></span>
+          <span class="price"><span class="price-sign">￥</span>{{item.price}}</span>
         </div>
       </div>
     </div>
@@ -80,6 +80,7 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   border-bottom: 4rpx solid #f4f4f4;
+  padding-top: 30rpx;
 }
 .cattle-title h2 {
   font-size: 20px;
@@ -87,6 +88,8 @@ export default {
 .cattle-title p {
   font-size: 14px;
   color: #777;
+  padding: 30rpx 30rpx;
+  line-height: 46rpx;
 }
 .cattle-goods-box {
   width: 100%;

@@ -1,14 +1,14 @@
 <template>
   <div class="about-page">
     <div class="about-background">
-      <image  lazy-load=true class="about-background-img" @click="reviewBackground" mode="widthFile" :src="backgroundImg"></image>
+      <image  lazy-load=true class="about-background-img" @click="reviewBackground" mode="aspectFill" :src="backgroundImg"></image>
       <div class="about-headimg">
         <image lazy-load=true @click="reviewHeadimg" mode="widthFile" :src="headimg"></image>
       </div>
     </div>
     <div class="about-introduce">
       <h2>商家自述</h2>
-      <span>我们是我们是我们是我们是我们是我们是我们是我们是我们是我们是</span>
+      <span>店里主营排酸牛羊肉，是一家老字号的清真牛羊肉店。全线产品天然无污染、质检、动检完全符合国家标准，我们始终秉承“食品工业，道德工业”的经营理念，服务好消费者！</span>
     </div>
     <div class="about-contact" @click='callPhone(phoneOne)'>
         <i class="iconfont icondianhua"></i>
@@ -48,8 +48,8 @@ export default {
     return {
       headimg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GC6nAyObTil3U7Yj.FPH60yg8oSeuE*R79CUhMsECdQgQF1GmFMxO7LIIROLUVJRQFCCtt1d*3hfm9Z2nm42pg4!/b&bo=OAQ4BAAAAAARFyA!&rf=viewer_4&t=5',
       headimgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GC6nAyObTil3U7Yj.FPH60yg8oSeuE*R79CUhMsECdQgQF1GmFMxO7LIIROLUVJRQFCCtt1d*3hfm9Z2nm42pg4!/b&bo=OAQ4BAAAAAARFyA!&rf=viewer_4&t=5'],
-      backgroundImg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GHS0rXTHN*Vt3pUpz4.48tf8k.QEtk*hbinB8ZrZUFMr0R4PyWmYvo9j6HTAV.XNDnY*8IF7KHKOEL.*O8eN35k!/b&bo=NgR.AjYEfgIRFyA!&rf=viewer_4&t=5',
-      backgroundImgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GHS0rXTHN*Vt3pUpz4.48tf8k.QEtk*hbinB8ZrZUFMr0R4PyWmYvo9j6HTAV.XNDnY*8IF7KHKOEL.*O8eN35k!/b&bo=NgR.AjYEfgIRFyA!&rf=viewer_4&t=5'],
+      backgroundImg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GOLQOlQ7RiBUaOUKn6wA0OEHM5.vJZ.h8Gfle0yXTo8xd7n*oihUJs7cPlZ41Sw6ZAW0kB4FLUBNxjJMu5EdcNI!/b&bo=DwqAAkArwAoRJzY!&rf=viewer_4&t=5',
+      backgroundImgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GOLQOlQ7RiBUaOUKn6wA0OEHM5.vJZ.h8Gfle0yXTo8xd7n*oihUJs7cPlZ41Sw6ZAW0kB4FLUBNxjJMu5EdcNI!/b&bo=DwqAAkArwAoRJzY!&rf=viewer_4&t=5'],
       phoneOne: this.GLOBAL.PHONE_ONE,
       phoneTwo: this.GLOBAL.PHONE_TWO,
       weChatOne: this.GLOBAL.WE_CHAT_ONE,
@@ -75,12 +75,8 @@ export default {
     },
     // 拨打电话
     callPhone (phone) {
-      console.log(phone)
       wx.makePhoneCall({
-        phoneNumber: phone,
-        fail (err) {
-          console.log(err)
-        }
+        phoneNumber: phone
       })
     },
     // 查看图集
@@ -99,11 +95,9 @@ export default {
     // 查看新华店
     checkAddressOne () {
       let that = this
+      that.getLocation()
       wx.getLocation({
         type: 'gcj02',
-        fail (err) {
-          console.log(err)
-        },
         success: function (res) {
           wx.openLocation({
             latitude: that.GLOBAL.ADDRESS_ONE_WEI, // 要去的纬度-地址
@@ -117,18 +111,48 @@ export default {
     // 查看全宁店
     checkAddressTwo () {
       let that = this
+      that.getLocation()
       wx.getLocation({
         type: 'gcj02',
-        fail (err) {
-          console.log(err)
-        },
         success: function (res) {
           wx.openLocation({
             latitude: that.GLOBAL.ADDRESS_TWO_WEI, // 要去的纬度-地址
             longitude: that.GLOBAL.ADDRESS_TWO_JING, // 要去的经度-地址
-            name: '新华店',
-            address: that.addressOne
+            name: '全宁店',
+            address: that.addressTwo
           })
+        }
+      })
+    },
+    // 拒绝授权方法
+    getLocation () {
+      wx.getSetting({
+        success (res) {
+          if (!res.authSetting['scope.userLocation']) {
+            wx.authorize({
+              scope: 'scope.userLocation',
+              fail () {
+                wx.hideLoading()
+                wx.showModal({
+                  title: '温馨提示',
+                  content: '您已拒绝授权，是否去设置打开？',
+                  confirmText: '确认',
+                  cancelText: '取消',
+                  success: function (res) {
+                    if (res.confirm) {
+                      wx.openSetting({
+                        success: (res) => {
+                          res.authSetting = {
+                            'scope.userLocation': true
+                          }
+                        }
+                      })
+                    }
+                  }
+                })
+              }
+            })
+          }
         }
       })
     }
@@ -172,7 +196,8 @@ export default {
   padding-bottom: 20rpx;
 }
 .about-introduce span {
-  font-size: 14px;
+  font-size: 32rpx;
+  line-height: 48rpx;
 }
 .about-contact,
 .about-contact-wechat {
@@ -211,6 +236,7 @@ export default {
 .about-address div {
   display: flex;
   font-weight: 600;
+  padding-bottom: 6rpx;
 }
 .about-address h2 {
   font-size: 16px;

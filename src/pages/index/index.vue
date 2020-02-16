@@ -31,7 +31,7 @@
       </div>
       <div @click="toChicken">
          <image mode='widthFix' src="../../static/images/chicken.png"></image>
-        部位鸡
+        鸡产品
       </div>
       <div @click="toOther">
          <image mode='widthFix' src="../../static/images/other.png"></image>
@@ -39,9 +39,17 @@
       </div>
     </div>
     <div class="hot-goods-box">
-      <h2>精选商品</h2>
+      <div class="hot-goods-title">
+        <h2>精选商品</h2>
+        <i class="iconfont iconHOT"></i>
+      </div>
       <div class="hot-goods">
-        <div v-for="(item,index) in hotGoods" :key="index" @click="toDetails(item)">
+        <div
+          v-for="(item,index) in hotGoods"
+          :key="index"
+          @click="toDetails(item)"
+          class="hot-goods-div"
+        >
           <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
           <p>{{item.title}}</p>
             <span class="price">
@@ -242,9 +250,19 @@ export default {
   height: auto;
   border-top: 6rpx solid #f4f4f4;
 }
-.hot-goods-box h2 {
-  font-size: 18px;
+.hot-goods-box .hot-goods-title {
+  width: auto;
+  height: auto;
+  display: flex;
   padding: 40rpx;
+  align-items: center;
+}
+.hot-goods-box .hot-goods-title h2 {
+  font-size: 18px;
+}
+.hot-goods-box .hot-goods-title i {
+  padding-left: 20rpx;
+  color: red;
 }
 .hot-goods-box .hot-goods {
   width: 700rpx;
@@ -254,20 +272,20 @@ export default {
   justify-content: start;
   margin: 0 auto;
 }
-.hot-goods-box .hot-goods div {
+.hot-goods-box .hot-goods .hot-goods-div {
   width: 340rpx;
   height: 400rpx;
   border-radius: 8rpx;
   margin: 0 10rpx 10rpx 0;
   box-shadow: darkgrey 0 0 30rpx -10rpx;
 }
-.hot-goods-box .hot-goods div image {
+.hot-goods-box .hot-goods .hot-goods-div image {
   width: 100%;
   height: 70%;
   border-top-left-radius: 8rpx;
   border-top-right-radius: 8rpx;
 }
-.hot-goods-box .hot-goods div p {
+.hot-goods-box .hot-goods .hot-goods-div p {
   font-size: 16px;
   font-weight: 600;
   padding-left: 20rpx;
@@ -276,13 +294,13 @@ export default {
   text-overflow: ellipsis;
 }
 
-.hot-goods-box .hot-goods div .price {
+.hot-goods-box .hot-goods .hot-goods-div .price {
   font-size: 20px;
   padding-left: 20rpx;
   font-weight: 600;
   color: #ff5f5f;
 }
-.hot-goods-box .hot-goods div .price-sign {
+.hot-goods-box .hot-goods .hot-goods-div .price-sign {
   font-size: 14px;
   color: #ff5f5f;
 }

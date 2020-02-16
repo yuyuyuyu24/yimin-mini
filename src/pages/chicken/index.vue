@@ -2,15 +2,15 @@
   <div class="page">
     <back-top v-if="isBack"></back-top>
     <div class="cattle-title">
-      <h2>部位鸡</h2>
-      <p>指从鸡身上获得的肉，为常见的肉品之一。</p>
+      <h2>鸡产品</h2>
+      <p>本着：经营好的部位鸡产品，吃放心的部位鸡肉的原则，尽力为您提供质优价美的产品和服务。</p>
     </div>
     <div class="cattle-goods-box">
       <div class="cattle-goods">
         <div v-for="(item,index) in chickenGoods" :key="index" @click="toDetails(item)">
           <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
           <p>{{item.title}}</p>
-          <span class="price"><span class="price-sign">￥</span>{{item.price}}<span class="price-unit">/500克</span></span>
+          <span class="price"><span class="price-sign">￥</span>{{item.price}}</span>
         </div>
       </div>
     </div>
@@ -79,6 +79,7 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   border-bottom: 4rpx solid #f4f4f4;
+  padding-top: 30rpx;
 }
 .cattle-title h2 {
   font-size: 20px;
@@ -86,6 +87,8 @@ export default {
 .cattle-title p {
   font-size: 14px;
   color: #777;
+  padding: 30rpx 30rpx;
+  line-height: 46rpx;
 }
 .cattle-goods-box {
   width: 100%;

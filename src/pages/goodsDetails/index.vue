@@ -16,7 +16,10 @@
       <p>{{hotGoodsList.title}}</p>
       <view>
         <span class="price">
-          <span class="price-sign">￥</span>{{hotGoodsList.price}}<span class="price-unit">/500克</span>
+          <span class="price-sign">￥</span>{{hotGoodsList.price}}
+          <span class="price-unit" v-if="hotGoodsList.id !== 17 && hotGoodsList.id !== 42 && hotGoodsList.id !== 43 && hotGoodsList.id !== 44 && hotGoodsList.id !== 45 && hotGoodsList.id !== 46 && hotGoodsList.id !== 47 && hotGoodsList.id !== 50 && hotGoodsList.id !== 52 && hotGoodsList.id !== 53 && hotGoodsList.id !== 54 && hotGoodsList.id !== 55 && hotGoodsList.id !== 56 && hotGoodsList.id !== 57 && hotGoodsList.id !== 58 && hotGoodsList.id !== 59 && hotGoodsList.id !== 60 && hotGoodsList.id !== 61">/ 500克</span>
+          <span class="price-unit"  v-if="hotGoodsList.id === 17 || hotGoodsList.id === 53">/ 个</span>
+          <span class="price-unit"  v-if="hotGoodsList.id === 42 || hotGoodsList.id === 43 || hotGoodsList.id === 44 || hotGoodsList.id === 45 || hotGoodsList.id === 46 || hotGoodsList.id === 47 | hotGoodsList.id === 50 || hotGoodsList.id === 52 || hotGoodsList.id === 54|| hotGoodsList.id === 55|| hotGoodsList.id === 56 || hotGoodsList.id === 57 || hotGoodsList.id === 58 || hotGoodsList.id === 59 || hotGoodsList.id === 60 || hotGoodsList.id === 61">/ 袋</span>
         </span>
         <i class="iconfont iconwenhao" @click="tip"></i>
       </view>
@@ -29,12 +32,13 @@
       <p>商品视频</p>
       <div class="store-videos-video">
         <view>
-        <video :src="hotGoodsList.videoUrl"></video>
+        <video muted=true :src="hotGoodsList.videoUrl"></video>
         </view>
       </div>
     </div>
     <div class="share">
-      <button open-type="share">分享给好友</button>
+      <button open-type="share">分享给好友
+      </button>
     </div>
   </div>
 </template>
@@ -96,14 +100,7 @@ export default {
     tip () {
       wx.showModal({
         title: '提示',
-        content: '价钱xxxxxx',
-        success (res) {
-          if (res.confirm) {
-            console.log('用户点击确定')
-          } else if (res.cancel) {
-            console.log('用户点击取消')
-          }
-        }
+        content: '近期肉类价格波动频繁，实际价格以咨询店主为准。'
       })
     }
   },
@@ -122,6 +119,7 @@ export default {
 
 <style scoped>
 .goods-details-page {
+  height: 100%;
   background-color: #f4f4f4;
 }
 .swiper-box {
@@ -181,7 +179,7 @@ export default {
 }
 .store-message p {
   font-size: 18px;
-  padding: 40rpx 0;
+  padding: 35rpx 0;
   text-align: center;
 }
 .store-message span {
@@ -189,7 +187,9 @@ export default {
   margin: 0 20rpx;
   display: block;
   text-indent: 32px;
-  padding: 20rpx 0;
+  padding: 0rpx 0 40rpx 0;
+  line-height: 50rpx;
+  color: #666;
 }
 .store-videos {
   margin-top: 40rpx;
@@ -200,7 +200,7 @@ export default {
 }
 .store-videos p {
   font-size: 18px;
-  padding: 40rpx 0;
+  padding: 35rpx 0;
   text-align: center;
 }
 .store-videos span {
@@ -208,7 +208,9 @@ export default {
   margin: 0 20rpx;
   display: block;
   text-indent: 32px;
-  padding: 20rpx 0;
+  padding: 0rpx 0 40rpx 0;
+  line-height: 50rpx;
+  color: #666;
 }
 .store-videos .store-videos-video {
   width: 710rpx;
@@ -229,7 +231,7 @@ export default {
   height: 100rpx;
   text-align: center;
   line-height: 100rpx;
-  background-color: #ff5f69;
+  background-color: #67c23a;
   color: #fff;
   border-radius: 0;
 }

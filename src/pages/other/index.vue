@@ -3,14 +3,14 @@
     <back-top v-if="isBack"></back-top>
     <div class="cattle-title">
       <h2>其他</h2>
-      <p>里面包含了很多其他的东西</p>
+      <p>以质量求生存，以安全求保障，以诚信求发展。<br/>期待着您的选择和品尝。</p>
     </div>
     <div class="cattle-goods-box">
       <div class="cattle-goods">
         <div v-for="(item,index) in otherGoods" :key="index" @click="toDetails(item)">
           <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
           <p>{{item.title}}</p>
-          <span class="price"><span class="price-sign">￥</span>{{item.price}}<span class="price-unit">/500克</span></span>
+          <span class="price"><span class="price-sign">￥</span>{{item.price}}</span>
         </div>
       </div>
     </div>
@@ -78,6 +78,7 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   border-bottom: 4rpx solid #f4f4f4;
+  padding-top: 30rpx;
 }
 .cattle-title h2 {
   font-size: 20px;
@@ -85,6 +86,8 @@ export default {
 .cattle-title p {
   font-size: 14px;
   color: #777;
+  padding: 30rpx 30rpx;
+  line-height: 46rpx;
 }
 .cattle-goods-box {
   width: 100%;

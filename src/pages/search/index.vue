@@ -34,9 +34,11 @@ export default {
   data () {
     return {
       hotSearch: [
-        '牛肉块',
-        '羊肉块',
-        '鸡肉块'
+        '风干牛肉',
+        '牛',
+        '羊',
+        '鸡',
+        '奶制品'
       ],
       search: '',
       searchHistory: [],
@@ -106,13 +108,20 @@ export default {
       })
     }
   },
-  // 页面打开 就更新一次缓存
+  // 页面打开 就
   onShow () {
     let _that = this
+    // 更新一次缓存
     wx.getStorage({
       key: 'searchHistory',
       success (res) {
-        _that.searchHistoryList = res.data
+        _that.searchHistoryList = []
+        for (var i = 0; i < res.data.length; i++) {
+          if (_that.searchHistoryList.indexOf(res.data[i]) === -1) {
+            _that.searchHistoryList.push(res.data[i])
+            _that.searchHistoryList.reverse()
+          }
+        }
       }
     })
   }

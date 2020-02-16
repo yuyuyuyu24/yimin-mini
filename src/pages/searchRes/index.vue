@@ -16,7 +16,7 @@
         <div class="search-res-goods" v-for="(item,index) in searchResGoodsList" :key="index" @click="toDetails(item)">
             <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
             <p>{{item.title}}</p>
-            <span class="price"><span class="price-sign">￥</span>{{item.price}}<span class="price-unit">/500克</span></span>
+            <span class="price"><span class="price-sign">￥</span>{{item.price}}</span>
         </div>
       </div>
     </div>

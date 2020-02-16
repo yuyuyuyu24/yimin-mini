@@ -5,11 +5,21 @@
 		"es6": false,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"coverView": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
 	},
 	"miniprogramRoot": "dist/wx/",
 	"compileType": "miniprogram",
-	"appid": "wx7e7cc9e3d12cd1a4",
+	"appid": "wxe48ab033fb1c161c",
 	"projectname": "yiminmeat",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},

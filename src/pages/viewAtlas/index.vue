@@ -47,7 +47,7 @@ export default {
   border-radius: 8rpx;
   display: flex;
   justify-content: flex-end;
-  background: url("http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GIGP1a3293EJGtsS6FqigUzj*2dY0LbLMzVTV7iocZkLQzDO0cntIiRbFs*bUSYUChHzp3927whvNQI4c0PaKRo!/b&bo=NgR.AgAAAAARF24!&rf=viewer_4&t=5")
+  background: url("http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GJ1qB*eLxESqM8nhW*Z4saBq8R6l2um6yflnOMRgKU4KrXXHmD0TTFYvFC1JTIRwmh9.m5IhOhxrCLeJ4hD8Kq8!/b&bo=gw1ABoMNQAYRNwA!&rf=viewer_4&t=5")
     no-repeat;
   background-size: 100% 100%;
 }
