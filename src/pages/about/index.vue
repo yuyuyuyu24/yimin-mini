@@ -46,8 +46,8 @@
 export default {
   data () {
     return {
-      headimg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GC6nAyObTil3U7Yj.FPH60yg8oSeuE*R79CUhMsECdQgQF1GmFMxO7LIIROLUVJRQFCCtt1d*3hfm9Z2nm42pg4!/b&bo=OAQ4BAAAAAARFyA!&rf=viewer_4&t=5',
-      headimgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GC6nAyObTil3U7Yj.FPH60yg8oSeuE*R79CUhMsECdQgQF1GmFMxO7LIIROLUVJRQFCCtt1d*3hfm9Z2nm42pg4!/b&bo=OAQ4BAAAAAARFyA!&rf=viewer_4&t=5'],
+      headimg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GEQzgD16BuMLe7xwefdGnY4tQoqlHOU2o*gu*UB8awTjcL2UjoK0mmWcLk6dk49Gyc*oXiBm8mizYdRV4xyYR1w!/b&bo=ggGCAYIBggEDFzI!&rf=viewer_4&t=5',
+      headimgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GEQzgD16BuMLe7xwefdGnY4tQoqlHOU2o*gu*UB8awTjcL2UjoK0mmWcLk6dk49Gyc*oXiBm8mizYdRV4xyYR1w!/b&bo=ggGCAYIBggEDFzI!&rf=viewer_4&t=5'],
       backgroundImg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GOLQOlQ7RiBUaOUKn6wA0OEHM5.vJZ.h8Gfle0yXTo8xd7n*oihUJs7cPlZ41Sw6ZAW0kB4FLUBNxjJMu5EdcNI!/b&bo=DwqAAkArwAoRJzY!&rf=viewer_4&t=5',
       backgroundImgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GOLQOlQ7RiBUaOUKn6wA0OEHM5.vJZ.h8Gfle0yXTo8xd7n*oihUJs7cPlZ41Sw6ZAW0kB4FLUBNxjJMu5EdcNI!/b&bo=DwqAAkArwAoRJzY!&rf=viewer_4&t=5'],
       phoneOne: this.GLOBAL.PHONE_ONE,
