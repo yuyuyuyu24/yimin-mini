@@ -91,6 +91,10 @@
           @click="toDetails(item)"
           class="hot-goods-div"
         >
+          <div
+            class="yishouqing"
+            v-if="item.goodsStatus === 2"
+          >已 售 罄</div>
           <image
             lazy-load=true
             mode="widthFile"
@@ -150,7 +154,6 @@ export default {
     var that = this
     var length = that.pageNotice.noticeContent.length * that.size// 文字长度
     var windowWidth = wx.getSystemInfoSync().windowWidth// 屏幕宽度
-    // console.log(length,windowWidth);
     that.length = length
     that.windowWidth = windowWidth
 
@@ -332,18 +335,6 @@ export default {
 </script>
 
 <style scoped>
-.swiper {
-  width: 680rpx;
-  height: 340rpx;
-  margin: 20rpx auto;
-  border-radius: 16rpx;
-  overflow: hidden;
-  transform: translateY(0);
-}
-.swiper image {
-  width: 100%;
-  height: 340rpx;
-}
 .notice-box {
   background-color: #fff;
   width: 100%;
@@ -381,14 +372,17 @@ export default {
   color: #666;
 }
 .search-box {
-  background-color: #fff;
+  background-color: #00bf6f;
   width: 100%;
   height: 100rpx;
-  border-top: 2rpx solid #f4f4f4;
+  border-top: 2rpx solid #00bf6f;
   border-bottom: 2rpx solid #f4f4f4;
+  position: fixed;
+  top: 0;
+  z-index: 99;
 }
 .search-box .search {
-  background-color: #f6f6f6;
+  background-color: #fff;
   width: 680rpx;
   height: 60rpx;
   margin: 20rpx auto;
@@ -405,6 +399,25 @@ export default {
   font-size: 12px;
   color: #666;
 }
+.swiper-box {
+  /* background: linear-gradient(to bottom, #00bf6f, #fff); */
+  background: -webkit-gradient(linear, 0 0, 0 60%, from(#00bf6f), to(#fff));
+  padding: 20rpx 0;
+  margin-top: 102rpx;
+}
+.swiper {
+  width: 680rpx;
+  height: 340rpx;
+  margin: 0 auto;
+  border-radius: 16rpx;
+  overflow: hidden;
+  transform: translateY(0);
+}
+.swiper image {
+  width: 100%;
+  height: 340rpx;
+}
+
 .classification {
   background-color: #fff;
   width: 680rpx;
@@ -461,6 +474,19 @@ export default {
   border-radius: 8rpx;
   margin: 0 10rpx 10rpx 0;
   box-shadow: darkgrey 0 0 30rpx -10rpx;
+  position: relative;
+}
+.hot-goods-box .hot-goods .hot-goods-div .yishouqing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .hot-goods-box .hot-goods .hot-goods-div image {
   width: 100%;

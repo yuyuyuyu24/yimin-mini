@@ -8,10 +8,16 @@
     <div class="cattle-goods-box">
       <div class="cattle-goods">
         <div
+          class="cattle-goods-div"
           v-for="(item,index) in otherGoods"
           :key="index"
           @click="toDetails(item)"
         >
+          <div
+            class="yishouqing"
+            v-if="item.goodsStatus === 2"
+          >已 售 罄
+          </div>
           <image
             lazy-load=true
             mode="widthFile"
@@ -134,20 +140,33 @@ export default {
   justify-content: start;
   margin: 20rpx auto;
 }
-.cattle-goods-box .cattle-goods div {
+.cattle-goods-box .cattle-goods .cattle-goods-div {
   width: 340rpx;
   height: 400rpx;
   border-radius: 8rpx;
   margin: 0 10rpx 10rpx 0;
   box-shadow: darkgrey 0 0 30rpx -10rpx;
+  position: relative;
 }
-.cattle-goods-box .cattle-goods div image {
+.cattle-goods-box .cattle-goods .cattle-goods-div .yishouqing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cattle-goods-box .cattle-goods .cattle-goods-div image {
   width: 100%;
   height: 70%;
   border-top-left-radius: 8rpx;
   border-top-right-radius: 8rpx;
 }
-.cattle-goods-box .cattle-goods div p {
+.cattle-goods-box .cattle-goods .cattle-goods-div p {
   font-size: 16px;
   font-weight: 600;
   padding-left: 20rpx;
@@ -155,17 +174,17 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.cattle-goods-box .cattle-goods div .price {
+.cattle-goods-box .cattle-goods .cattle-goods-div .price {
   font-size: 20px;
   padding-left: 20rpx;
   font-weight: 600;
   color: #ff5f5f;
 }
-.cattle-goods-box .cattle-goods div .price-sign {
+.cattle-goods-box .cattle-goods .cattle-goods-div .price-sign {
   font-size: 14px;
   color: #ff5f5f;
 }
-.cattle-goods-box .cattle-goods div .price-unit {
+.cattle-goods-box .cattle-goods .cattle-goods-div .price-unit {
   font-size: 14px;
   color: #222;
 }

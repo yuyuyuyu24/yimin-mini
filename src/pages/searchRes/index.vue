@@ -25,6 +25,11 @@
           :key="index"
           @click="toDetails(item)"
         >
+          <div
+            class="yishouqing"
+            v-if="item.goodsStatus === 2"
+          >已 售 罄
+          </div>
           <image
             lazy-load=true
             mode="widthFile"
@@ -193,6 +198,19 @@ export default {
   border-radius: 8rpx;
   margin: 0 10rpx 10rpx 0;
   box-shadow: darkgrey 0 0 30rpx -10rpx;
+  position: relative;
+}
+.search-res-goods .yishouqing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .search-res-goods image {
   width: 100%;
@@ -200,6 +218,7 @@ export default {
   border-top-left-radius: 8rpx;
   border-top-right-radius: 8rpx;
 }
+
 .search-res-goods p {
   font-size: 16px;
   font-weight: 600;
