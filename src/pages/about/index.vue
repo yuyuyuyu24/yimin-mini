@@ -1,40 +1,60 @@
 <template>
   <div class="about-page">
     <div class="about-background">
-      <image  lazy-load=true class="about-background-img" @click="reviewBackground" mode="aspectFill" :src="backgroundImg"></image>
+      <image
+        lazy-load=true
+        class="about-background-img"
+        @click="reviewBackground"
+        mode="aspectFill"
+        :src="adminData.background.url"
+      ></image>
       <div class="about-headimg">
-        <image lazy-load=true @click="reviewHeadimg" mode="widthFile" :src="headimg"></image>
+        <image
+          lazy-load=true
+          @click="reviewHeadimg"
+          mode="widthFile"
+          :src="adminData.head.url"
+        ></image>
       </div>
     </div>
     <div class="about-introduce">
       <h2>商家自述</h2>
-      <span>店里主营排酸牛羊肉，是一家老字号的清真牛羊肉店。全线产品天然无污染、质检、动检完全符合国家标准，我们始终秉承“食品工业，道德工业”的经营理念，服务好消费者！</span>
+      <span>{{adminData.shopWord}}</span>
     </div>
-    <div class="about-contact" @click='callPhone(phoneOne)'>
-        <i class="iconfont icondianhua"></i>
-      联系电话1 :  <span><text selectable=true>{{phoneOne}}</text></span>
+    <div
+      class="about-contact"
+      @click='callPhone(adminData.phoneOne)'
+    >
+      <i class="iconfont icondianhua"></i>
+      联系电话1 : <span><text selectable=true>{{adminData.phoneOne}}</text></span>
     </div>
-    <div class="about-contact" @click='callPhone(phoneTwo)'>
-        <i class="iconfont iconzuoji"></i>
-      联系电话2 :  <span><text selectable=true>{{phoneTwo}}</text></span>
+    <div
+      class="about-contact"
+      @click='callPhone(adminData.phoneTwo)'
+    >
+      <i class="iconfont iconzuoji"></i>
+      联系电话2 : <span><text selectable=true>{{adminData.phoneTwo}}</text></span>
     </div>
     <div class="about-contact-wechat">
       <i class="iconfont iconicon"></i>
-      微信1 :  <span><text selectable=true>{{weChatOne}}</text></span>
+      微信1 : <span><text selectable=true>{{weChatOne}}</text></span>
     </div>
     <div class="about-contact-wechat">
       <i class="iconfont iconicon"></i>
-      微信2 :  <span><text selectable=true>{{weChatTwo}}</text></span>
+      微信2 : <span><text selectable=true>{{weChatTwo}}</text></span>
     </div>
     <div class="about-address">
       <div>
         <i class="iconfont iconicon-"></i>
         <h2>店铺地址</h2>
       </div>
-      <span @click="checkAddressOne">新华店 :  <span><text selectable=true>{{addressOne}}</text></span></span>
-      <span @click="checkAddressTwo">全宁店 :  <span><text selectable=true>{{addressTwo}}</text></span></span>
+      <span @click="checkAddressOne">新华店 : <span><text selectable=true>{{addressOne}}</text></span></span>
+      <span @click="checkAddressTwo">全宁店 : <span><text selectable=true>{{addressTwo}}</text></span></span>
     </div>
-    <div class="about-imgs" @click="toViewAtlas">
+    <div
+      class="about-imgs"
+      @click="toViewAtlas"
+    >
       <i class="iconfont iconzhaopian"></i>
       查看图集
     </div>
@@ -43,22 +63,49 @@
 </template>
 
 <script>
+import { getAdminDetail } from '@/api/admin'
+import querystring from 'querystring'
+
 export default {
   data () {
     return {
-      headimg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GEQzgD16BuMLe7xwefdGnY4tQoqlHOU2o*gu*UB8awTjcL2UjoK0mmWcLk6dk49Gyc*oXiBm8mizYdRV4xyYR1w!/b&bo=ggGCAYIBggEDFzI!&rf=viewer_4&t=5',
-      headimgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GEQzgD16BuMLe7xwefdGnY4tQoqlHOU2o*gu*UB8awTjcL2UjoK0mmWcLk6dk49Gyc*oXiBm8mizYdRV4xyYR1w!/b&bo=ggGCAYIBggEDFzI!&rf=viewer_4&t=5'],
-      backgroundImg: 'http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GOLQOlQ7RiBUaOUKn6wA0OEHM5.vJZ.h8Gfle0yXTo8xd7n*oihUJs7cPlZ41Sw6ZAW0kB4FLUBNxjJMu5EdcNI!/b&bo=DwqAAkArwAoRJzY!&rf=viewer_4&t=5',
-      backgroundImgList: ['http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GOLQOlQ7RiBUaOUKn6wA0OEHM5.vJZ.h8Gfle0yXTo8xd7n*oihUJs7cPlZ41Sw6ZAW0kB4FLUBNxjJMu5EdcNI!/b&bo=DwqAAkArwAoRJzY!&rf=viewer_4&t=5'],
-      phoneOne: this.GLOBAL.PHONE_ONE,
-      phoneTwo: this.GLOBAL.PHONE_TWO,
+      headimg: '',
+      headimgList: [],
+      backgroundImg: '',
+      backgroundImgList: [],
       weChatOne: this.GLOBAL.WE_CHAT_ONE,
       weChatTwo: this.GLOBAL.WE_CHAT_TWO,
       addressOne: this.GLOBAL.ADDRESS_ONE,
-      addressTwo: this.GLOBAL.ADDRESS_TWO
+      addressTwo: this.GLOBAL.ADDRESS_TWO,
+      adminData: {}
     }
   },
+  created () {
+    this.getAdminDetailFun()
+  },
   methods: {
+    // 获取商家信息
+    getAdminDetailFun () {
+      let _this = this
+      let id = 1
+      getAdminDetail('admin/getAdminDetail', { id }).then(res => {
+        if (res.data.data) {
+          res.data.data.head = querystring.parse(res.data.data.head)
+          res.data.data.background = querystring.parse(res.data.data.background)
+          _this.adminData = res.data.data
+          _this.headimg = res.data.data.head.url
+          _this.headimgList.push(res.data.data.head.url)
+          _this.backgroundImg = res.data.data.background.url
+          _this.backgroundImgList.push(res.data.data.background.url)
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
     // 预览头像
     reviewHeadimg () {
       wx.previewImage({

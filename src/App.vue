@@ -1,5 +1,11 @@
 <script>
+import { getNotice } from '@/api/notice'
 export default {
+  data () {
+    return {
+      alertNotice: {}
+    }
+  },
   onLaunch: function () {
     if (wx.canIUse('getUpdateManager')) {
       const updateManager = wx.getUpdateManager()
@@ -27,6 +33,29 @@ export default {
             })
           })
         }
+      })
+    }
+    this.getNoticeFun()
+  },
+  methods: {
+    getNoticeFun () {
+      let _this = this
+      getNotice('notice/getNotice').then(res => {
+        if (res.data.data) {
+          _this.alertNotice = res.data.data[0]
+          if (_this.alertNotice.noticeStatus === 1) {
+            wx.showModal({
+              title: _this.alertNotice.noticeTitle,
+              content: _this.alertNotice.noticeContent
+            })
+          }
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
       })
     }
   }

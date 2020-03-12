@@ -1,22 +1,37 @@
 <template>
   <div class="page">
     <back-top v-if="isBack"></back-top>
-    <div class="search-box" @click="toSearch">
+    <div
+      class="search-box"
+      @click="toSearch"
+    >
       <div class="search">
         <i class="iconfont iconsousuo-copy"></i>
         <p>{{query}}</p>
       </div>
     </div>
     <div class="search-res-box">
-      <view class="no-search-res" v-if="searchResGoodsList.length === 0">
+      <view
+        class="no-search-res"
+        v-if="searchResGoodsList.length === 0"
+      >
         <i class="iconfont iconno_result"></i>
         <h2>暂时没有找到商品</h2>
       </view>
       <div class="search-res">
-        <div class="search-res-goods" v-for="(item,index) in searchResGoodsList" :key="index" @click="toDetails(item)">
-            <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
-            <p>{{item.title}}</p>
-            <span class="price"><span class="price-sign">￥</span>{{item.price}}</span>
+        <div
+          class="search-res-goods"
+          v-for="(item,index) in searchResGoodsList"
+          :key="index"
+          @click="toDetails(item)"
+        >
+          <image
+            lazy-load=true
+            mode="widthFile"
+            :src='item.coverList.url'
+          ></image>
+          <p>{{item.goodsName}}</p>
+          <span class="price"><span class="price-sign">￥</span>{{item.goodsPrice}}</span>
         </div>
       </div>
     </div>
@@ -27,6 +42,9 @@
 import backTop from '@/components/backTop'
 // 导入全部数据
 import data from '@/utils/data.js'
+import { searchGoods } from '@/api/goods'
+import { changeQuerystring, ENCODE } from '@/utils/function'
+
 export default {
   data () {
     return {
@@ -41,14 +59,8 @@ export default {
   mounted () {
     // 取路由参数
     this.query = this.$root.$mp.query.search
-    // 根据搜索的值进行查询并返回结果
-    let that = this
-    that.searchResGoodsList = []
-    for (var i = 0; i < that.searchResGoods.length; i++) {
-      if (that.searchResGoods[i].title.indexOf(that.query) >= 0) {
-        that.searchResGoodsList.push(that.searchResGoods[i])
-      }
-    }
+    let goodsName = this.query
+    this.searchGoodsFun({ goodsName })
   },
 
   onPageScroll (e) {
@@ -60,6 +72,25 @@ export default {
   },
 
   methods: {
+    // 搜索商品接口 模糊查询
+    searchGoodsFun (goodsName) {
+      let _this = this
+      wx.showLoading({
+        title: '加载中'
+      })
+      searchGoods('goods/searchGoods', goodsName).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          _this.searchResGoodsList = changeQuerystring(res.data.data)
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
     // 返回顶部
     fatherMethod (e) { // 一键回到顶部=
       if (wx.pageScrollTo) {
@@ -89,12 +120,13 @@ export default {
     },
     // 跳转至商品详情页面
     toDetails (item) {
+      console.log(item)
       wx.showToast({
         title: '跳转中...',
         icon: 'loading'
       })
       wx.navigateTo({
-        url: `/pages/goodsDetails/main?id=${item.id}`,
+        url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
         success: function (res) {
           wx.hideToast()
         }

@@ -1,30 +1,63 @@
 <template>
   <div class="viewAtlas-page">
-    <div class="viewAtlas-shop" @click="checkViewAtlasDetails">
+    <div
+      class="viewAtlas-shop"
+      v-for="(item,index) in realShooting"
+      :key="index"
+      @click="checkViewAtlasDetails(index)"
+      :style="{ 'background': 'url('+item.atlasImgs[0].url+') no-repeat center center', 'background-size': '100% 100%'}"
+    >
       <div class="viewAtlas-opacity">
-        <h2>{{realShooting.length}}+</h2>
-        <span>店铺实拍</span>
+        <h2>{{item.atlasImgs.length}}+</h2>
+        <span>{{item.atlasName}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// 导入店内实拍照片
-import data from '@/utils/data.js'
+import { getAtlas } from '@/api/atlas'
+import { changeQuerystringAtlas } from '@/utils/function'
 
 export default {
   data () {
     return {
-      realShooting: data.realShootingData
+      realShooting: []
     }
   },
+  mounted () {
+    this.getAtlasFun()
+  },
   methods: {
+    // 获取图集
+    getAtlasFun () {
+      let _this = this
+      getAtlas('atlas/getAtlas').then(res => {
+        if (res.data.data) {
+          _this.realShooting = changeQuerystringAtlas(res.data.data)
+          for (let i = 0; i < res.data.data.length; i++) {
+            if (JSON.stringify(_this.realShooting[i].atlasImgs[0]) === '{}') {
+              _this.realShooting.splice(0, 1)
+            }
+          }
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
     // 查看图集详情
-    checkViewAtlasDetails () {
+    checkViewAtlasDetails (index) {
+      let atlasImgs = []
+      for (let i = 0; i < this.realShooting[index].atlasImgs.length; i++) {
+        atlasImgs.push(this.realShooting[index].atlasImgs[i].url)
+      }
       wx.previewImage({
-        current: data.realShootingData[0],
-        urls: data.realShootingData
+        current: atlasImgs[0],
+        urls: atlasImgs
       })
     }
   }
@@ -47,9 +80,7 @@ export default {
   border-radius: 8rpx;
   display: flex;
   justify-content: flex-end;
-  background: url("http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GJ1qB*eLxESqM8nhW*Z4saBq8R6l2um6yflnOMRgKU4KrXXHmD0TTFYvFC1JTIRwmh9.m5IhOhxrCLeJ4hD8Kq8!/b&bo=gw1ABoMNQAYRNwA!&rf=viewer_4&t=5")
-    no-repeat;
-  background-size: 100% 100%;
+  margin-bottom: 20rpx;
 }
 .viewAtlas-page .viewAtlas-shop .viewAtlas-opacity {
   width: 260rpx;

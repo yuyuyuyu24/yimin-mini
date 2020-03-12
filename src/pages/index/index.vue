@@ -1,40 +1,81 @@
 <template>
   <div class="page">
     <back-top v-if="isBack"></back-top>
-    <div class="search-box" @click="toSearch">
+    <div
+      class="search-box"
+      @click="toSearch"
+    >
       <div class="search">
         <i class="iconfont iconsousuo-copy"></i>
         <p>搜索你想要的商品...</p>
       </div>
     </div>
     <div class="swiper-box">
-      <swiper  class="swiper"
-      indicator-dots=true
-      autoplay=true
-      interval=5000
+      <swiper
+        class="swiper"
+        indicator-dots=true
+        autoplay=true
+        interval=5000
       >
-          <swiper-item v-for="(item,index) in swiperList" :key=index  @click="viewSwiper(index)">
-              <view>
-                <image lazy-load=true mode="widthFile" :src="item"></image>
-              </view>
-          </swiper-item>
+        <swiper-item
+          v-for="(item,index) in swiperList"
+          :key=index
+          @click="viewSwiper(index)"
+        >
+          <view>
+            <image
+              lazy-load=true
+              mode="widthFile"
+              :src="item.url"
+            ></image>
+          </view>
+        </swiper-item>
       </swiper>
+    </div>
+    <div
+      class="notice-box"
+      v-if="pageNotice.noticeStatus === 1"
+    >
+      <div class="notice">
+        <i class="iconfont icongonggao"></i>
+        <div class="notice-view">
+          <view
+            class="message-title"
+            :animation="animationData"
+            :style="{'transform': 'translateX('+-marqueeDistance+'px)'}"
+          >
+            {{pageNotice.noticeContent}}
+          </view>
+        </div>
+      </div>
     </div>
     <div class="classification">
       <div @click="toCattle">
-         <image mode='widthFix' src="../../static/images/cattle.png"></image>
+        <image
+          mode='widthFix'
+          src="../../static/images/cattle.png"
+        ></image>
         牛肉
       </div>
       <div @click="toSheep">
-         <image mode='widthFix' src="../../static/images/sheep.png"></image>
+        <image
+          mode='widthFix'
+          src="../../static/images/sheep.png"
+        ></image>
         羊肉
       </div>
       <div @click="toChicken">
-         <image mode='widthFix' src="../../static/images/chicken.png"></image>
+        <image
+          mode='widthFix'
+          src="../../static/images/chicken.png"
+        ></image>
         鸡产品
       </div>
       <div @click="toOther">
-         <image mode='widthFix' src="../../static/images/other.png"></image>
+        <image
+          mode='widthFix'
+          src="../../static/images/other.png"
+        ></image>
         其他
       </div>
     </div>
@@ -50,11 +91,15 @@
           @click="toDetails(item)"
           class="hot-goods-div"
         >
-          <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
-          <p>{{item.title}}</p>
-            <span class="price">
-              <span class="price-sign">￥</span>{{item.price}}
-            </span>
+          <image
+            lazy-load=true
+            mode="widthFile"
+            :src='item.coverList.url'
+          ></image>
+          <p>{{item.goodsName}}</p>
+          <span class="price">
+            <span class="price-sign">￥</span>{{item.goodsPrice}}
+          </span>
         </div>
       </div>
     </div>
@@ -64,13 +109,26 @@
 <script>
 import backTop from '@/components/backTop'
 // 导入精选商品数据
-import data from '@/utils/data.js'
+import { getSwiper } from '@/api/swiper'
+import { getNotice } from '@/api/notice'
+import { queryHotGoods } from '@/api/goods'
+import { changeQuerystring, ENCODE } from '@/utils/function'
+
 export default {
   data () {
     return {
-      hotGoods: data.hotGoodsData,
+      hotGoods: [],
       isBack: false,
-      swiperList: data.swiperData
+      swiperList: [],
+      pageNotice: {},
+      marqueePace: 1, // 滚动速度
+      marqueeDistance: 0, // 初始滚动距离
+      marquee_margin: 30,
+      size: 14,
+      interval: 100,
+      length: '',
+      windowWidth: ''
+
     }
   },
   components: {
@@ -83,8 +141,93 @@ export default {
       this.isBack = false
     }
   },
+  created () {
+    this.getSwiperFun()
+    this.getNoticeFun()
+    this.queryHotGoodsFun()
+  },
+  mounted () {
+    var that = this
+    var length = that.pageNotice.noticeContent.length * that.size// 文字长度
+    var windowWidth = wx.getSystemInfoSync().windowWidth// 屏幕宽度
+    // console.log(length,windowWidth);
+    that.length = length
+    that.windowWidth = windowWidth
 
+    that.scrolltxt()
+  },
   methods: {
+    scrolltxt: function () {
+      var that = this
+      var length = that.length// 滚动文字的宽度
+      var windowWidth = that.windowWidth// 屏幕宽度
+      if (length > windowWidth) {
+        var interval = setInterval(function () {
+          var maxscrollwidth = windowWidth * 0.9 * 0.9 + 50// 滚动的最大宽度，文字宽度+间距，如果需要一行文字滚完后再显示第二行可以修改marquee_margin值等于windowWidth即可
+
+          var crentleft = that.marqueeDistance
+          if (crentleft < maxscrollwidth) { // 判断是否滚动到最大宽度
+            that.marqueeDistance = crentleft + that.marqueePace
+          } else {
+            that.marqueeDistance = 0 // 直接重新滚动
+
+            clearInterval(interval)
+            that.scrolltxt()
+          }
+        }, that.interval)
+      } else {
+        that.marquee_margin = '1000' // 只显示一条不滚动右边间距加大，防止重复显示
+      }
+    },
+
+    // 获取全部轮播图 接口
+    getSwiperFun () {
+      let _this = this
+      getSwiper('swiper/getSwiper').then(res => {
+        if (res.data.data) {
+          _this.swiperList = res.data.data
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 获取全部公告 接口
+    getNoticeFun () {
+      let _this = this
+      getNotice('notice/getNotice').then(res => {
+        if (res.data.data) {
+          _this.pageNotice = res.data.data[1]
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 获取精选商品 接口
+    queryHotGoodsFun () {
+      let _this = this
+      let data = {
+        isHot: '1'
+      }
+      queryHotGoods('goods/queryHotGoods', data).then(res => {
+        if (res.data.data) {
+          _this.hotGoods = changeQuerystring(res.data.data)
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
     // 返回顶部
     fatherMethod (e) { // 一键回到顶部=
       if (wx.pageScrollTo) {
@@ -105,7 +248,7 @@ export default {
         icon: 'loading'
       })
       wx.navigateTo({
-        url: `/pages/goodsDetails/main?id=${item.id}`,
+        url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
         success: function (res) {
           wx.hideToast()
         }
@@ -126,9 +269,13 @@ export default {
     },
     // 预览轮播图
     viewSwiper (index) {
+      let swiperList = []
+      for (let i = 0; i < this.swiperList.length; i++) {
+        swiperList.push(this.swiperList[i].url)
+      }
       wx.previewImage({
-        current: data.swiperData[index],
-        urls: data.swiperData
+        current: swiperList[index],
+        urls: swiperList
       })
     },
     // 分类跳转
@@ -196,6 +343,42 @@ export default {
 .swiper image {
   width: 100%;
   height: 340rpx;
+}
+.notice-box {
+  background-color: #fff;
+  width: 100%;
+  height: 80rpx;
+}
+.notice-box .notice {
+  width: 90%;
+  height: 60rpx;
+  margin: 10rpx auto;
+  border-radius: 46rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: darkgrey 0 0 30rpx -10rpx;
+}
+.notice-box .notice .notice-view {
+  width: 90%;
+  height: 100%;
+  overflow: hidden;
+}
+.notice-box .notice .message-title {
+  width: 100%;
+  height: 100%;
+  font-size: 25rpx;
+  line-height: 60rpx;
+  padding-left: 60rpx;
+}
+.notice-box .notice i {
+  padding-left: 10rpx;
+  font-size: 50rpx;
+  color: red;
+}
+.notice-box .notice p {
+  padding-left: 10rpx;
+  font-size: 12px;
+  color: #666;
 }
 .search-box {
   background-color: #fff;

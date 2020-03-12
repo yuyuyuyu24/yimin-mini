@@ -1,14 +1,14 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/about/main",
     "pages/search/main",
-    "pages/goodsDetails/main",
     "pages/searchRes/main",
+    "pages/goodsDetails/main",
     "pages/sheep/main",
     "pages/chicken/main",
     "pages/other/main",
     "pages/cattle/main",
+    "pages/about/main",
     "pages/viewAtlas/main"
   ],
   "permission": {

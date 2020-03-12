@@ -3,14 +3,22 @@
     <back-top v-if="isBack"></back-top>
     <div class="cattle-title">
       <h2>其他</h2>
-      <p>以质量求生存，以安全求保障，以诚信求发展。<br/>期待着您的选择和品尝。</p>
+      <p>以质量求生存，以安全求保障，以诚信求发展。<br />期待着您的选择和品尝。</p>
     </div>
     <div class="cattle-goods-box">
       <div class="cattle-goods">
-        <div v-for="(item,index) in otherGoods" :key="index" @click="toDetails(item)">
-          <image lazy-load=true mode="widthFile" :src='item.imgUrl'></image>
-          <p>{{item.title}}</p>
-          <span class="price"><span class="price-sign">￥</span>{{item.price}}</span>
+        <div
+          v-for="(item,index) in otherGoods"
+          :key="index"
+          @click="toDetails(item)"
+        >
+          <image
+            lazy-load=true
+            mode="widthFile"
+            :src='item.coverList.url'
+          ></image>
+          <p>{{item.goodsName}}</p>
+          <span class="price"><span class="price-sign">￥</span>{{item.goodsPrice}}</span>
         </div>
       </div>
     </div>
@@ -19,12 +27,12 @@
 
 <script>
 import backTop from '@/components/backTop'
-// 导入其他数据
-import data from '@/utils/data.js'
+import { queryClassGoods } from '@/api/goods'
+import { changeQuerystring, ENCODE } from '@/utils/function'
 export default {
   data () {
     return {
-      otherGoods: data.otherData,
+      otherGoods: [],
       isBack: false
     }
   },
@@ -38,7 +46,32 @@ export default {
       this.isBack = false
     }
   },
+  mounted () {
+    this.queryClassGoodsFun()
+  },
   methods: {
+    // 根据分类显示商品 接口
+    queryClassGoodsFun () {
+      let _this = this
+      let data = {
+        goodsType: 'O'
+      }
+      wx.showLoading({
+        title: '加载中'
+      })
+      queryClassGoods('goods/queryClassGoods', data).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          _this.otherGoods = changeQuerystring(res.data.data)
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
     // 返回顶部
     fatherMethod (e) { // 一键回到顶部=
       if (wx.pageScrollTo) {
@@ -59,7 +92,7 @@ export default {
         icon: 'loading'
       })
       wx.navigateTo({
-        url: `/pages/goodsDetails/main?id=${item.id}`,
+        url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
         success: function (res) {
           wx.hideToast()
         }

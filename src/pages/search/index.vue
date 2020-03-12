@@ -3,27 +3,49 @@
     <div class="search-box">
       <div class="search-box-left">
         <i class="iconfont iconsousuo-copy"></i>
-        <input class="search" v-model="search" placeholder="搜索你想要的商品..." placeholder-style="font-size:12px;"/>
+        <input
+          class="search"
+          v-model="search"
+          placeholder="搜索你想要的商品..."
+          placeholder-style="font-size:12px;"
+        />
       </div>
-      <div class="search-btn" @click="toSearchRes">搜索</div>
+      <div
+        class="search-btn"
+        @click="toSearchRes"
+      >搜索</div>
     </div>
     <div class="hot-search-box">
       <h2>热门搜索</h2>
       <div class="hot-search">
-        <span v-for="(item,index) in hotSearch" :key="index" @click="onSearch(item)">{{item}}</span>
+        <span
+          v-for="(item,index) in hotSearch"
+          :key="index"
+          @click="onSearch(item)"
+        >{{item}}</span>
       </div>
     </div>
     <div class="hot-search-box">
-      <div class="hot-search-title" >
+      <div class="hot-search-title">
         <h2>搜索记录</h2>
-        <i class="iconfont iconlajitong-copy" @click="removeSearchHistory"></i>
+        <i
+          class="iconfont iconlajitong-copy"
+          @click="removeSearchHistory"
+        ></i>
       </div>
-       <view class="hot-search-not" v-if="searchHistoryList.length === 0">
+      <view
+        class="hot-search-not"
+        v-if="searchHistoryList.length === 0"
+      >
         <i class="iconfont iconno_result"></i>
         <h2>没有发现搜索记录哦！</h2>
       </view>
       <div class="hot-search">
-        <span v-for="(item,index) in searchHistoryList" :key="index" @click="onSearch(item)">{{item}}</span>
+        <span
+          v-for="(item,index) in searchHistoryList"
+          :key="index"
+          @click="onSearch(item)"
+        >{{item}}</span>
       </div>
     </div>
   </div>
@@ -211,7 +233,7 @@ export default {
   height: 36rpx;
   border-radius: 8rpx;
   background-color: #f1f1f1;
-  padding: 4rpx 8rpx;
+  padding: 16rpx 24rpx;
   font-size: 14px;
   text-align: center;
   line-height: 36rpx;

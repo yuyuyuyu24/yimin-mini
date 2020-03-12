@@ -2,37 +2,56 @@
   <div class="goods-details-page">
     <back-top v-if="isBack"></back-top>
     <div class="swiper-box">
-      <swiper  class="swiper"
-      indicator-dots=true
-      autoplay=true interval=5000>
-          <swiper-item v-for="(item,index) in hotGoodsList.imgUrlList" :key=index @click="viewSwiper(index)">
-              <view>
-                <image lazy-load=true mode="aspectFit" :src="item"></image>
-              </view>
-          </swiper-item>
+      <swiper
+        class="swiper"
+        indicator-dots=true
+        autoplay=true
+        interval=5000
+      >
+        <swiper-item
+          v-for="(item,index) in hotGoodsList.swiperList"
+          :key=index
+          @click="viewSwiper(index)"
+        >
+          <view>
+            <image
+              lazy-load=true
+              mode="aspectFit"
+              :src="item.url"
+            ></image>
+          </view>
+        </swiper-item>
       </swiper>
     </div>
     <div class="details">
-      <p>{{hotGoodsList.title}}</p>
+      <p>{{hotGoodsList.goodsName}}</p>
       <view>
         <span class="price">
-          <span class="price-sign">￥</span>{{hotGoodsList.price}}
-          <span class="price-unit" v-if="hotGoodsList.id !== 17 && hotGoodsList.id !== 42 && hotGoodsList.id !== 43 && hotGoodsList.id !== 44 && hotGoodsList.id !== 45 && hotGoodsList.id !== 46 && hotGoodsList.id !== 47 && hotGoodsList.id !== 50 && hotGoodsList.id !== 52 && hotGoodsList.id !== 53 && hotGoodsList.id !== 54 && hotGoodsList.id !== 55 && hotGoodsList.id !== 56 && hotGoodsList.id !== 57 && hotGoodsList.id !== 58 && hotGoodsList.id !== 59 && hotGoodsList.id !== 60 && hotGoodsList.id !== 61">/ 500克</span>
-          <span class="price-unit"  v-if="hotGoodsList.id === 17 || hotGoodsList.id === 53">/ 个</span>
-          <span class="price-unit"  v-if="hotGoodsList.id === 42 || hotGoodsList.id === 43 || hotGoodsList.id === 44 || hotGoodsList.id === 45 || hotGoodsList.id === 46 || hotGoodsList.id === 47 | hotGoodsList.id === 50 || hotGoodsList.id === 52 || hotGoodsList.id === 54|| hotGoodsList.id === 55|| hotGoodsList.id === 56 || hotGoodsList.id === 57 || hotGoodsList.id === 58 || hotGoodsList.id === 59 || hotGoodsList.id === 60 || hotGoodsList.id === 61">/ 袋</span>
+          <span class="price-sign">￥</span>{{hotGoodsList.goodsPrice}}
+          <span class="price-unit">/ {{hotGoodsList.goodsUnit}}</span>
+
         </span>
-        <i class="iconfont iconwenhao" @click="tip"></i>
+        <i
+          class="iconfont iconwenhao"
+          @click="tip"
+        ></i>
       </view>
     </div>
     <div :class="[hotGoodsList.isVideos ? 'store-message' : 'store-videos']">
       <p>商家留言</p>
-      <span>{{hotGoodsList.content}}</span>
+      <span>{{hotGoodsList.goodsInfo}}</span>
     </div>
-    <div class="store-videos" v-if="hotGoodsList.isVideos">
+    <div
+      class="store-videos"
+      v-if="hotGoodsList.isVideos"
+    >
       <p>商品视频</p>
       <div class="store-videos-video">
         <view>
-        <video muted=true :src="hotGoodsList.videoUrl"></video>
+          <video
+            muted=true
+            :src="hotGoodsList.videoList[0].url"
+          ></video>
         </view>
       </div>
     </div>
@@ -45,12 +64,11 @@
 
 <script>
 import backTop from '@/components/backTop'
-// 导入全部数据
-import data from '@/utils/data.js'
+import { getGoodsDetail } from '@/api/goods'
+import { UNENCODE, changeQuerystringDetail } from '@/utils/function'
 export default {
   data () {
     return {
-      hotGoods: data.allData,
       hotGoodsList: {},
       isBack: false
     }
@@ -59,11 +77,8 @@ export default {
     backTop
   },
   mounted () {
-    let query = this.$root.$mp.query.id
-    let obj = this.hotGoods.find(function (e) {
-      return e.id === Number(query)
-    })
-    this.hotGoodsList = obj
+    let id = UNENCODE(this.$root.$mp.query.id)
+    this.getGoodsDetailFun({ id })
   },
 
   onPageScroll (e) {
@@ -75,6 +90,26 @@ export default {
   },
 
   methods: {
+    // 获取商品详情接口
+    getGoodsDetailFun (id) {
+      let _this = this
+      wx.showLoading({
+        title: '加载中'
+      })
+      getGoodsDetail('goods/getGoodsDetail', id).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          _this.hotGoodsList = changeQuerystringDetail(res.data.data)
+          console.log(_this.hotGoodsList)
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
     // 返回顶部
     fatherMethod (e) { // 一键回到顶部
       if (wx.pageScrollTo) {
@@ -90,10 +125,14 @@ export default {
     },
     // 预览轮播图
     viewSwiper (index) {
-      let that = this
+      let _this = this
+      let swiperList = []
+      for (let i = 0; i < _this.hotGoodsList.swiperList.length; i++) {
+        swiperList.push(_this.hotGoodsList.swiperList[i].url)
+      }
       wx.previewImage({
-        current: that.hotGoodsList.imgUrlList[index],
-        urls: that.hotGoodsList.imgUrlList
+        current: swiperList[index],
+        urls: swiperList
       })
     },
     // 提示
@@ -109,8 +148,8 @@ export default {
     let that = this
     return {
       title: that.hotGoodsList.title,
-      path: `/pages/goodsDetails/main?id=${that.$root.$mp.query.id}`,
-      imageUrl: that.hotGoodsList.imgUrlList[0]
+      path: `/pages/goodsDetails/main?id=${UNENCODE(that.$root.$mp.query.id)}`,
+      imageUrl: that.hotGoodsList.swiperList[0].url
     }
   }
 
