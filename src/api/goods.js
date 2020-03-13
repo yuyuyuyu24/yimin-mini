@@ -1,7 +1,7 @@
 import config from '../utils/parameter'
 
 // 获取全部商品
-export async function getGoods (api, data) {
+export async function miniGetGoods (api, data) {
   return new Promise(function (resolve, reject) {
     wx.request({
       url: `${config.api}/${api}`,

@@ -10,6 +10,20 @@
         <p>搜索你想要的商品...</p>
       </div>
     </div>
+    <div class="notice-box">
+      <div class="notice">
+        <i class="iconfont icongonggao"></i>
+        <div class="notice-view">
+          <view
+            class="message-title"
+            :animation="animationData"
+            :style="{'transform': 'translateX('+-marqueeDistance+'px)'}"
+          >
+            {{pageNotice.noticeContent}}
+          </view>
+        </div>
+      </div>
+    </div>
     <div class="swiper-box">
       <swiper
         class="swiper"
@@ -31,23 +45,6 @@
           </view>
         </swiper-item>
       </swiper>
-    </div>
-    <div
-      class="notice-box"
-      v-if="pageNotice.noticeStatus === 1"
-    >
-      <div class="notice">
-        <i class="iconfont icongonggao"></i>
-        <div class="notice-view">
-          <view
-            class="message-title"
-            :animation="animationData"
-            :style="{'transform': 'translateX('+-marqueeDistance+'px)'}"
-          >
-            {{pageNotice.noticeContent}}
-          </view>
-        </div>
-      </div>
     </div>
     <div class="classification">
       <div @click="toCattle">
@@ -78,50 +75,80 @@
         ></image>
         其他
       </div>
+      <div @click="toAll">
+        <image
+          mode='widthFix'
+          src="../../static/images/all.png"
+        ></image>
+        全部商品
+      </div>
+      <div @click="toSpecial">
+        <image
+          mode='widthFix'
+          src="../../static/images/special.png"
+        ></image>
+        特价商品
+      </div>
+      <div @click="toHot">
+        <image
+          mode='widthFix'
+          src="../../static/images/hot.png"
+        ></image>
+        精选商品
+      </div>
+      <div @click="toNew">
+        <image
+          mode='widthFix'
+          src="../../static/images/new.png"
+        ></image>
+        新品专区
+      </div>
     </div>
-    <div class="hot-goods-box">
-      <div class="hot-goods-title">
-        <h2>精选商品</h2>
-        <i class="iconfont iconHOT"></i>
+    <div
+      class="goodsTab"
+      :class="{isFixedClass:isFixed}"
+    >
+
+      <div
+        v-for="(item,index) in tabsList"
+        :key="index"
+        @click='checkCurrent(index)'
+        :class="[ item.class,{'selected':index === currentData  }]"
+      >
+        <h3>{{item.title}}</h3>
+        <p>
+          {{item.content}}
+        </p>
       </div>
-      <div class="hot-goods">
-        <div
-          v-for="(item,index) in hotGoods"
-          :key="index"
-          @click="toDetails(item)"
-          class="hot-goods-div"
-        >
-          <div
-            class="yishouqing"
-            v-if="item.goodsStatus === 2"
-          >已 售 罄</div>
-          <image
-            lazy-load=true
-            mode="widthFile"
-            :src='item.coverList.url'
-          ></image>
-          <p>{{item.goodsName}}</p>
-          <span class="price">
-            <span class="price-sign">￥</span>{{item.goodsPrice}}
-          </span>
-        </div>
-      </div>
+    </div>
+    <div
+      class="
+        goodsTab-box"
+      @change="bindchange"
+      :class="{isFixedClassGoodsTab:isFixed}"
+    >
+      <all-tabs v-if="currentData === 0" />
+      <special-tabs v-else-if="currentData === 1" />
+      <hot-tabs v-else-if="currentData === 2" />
+      <new-tabs v-else />
     </div>
   </div>
 </template>
 
 <script>
 import backTop from '@/components/backTop'
+import allTabs from '@/components/allTabs'
+import specialTabs from '@/components/specialTabs'
+import hotTabs from '@/components/hotTabs'
+import newTabs from '@/components/newTabs'
+
 // 导入精选商品数据
 import { getSwiper } from '@/api/swiper'
 import { getNotice } from '@/api/notice'
-import { queryHotGoods } from '@/api/goods'
-import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
   data () {
     return {
-      hotGoods: [],
       isBack: false,
       swiperList: [],
       pageNotice: {},
@@ -131,14 +158,32 @@ export default {
       size: 14,
       interval: 100,
       length: '',
-      windowWidth: ''
-
+      windowWidth: '',
+      isFixed: false,
+      currentData: 0,
+      tabsList: [
+        { 'title': '全部商品', 'content': '超值好货', 'tabs': 0, 'class': 'goodsTab-all' },
+        { 'title': '特价商品', 'content': '低价抢购', 'tabs': 1, 'class': 'goodsTab-special' },
+        { 'title': '精选商品', 'content': '好物放心购', 'tabs': 2, 'class': 'goodsTab-hot' },
+        { 'title': '新品专区', 'content': '春季上新', 'tabs': 3, 'class': 'goodsTab-new' }
+      ]
     }
   },
   components: {
-    backTop
+    backTop,
+    allTabs,
+    specialTabs,
+    hotTabs,
+    newTabs
   },
+  // 页面滚动 选项卡吸顶
   onPageScroll (e) {
+    let _this = this
+    if (e.scrollTop >= 418) {
+      _this.isFixed = true
+    } else {
+      _this.isFixed = false
+    }
     if (e.scrollTop > this.GLOBAL.SCROLL_TOP) {
       this.isBack = true
     } else {
@@ -148,7 +193,6 @@ export default {
   created () {
     this.getSwiperFun()
     this.getNoticeFun()
-    this.queryHotGoodsFun()
   },
   mounted () {
     var that = this
@@ -156,10 +200,10 @@ export default {
     var windowWidth = wx.getSystemInfoSync().windowWidth// 屏幕宽度
     that.length = length
     that.windowWidth = windowWidth
-
     that.scrolltxt()
   },
   methods: {
+    // 滚动公告动画
     scrolltxt: function () {
       var that = this
       var length = that.length// 滚动文字的宽度
@@ -213,24 +257,7 @@ export default {
         })
       })
     },
-    // 获取精选商品 接口
-    queryHotGoodsFun () {
-      let _this = this
-      let data = {
-        isHot: '1'
-      }
-      queryHotGoods('goods/queryHotGoods', data).then(res => {
-        if (res.data.data) {
-          _this.hotGoods = changeQuerystring(res.data.data)
-        }
-      }).catch(() => {
-        wx.showToast({
-          title: '网络出现问题，请稍后再试！',
-          icon: 'none',
-          duration: 2000
-        })
-      })
-    },
+
     // 返回顶部
     fatherMethod (e) { // 一键回到顶部=
       if (wx.pageScrollTo) {
@@ -243,19 +270,6 @@ export default {
           content: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。'
         })
       }
-    },
-    // 跳转至商品详情页面
-    toDetails (item) {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
     },
     // 跳转至搜索页面
     toSearch () {
@@ -329,18 +343,29 @@ export default {
           wx.hideToast()
         }
       })
+    },
+    toAll () { },
+    toSpecial () { },
+    toHot () { },
+    toNew () { },
+    checkCurrent (index) {
+      let _this = this
+      _this.currentData = index
     }
+
   }
 }
 </script>
 
 <style scoped>
 .notice-box {
-  background-color: #fff;
+  background-color: #00bf6f;
   width: 100%;
-  height: 80rpx;
+  height: 60rpx;
+  margin-top: 102rpx;
 }
 .notice-box .notice {
+  background-color: #fff;
   width: 90%;
   height: 60rpx;
   margin: 10rpx auto;
@@ -360,6 +385,7 @@ export default {
   font-size: 25rpx;
   line-height: 60rpx;
   padding-left: 60rpx;
+  color: #666;
 }
 .notice-box .notice i {
   padding-left: 10rpx;
@@ -376,7 +402,6 @@ export default {
   width: 100%;
   height: 100rpx;
   border-top: 2rpx solid #00bf6f;
-  border-bottom: 2rpx solid #f4f4f4;
   position: fixed;
   top: 0;
   z-index: 99;
@@ -401,9 +426,11 @@ export default {
 }
 .swiper-box {
   /* background: linear-gradient(to bottom, #00bf6f, #fff); */
-  background: -webkit-gradient(linear, 0 0, 0 60%, from(#00bf6f), to(#fff));
-  padding: 20rpx 0;
-  margin-top: 102rpx;
+  /* background: -webkit-gradient(linear, 0 0, 0 60%, from(#00bf6f), to(#fff)); */
+  background-color: #00bf6f;
+  padding: 20rpx 0 140rpx 0;
+  border-bottom-left-radius: 70rpx;
+  border-bottom-right-radius: 70rpx;
 }
 .swiper {
   width: 680rpx;
@@ -421,96 +448,78 @@ export default {
 .classification {
   background-color: #fff;
   width: 680rpx;
-  height: 200rpx;
+  height: 350rpx;
   margin: 0 auto;
-  border-radius: 5rpx;
+  border-radius: 13rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: -113rpx;
+  box-shadow: darkgrey 0 0 30rpx -10rpx;
+  flex-wrap: wrap;
 }
 .classification div {
   width: 160rpx;
-  height: 100%;
+  height: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 .classification div image {
-  width: 80rpx;
+  width: 65rpx;
   display: block;
-  margin-bottom: 20rpx;
+  margin-bottom: 15rpx;
 }
-.hot-goods-box {
+.goodsTab {
   width: 100%;
-  height: auto;
-  border-top: 6rpx solid #f4f4f4;
-}
-.hot-goods-box .hot-goods-title {
-  width: auto;
-  height: auto;
+  height: 100rpx;
+  background-color: #f8f8f8;
   display: flex;
-  padding: 40rpx;
-  align-items: center;
-}
-.hot-goods-box .hot-goods-title h2 {
-  font-size: 18px;
-}
-.hot-goods-box .hot-goods-title i {
-  padding-left: 20rpx;
-  color: red;
-}
-.hot-goods-box .hot-goods {
-  width: 700rpx;
-  height: auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: start;
-  margin: 0 auto;
-}
-.hot-goods-box .hot-goods .hot-goods-div {
-  width: 340rpx;
-  height: 400rpx;
-  border-radius: 8rpx;
-  margin: 0 10rpx 10rpx 0;
-  box-shadow: darkgrey 0 0 30rpx -10rpx;
-  position: relative;
-}
-.hot-goods-box .hot-goods .hot-goods-div .yishouqing {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  text-align: center;
-  color: #fff;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  margin-top: 40rpx;
+  z-index: 99;
 }
-.hot-goods-box .hot-goods .hot-goods-div image {
+.goodsTab .selected h3 {
+  color: #00bf6f !important;
+}
+.isFixedClass {
+  position: fixed;
+  top: 63rpx;
+  background-color: #fff;
+}
+.isFixedClassGoodsTab {
+  margin-top: 180rpx;
+}
+.goodsTab .goodsTab-all,
+.goodsTab-special,
+.goodsTab-hot,
+.goodsTab-new {
+  width: 25%;
+  text-align: center;
+}
+.goodsTab .goodsTab-all h3,
+.goodsTab-special h3,
+.goodsTab-hot h3,
+.goodsTab-new h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+}
+.goodsTab .goodsTab-all p,
+.goodsTab-special p,
+.goodsTab-hot p,
+.goodsTab-new p {
+  font-size: 12px;
+  color: #666;
+}
+.goodsTab .goodsTab-all,
+.goodsTab-special,
+.goodsTab-hot {
+  border-right: 1px solid #ccc;
+}
+.goodsTab-box {
   width: 100%;
-  height: 70%;
-  border-top-left-radius: 8rpx;
-  border-top-right-radius: 8rpx;
-}
-.hot-goods-box .hot-goods .hot-goods-div p {
-  font-size: 16px;
-  font-weight: 600;
-  padding-left: 20rpx;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.hot-goods-box .hot-goods .hot-goods-div .price {
-  font-size: 20px;
-  padding-left: 20rpx;
-  font-weight: 600;
-  color: #ff5f5f;
-}
-.hot-goods-box .hot-goods .hot-goods-div .price-sign {
-  font-size: 14px;
-  color: #ff5f5f;
 }
 </style>

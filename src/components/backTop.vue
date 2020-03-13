@@ -1,5 +1,8 @@
 <template>
-  <div class="back-top" @click="goTop">
+  <div
+    class="back-top"
+    @click="goTop"
+  >
     <i class="iconfont iconsvg-"></i>
   </div>
 </template>
@@ -29,5 +32,6 @@ export default {
   position: fixed;
   right: 40rpx;
   bottom: 100rpx;
+  z-index: 99;
 }
 </style>
