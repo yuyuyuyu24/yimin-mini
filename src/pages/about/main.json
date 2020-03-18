@@ -1,3 +1,5 @@
 {
-  "navigationBarTitleText": "关于我们"
+  "navigationBarTitleText": "关于商家",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTextStyle": "black"
 }

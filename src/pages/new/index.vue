@@ -2,14 +2,14 @@
   <div class="page">
     <back-top v-if="isBack"></back-top>
     <div class="cattle-title">
-      <h2>鸡产品</h2>
-      <p>本着：经营好的部位鸡产品，吃放心的部位鸡肉的原则，尽力为您提供质优价美的产品和服务。</p>
+      <h2>新品专区</h2>
+      <p>春季上新</p>
     </div>
     <div class="cattle-goods-box">
       <div class="cattle-goods">
         <div
           class="cattle-goods-div"
-          v-for="(item,index) in chickenGoods"
+          v-for="(item,index) in newGoods"
           :key="index"
           @click="toDetails(item)"
         >
@@ -39,12 +39,14 @@
 
 <script>
 import backTop from '@/components/backTop'
-import { queryClassGoods } from '@/api/goods'
+import { miniGetGoods } from '@/api/goods'
+
 import { changeQuerystring, ENCODE } from '@/utils/function'
+
 export default {
   data () {
     return {
-      chickenGoods: [],
+      newGoods: [],
       isBack: false
     }
   },
@@ -59,22 +61,15 @@ export default {
     }
   },
   mounted () {
-    this.queryClassGoodsFun()
+    this.miniGetGoodsFun()
   },
   methods: {
-    // 根据分类显示商品 接口
-    queryClassGoodsFun () {
+    // 获取最新的10条商品 接口
+    miniGetGoodsFun () {
       let _this = this
-      let data = {
-        goodsType: 'C'
-      }
-      wx.showLoading({
-        title: '加载中'
-      })
-      queryClassGoods('goods/queryClassGoods', data).then(res => {
-        wx.hideLoading()
+      miniGetGoods('goods/miniGetGoods').then(res => {
         if (res.data.data) {
-          _this.chickenGoods = changeQuerystring(res.data.data)
+          _this.newGoods = changeQuerystring(res.data.data.slice(-5).reverse())
         }
       }).catch(() => {
         wx.showToast({
@@ -97,6 +92,7 @@ export default {
         })
       }
     },
+
     // 跳转至商品详情页面
     toDetails (item) {
       wx.showToast({
@@ -166,6 +162,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 .cattle-goods-box .cattle-goods .cattle-goods-div image {
   width: 100%;
   height: 70%;
@@ -184,6 +181,7 @@ export default {
   bottom: 37rpx;
   right: 20rpx;
 }
+
 .cattle-goods-box .cattle-goods .cattle-goods-div p {
   font-size: 16px;
   font-weight: 600;

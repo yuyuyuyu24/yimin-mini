@@ -1,13 +1,23 @@
 {
   "pages": [
+    "pages/my/main",
     "pages/index/main",
     "pages/search/main",
     "pages/searchRes/main",
     "pages/goodsDetails/main",
+    "pages/cattle/main",
     "pages/sheep/main",
     "pages/chicken/main",
     "pages/other/main",
-    "pages/cattle/main",
+    "pages/all/main",
+    "pages/special/main",
+    "pages/hot/main",
+    "pages/new/main",
+    "pages/cart/main",
+    "pages/order/main",
+    "pages/collection/main",
+    "pages/address/main",
+    "pages/editAddress/main",
     "pages/about/main",
     "pages/viewAtlas/main"
   ],
@@ -34,10 +44,15 @@
       "iconPath": "static/images/home.png",
       "selectedIconPath": "static/images/home-active.png"
     }, {
-      "text": "关于我们",
-      "pagePath": "pages/about/main",
-      "iconPath": "static/images/about.png",
-      "selectedIconPath": "static/images/about-active.png"
+      "text": "购物车",
+      "pagePath": "pages/cart/main",
+      "iconPath": "static/images/cart.png",
+      "selectedIconPath": "static/images/cart-active.png"
+    }, {
+      "text": "我的",
+      "pagePath": "pages/my/main",
+      "iconPath": "static/images/my.png",
+      "selectedIconPath": "static/images/my-active.png"
     }],
 
     "items": [{
@@ -46,10 +61,15 @@
       "icon": "static/images/home.png",
       "activeIcon": "static/images/home-active.png"
     }, {
-      "name": "关于我们",
-      "pagePath": "pages/about/main",
-      "icon": "static/images/about.png",
-      "activeIcon": "static/images/about-active.png"
+      "name": "购物车",
+      "pagePath": "pages/cart/main",
+      "icon": "static/images/cart.png",
+      "activeIcon": "static/images/cart-active.png"
+    }, {
+      "name": "我的",
+      "pagePath": "pages/my/main",
+      "icon": "static/images/my.png",
+      "activeIcon": "static/images/my-active.png"
     }],
     "position": "bottom"
   }

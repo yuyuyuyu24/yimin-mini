@@ -2,7 +2,7 @@
 	"description": "项目配置文件。",
 	"setting": {
 		"urlCheck": false,
-		"es6": false,
+		"es6": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
@@ -59,6 +59,14 @@
 					"id": -1,
 					"name": "pages/index/main",
 					"pathName": "pages/index/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 2,
+					"name": "pages/goodsDetails/main",
+					"pathName": "pages/goodsDetails/main",
+					"query": "id=1008",
 					"scene": null
 				}
 			]

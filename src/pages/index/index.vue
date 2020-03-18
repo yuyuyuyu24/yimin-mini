@@ -124,7 +124,6 @@
     <div
       class="
         goodsTab-box"
-      @change="bindchange"
       :class="{isFixedClassGoodsTab:isFixed}"
     >
       <all-tabs v-if="currentData === 0" />
@@ -344,10 +343,54 @@ export default {
         }
       })
     },
-    toAll () { },
-    toSpecial () { },
-    toHot () { },
-    toNew () { },
+    toAll () {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      wx.navigateTo({
+        url: '/pages/all/main',
+        success: function (res) {
+          wx.hideToast()
+        }
+      })
+    },
+    toSpecial () {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      wx.navigateTo({
+        url: '/pages/special/main',
+        success: function (res) {
+          wx.hideToast()
+        }
+      })
+    },
+    toHot () {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      wx.navigateTo({
+        url: '/pages/hot/main',
+        success: function (res) {
+          wx.hideToast()
+        }
+      })
+    },
+    toNew () {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      wx.navigateTo({
+        url: '/pages/new/main',
+        success: function (res) {
+          wx.hideToast()
+        }
+      })
+    },
     checkCurrent (index) {
       let _this = this
       _this.currentData = index

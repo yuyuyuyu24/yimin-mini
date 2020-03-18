@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "编辑地址",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-cell": "/static/vant/dist/cell/index",
+    "van-cell-group": "/static/vant/dist/cell-group/index",
+    "van-field": "/static/vant/dist/field/index",
+    "van-popup": "/static/vant/dist/popup/index",
+    "van-area": "/static/vant/dist/area/index",
+    "van-dialog": "/static/vant/dist/dialog/index"
+  }
+}

@@ -20,6 +20,12 @@
         <span class="price">
           <span class="price-sign">￥</span>{{item.goodsPrice}}
         </span>
+        <div
+          v-if="item.isSpecial === 1"
+          class="hot-goods-div-message-right"
+        >
+          特价
+        </div>
       </div>
     </div>
   </div>
@@ -99,6 +105,18 @@ export default {
   height: 70%;
   border-top-left-radius: 8rpx;
   border-top-right-radius: 8rpx;
+}
+.hot-goods-box .hot-goods-div-message-right {
+  width: 80rpx;
+  height: 60rpx;
+  background-color: #b4db9a;
+  color: #fff;
+  text-align: center;
+  line-height: 60rpx;
+  border-radius: 15rpx;
+  position: absolute;
+  bottom: 37rpx;
+  right: 20rpx;
 }
 .hot-goods-box .hot-goods .hot-goods-div p {
   font-size: 16px;

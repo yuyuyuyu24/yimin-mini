@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "我的地址",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-radio": "/static/vant/dist/radio/index",
+    "van-radio-group": "/static/vant/dist/radio-group/index"
+  }
+}

@@ -1,3 +1,9 @@
 {
-  "navigationBarTitleText": "商品详情"
+  "navigationBarTitleText": "商品详情",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-popup": "/static/vant/dist/popup/index",
+    "van-toast": "/static/vant/dist/toast/index"
+  }
 }

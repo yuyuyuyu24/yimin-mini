@@ -16,10 +16,18 @@
           mode="widthFile"
           :src='item.coverList.url'
         ></image>
-        <p>{{item.goodsName}}</p>
-        <span class="price">
-          <span class="price-sign">￥</span>{{item.goodsPrice}}
-        </span>
+        <div>
+          <p>{{item.goodsName}}</p>
+          <span class="price">
+            <span class="price-sign">￥</span>{{item.goodsPrice}}
+          </span>
+          <div
+            v-if="item.isSpecial === 1"
+            class="hot-goods-div-message-right"
+          >
+            特价
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -110,6 +118,19 @@ export default {
   border-top-left-radius: 8rpx;
   border-top-right-radius: 8rpx;
 }
+.hot-goods-box .hot-goods-div-message-right {
+  width: 80rpx;
+  height: 60rpx;
+  background-color: #b4db9a;
+  color: #fff;
+  text-align: center;
+  line-height: 60rpx;
+  border-radius: 15rpx;
+  position: absolute;
+  bottom: 37rpx;
+  right: 20rpx;
+}
+
 .hot-goods-box .hot-goods .hot-goods-div p {
   font-size: 16px;
   font-weight: 600;
@@ -121,12 +142,21 @@ export default {
 
 .hot-goods-box .hot-goods .hot-goods-div .price {
   font-size: 20px;
-  padding-left: 20rpx;
   font-weight: 600;
+  padding-left: 20rpx;
   color: #ff5f5f;
 }
 .hot-goods-box .hot-goods .hot-goods-div .price-sign {
   font-size: 14px;
   color: #ff5f5f;
+}
+.hot-goods-box .hot-goods .hot-goods-div .goods-type-icon {
+  width: auto;
+  height: auto;
+  padding: 8rpx 10rpx;
+  background-color: red;
+  border-top-right-radius: 20rpx;
+  border-bottom-left-radius: 20rpx;
+  color: #fff;
 }
 </style>
