@@ -42,7 +42,6 @@
         </div>
       </div>
     </div>
-    <van-dialog id="van-dialog" />
 
   </div>
 </template>
@@ -76,7 +75,7 @@ export default {
       this.conut += 1
       let data = {
         userId: userList.id,
-        orderStatus: '1',
+        orderStatus: '2',
         pageNumber: _this.conut,
         pageSize: 5
       }

@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "确认订单",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-radio": "/static/vant/dist/radio/index",
+    "van-radio-group": "/static/vant/dist/radio-group/index",
+    "van-field": "/static/vant/dist/field/index",
+    "van-dialog": "/static/vant/dist/dialog/index"
+  }
+}

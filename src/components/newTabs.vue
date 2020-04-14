@@ -1,5 +1,12 @@
 <template>
   <div class="hot-goods-box">
+    <view
+      class="hot-search-not"
+      v-if="newGoods.length === 0"
+    >
+      <i class="iconfont iconno_result"></i>
+      <h2>即将上新，敬请期待！</h2>
+    </view>
     <div class="hot-goods">
       <div
         v-for="(item,index) in newGoods"
@@ -146,5 +153,21 @@ export default {
 .hot-goods-box .hot-goods .hot-goods-div .price-sign {
   font-size: 14px;
   color: #ff5f5f;
+}
+.hot-search-not {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.hot-search-not i {
+  font-size: 30px;
+  padding: 40rpx 0;
+}
+
+.hot-search-not h2 {
+  font-size: 20px;
 }
 </style>

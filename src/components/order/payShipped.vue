@@ -20,6 +20,7 @@
         <div
           class="all-order-box-content-box"
           v-if="isGoods"
+          @click="toOrderDetails(item)"
         >
           <div
             class="all-order-box-content"
@@ -43,7 +44,6 @@
       </div>
     </div>
     <van-dialog id="van-dialog" />
-
   </div>
 </template>
 <script>
@@ -61,10 +61,10 @@ export default {
       conut: 0
     }
   },
-  mounted () {
+  onReachBottom () {
     this.getUserStatusOrderFun()
   },
-  onReachBottom () {
+  mounted () {
     this.getUserStatusOrderFun()
   },
   methods: {
@@ -76,7 +76,7 @@ export default {
       this.conut += 1
       let data = {
         userId: userList.id,
-        orderStatus: '1',
+        orderStatus: '3',
         pageNumber: _this.conut,
         pageSize: 5
       }

@@ -12,23 +12,18 @@
       class="collections"
       v-if="!isCollectionNull"
     >
-      <div class="collection-box">
+      <div
+        class="collection-box"
+        v-for="(item,index) in collectionData"
+        :key="index"
+        @click="toGoodsDetails (item)"
+      >
         <div class="collection-box-content">
-          <img />
+          <img :src="item.coverList[0].url" />
           <div class="collection-box-content-right">
-            <p>风干牛肉 500克</p>
-            <span>库存量： 10</span>
-            <h3>￥ 100</h3>
-          </div>
-        </div>
-      </div>
-      <div class="collection-box">
-        <div class="collection-box-content">
-          <img />
-          <div class="collection-box-content-right">
-            <p>风干牛肉 500克</p>
-            <span>库存量： 10</span>
-            <h3>￥ 100</h3>
+            <p>{{item.goodsName}} {{item.goodsUnit}}</p>
+            <span>库存量： {{item.goodsStock}}</span>
+            <h3>￥ {{item.goodsPrice}}</h3>
           </div>
         </div>
       </div>
@@ -36,14 +31,82 @@
   </div>
 </template>
 <script>
+import { getCollectionShop } from '@/api/collection'
+import { changeQuerystringDetail, ENCODE } from '@/utils/function'
+import { getGoodsDetail } from '@/api/goods'
 
 export default {
   data () {
     return {
-      isCollectionNull: false
+      isCollectionNull: false,
+      collectionData: []
     }
   },
+  onShow () {
+    let value = wx.getStorageSync('userMegList')
+    let data = {
+      userId: value.id
+    }
+    this.collectionData = []
+    this.getCollectionShopFun(data)
+  },
   methods: {
+    // 获取用户全部的收藏商品
+    getCollectionShopFun (data) {
+      let _this = this
+      getCollectionShop('mini/getCollectionShop', data).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          if (res.data.data.length === 0) {
+            _this.isCollectionNull = true
+          } else {
+            _this.isCollectionNull = false
+            for (let i = 0; i < res.data.data.length; i++) {
+              let id = res.data.data[i].shopId
+              _this.getGoodsDetailFun({ id })
+            }
+          }
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 获取商品详情接口
+    getGoodsDetailFun (id) {
+      let _this = this
+      wx.showLoading({
+        title: '加载中'
+      })
+      getGoodsDetail('goods/getGoodsDetail', id).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          _this.collectionData.push(changeQuerystringDetail(res.data.data))
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 点击图片跳转到商品详情
+    toGoodsDetails (item) {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      wx.navigateTo({
+        url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
+        success: function (res) {
+          wx.hideToast()
+        }
+      })
+    },
     // 去逛逛跳转到首页
     toIndex () {
       wx.showToast({

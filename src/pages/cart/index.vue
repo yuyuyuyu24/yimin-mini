@@ -81,7 +81,7 @@
           v-if="!isDelete"
           class="to-settlement-button"
         >
-          <span>去结算</span>
+          <span @click="toConfirmOrder">去结算</span>
         </div>
         <div
           v-if="isDelete"
@@ -128,11 +128,15 @@
         </div>
       </div>
     </div>
+    <van-dialog id="van-dialog" />
+
   </div>
 </template>
 <script>
 import { getGoodsDetail, randomGoods } from '@/api/goods'
 import { changeQuerystringDetail, changeQuerystring, ENCODE } from '@/utils/function'
+import Dialog from '../../../static/vant/dist/dialog/dialog'
+
 export default {
   data () {
     return {
@@ -150,6 +154,7 @@ export default {
   },
   onShow () {
     this.cartFun()
+    this.total = 0
   },
   mounted () {
     let number = 10
@@ -380,6 +385,66 @@ export default {
         url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
         success: function (res) {
           wx.hideToast()
+        }
+      })
+    },
+    // 点击去结算
+    toConfirmOrder () {
+      let _this = this
+      wx.checkSession({
+        success (res) {
+          let value = wx.getStorageSync('userMegList')
+          if (!value) {
+            Dialog.alert({
+              title: '提示',
+              message: '很抱歉，您需要先进行登录才可以购买商品哦 ~'
+            }).then(() => {
+              wx.navigateTo({
+                url: `/pages/loginPage/main`
+              })
+            })
+          } else {
+            let list = []
+            let unList = []
+            for (let i = 0; i < _this.cartData.length; i++) {
+              if (_this.cartData[i].selete === true) {
+                list.push({ 'id': _this.cartData[i].id, 'num': _this.cartData[i].goodsNum })
+              } else {
+                unList.push(_this.cartData[i])
+              }
+            }
+            if (unList.length === _this.cartData.length) {
+              wx.showToast({
+                title: '请先勾选要购买的商品',
+                icon: 'none',
+                duration: 3000
+              })
+            } else {
+              wx.showToast({
+                title: '跳转中...',
+                icon: 'loading'
+              })
+              let query = JSON.stringify(list)
+              wx.navigateTo({
+                url: `/pages/confirmOrder/main?data=${query}`,
+                success: function (res) {
+                  wx.hideToast()
+                }
+              })
+            }
+          }
+        },
+        fail () {
+          // session_key 已经失效，需要重新执行登录流程
+          // wx.login() // 重新登录
+          Dialog.alert({
+            title: '提示',
+            message: '很抱歉，您需要先进行登录才可以购买商品哦 ~'
+          }).then(() => {
+            wx.navigateTo({
+              url: `/pages/loginPage/main`
+            })
+          })
         }
       })
     },
@@ -632,7 +697,6 @@ export default {
   width: 100%;
   height: auto;
   background-color: #f4f4f4;
-  margin-bottom: 100rpx;
 }
 .cattle-goods-box .cattle-goods {
   width: 700rpx;

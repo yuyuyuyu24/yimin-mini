@@ -1,8 +1,7 @@
 {
-  "navigationBarTitleText": "我的订单",
-  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTitleText": "登录",
+  "navigationBarBackgroundColor": "#f4f4f4",
   "navigationBarTextStyle": "black",
-  "onReachBottomDistance": 10,
   "usingComponents": {
     "van-dialog": "/static/vant/dist/dialog/index"
   }

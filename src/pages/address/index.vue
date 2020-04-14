@@ -11,19 +11,26 @@
       class="address-box"
       v-if="!isCollectionNull"
     >
-      <div class="address-box-body">
+      <div
+        class="address-box-body"
+        v-for="(item,index) in addressData"
+        :key="index"
+      >
         <div class="address-box-body-top">
           <div>
-            <p>于佳一</p>
-            <h3>18647604888</h3>
+            <p>{{item.name}}</p>
+            <h3>{{item.phone}}</h3>
           </div>
-          <span>内蒙古自治区赤峰市翁牛特旗乌丹镇</span>
+          <span>{{item.address}}</span>
         </div>
         <div class="address-box-body-bottom">
-          <van-radio-group :value="radio">
-            <van-radio name="1">默认地址</van-radio>
+          <van-radio-group
+            :value="radio"
+            @change="onChange(index)"
+          >
+            <van-radio :name="item.isDefault">默认地址</van-radio>
           </van-radio-group>
-          <p @click="toEditAddress">编辑</p>
+          <p @click="deleteAddress(index)">删除</p>
         </div>
       </div>
     </div>
@@ -39,10 +46,24 @@ export default {
   data () {
     return {
       isCollectionNull: false,
-      radio: '1'
+      radio: true,
+      addressData: []
     }
   },
+  onShow () {
+    this.getAddress()
+  },
   methods: {
+    // 取本地缓存方法
+    getAddress () {
+      let value = wx.getStorageSync('yiminAddress') || []
+      if (value.length === 0) {
+        this.isCollectionNull = true
+      } else {
+        this.isCollectionNull = false
+        this.addressData = value
+      }
+    },
     // 去逛逛跳转到首页
     toIndex () {
       wx.showToast({
@@ -56,19 +77,6 @@ export default {
         }
       })
     },
-    // 跳转编辑地址页面
-    toEditAddress () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/editAddress/main?type="edit"',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
     // 创建新的地址
     toAddAddress () {
       wx.showToast({
@@ -76,9 +84,44 @@ export default {
         icon: 'loading'
       })
       wx.navigateTo({
-        url: '/pages/editAddress/main?type="add"',
+        url: '/pages/editAddress/main',
         success: function (res) {
           wx.hideToast()
+        }
+      })
+    },
+    // 切换默认地址
+    onChange (index) {
+      let list = this.addressData
+      for (let i = 0; i < list.length; i++) {
+        list[i].isDefault = false
+      }
+      list[index].isDefault = true
+      this.addressData = list
+      wx.setStorageSync('yiminAddress', this.addressData)
+    },
+    // 删除地址
+    deleteAddress (index) {
+      let _this = this
+      wx.showModal({
+        title: '提示',
+        content: '确定要删除该收货地址吗？',
+        success (res) {
+          if (res.confirm) {
+            let list = JSON.parse(JSON.stringify(_this.addressData))
+            list.splice(index, 1)
+            if (index !== 0) {
+              list[0].isDefault = true
+            }
+            _this.addressData = list
+            wx.setStorageSync('yiminAddress', _this.addressData)
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success',
+              duration: 2000
+            })
+            _this.getAddress()
+          }
         }
       })
     }
@@ -159,7 +202,7 @@ export default {
   height: 100%;
   text-align: center;
   line-height: 80rpx;
-  color: #00bf6f;
+  color: red;
   font-size: 18px;
 }
 .address-add {

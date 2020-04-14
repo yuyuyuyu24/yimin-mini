@@ -60,9 +60,6 @@ export default {
       this.orderData = res.hotGoodsList
     })
   },
-  watch: {
-
-  },
   methods: {
     onClose () {
       this.isOrderNow = false
@@ -93,7 +90,21 @@ export default {
       this.minusStatus = minusStatus
     },
     // 立即购买
-    ordernowFun () { }
+    ordernowFun () {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      let list = []
+      list.push({ 'id': this.orderData.id, 'num': this.num })
+      wx.navigateTo({
+        url: `/pages/confirmOrder/main?data=${JSON.stringify(list)}`,
+        success: function (res) {
+          wx.hideToast()
+        }
+      })
+      this.onClose()
+    }
   }
 }
 </script>

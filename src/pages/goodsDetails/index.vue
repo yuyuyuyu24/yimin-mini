@@ -22,9 +22,12 @@
           </view>
         </swiper-item>
       </swiper>
-      <div class="collection-iconfont">
+      <button
+        class="collection-iconfont"
+        open-type="contact"
+      >
         <i class="iconfont iconlianxikefu"></i>
-      </div>
+      </button>
     </div>
     <div class="details">
       <view>
@@ -67,7 +70,7 @@
           <i class="iconfont iconpinglun"></i>
           评论
         </div>
-        <div @click="collection">
+        <div @click="collection()">
           <i
             v-if="isCollection"
             class="iconfont iconshoucang1"
@@ -105,28 +108,31 @@
       round
     >
       <div class="comment">
-        <span class="comment-title">评论 ( 0 )</span>
+        <span class="comment-title">评论 ( {{commentsList.length}} )</span>
         <div class="comment-content">
           <div
             class="comment-null"
-            v-if="isCommentNum"
+            v-if="commentsList.length === 0"
           >
             <i class="iconfont iconno_result"></i>
             暂时还没有商品评论，快去购买商品后评论吧！
           </div>
-          <div
-            class="comment-content-box"
-            v-if="!isCommentNum"
-          >
-            <div class="comment-content-box-top">
-              <img />
-              <div class="comment-content-box-top-right">
-                <p>爱24真的是太好了</p>
-                <span>2019.10.21</span>
+          <div v-if="commentsList.length > 0">
+            <div
+              class="comment-content-box"
+              v-for="(item,index) in commentsList"
+              :key="index"
+            >
+              <div class="comment-content-box-top">
+                <img :src="item.userImg" />
+                <div class="comment-content-box-top-right">
+                  <p>{{item.userName}}</p>
+                  <span>{{item.createTime}}</span>
+                </div>
               </div>
-            </div>
-            <div class="comment-content-box-bottom">
-              真的好！真的好！真的好！真的好！真的好！真的好！
+              <div class="comment-content-box-bottom">
+                {{item.comment}}
+              </div>
             </div>
           </div>
         </div>
@@ -135,16 +141,20 @@
     <van-toast id="van-toast" />
     <add-to-cart ref="addtocart"></add-to-cart>
     <order-now ref="ordernow"></order-now>
+    <van-dialog id="van-dialog" />
   </div>
 </template>
 
 <script>
 import backTop from '@/components/backTop'
 import { getGoodsDetail } from '@/api/goods'
-import { UNENCODE, changeQuerystringDetail } from '@/utils/function'
+import { toCollection, cancelCollection, searchCollection } from '@/api/collection'
+import { getGoodsComment } from '@/api/comment'
+import { UNENCODE, changeQuerystringDetail, formatDate } from '@/utils/function'
 import Toast from '../../../static/vant/dist/toast/toast'
 import addToCart from '@/components/goodsDetail/addToCart'
 import orderNow from '@/components/goodsDetail/orderNow'
+import Dialog from '../../../static/vant/dist/dialog/dialog'
 export default {
   data () {
     return {
@@ -152,7 +162,7 @@ export default {
       isBack: false,
       isCollection: true,
       isComment: false,
-      isCommentNum: true
+      commentsList: []
     }
   },
   components: {
@@ -161,11 +171,13 @@ export default {
     orderNow
   },
   mounted () {
-    let id = UNENCODE(this.$root.$mp.query.id)
-    this.getGoodsDetailFun({ id })
     // 页面打开时调用子组件的关闭加入购物车 立即购买 组件方法
     this.$refs.addtocart.onClose()
     this.$refs.ordernow.onClose()
+    let id = UNENCODE(this.$root.$mp.query.id)
+    this.getGoodsDetailFun({ id })
+  },
+  onShow () {
   },
   onPageScroll (e) {
     if (e.scrollTop > this.GLOBAL.SCROLL_TOP) {
@@ -174,7 +186,6 @@ export default {
       this.isBack = false
     }
   },
-
   methods: {
     // 获取商品详情接口
     getGoodsDetailFun (id) {
@@ -186,7 +197,7 @@ export default {
         wx.hideLoading()
         if (res.data.data) {
           _this.hotGoodsList = changeQuerystringDetail(res.data.data)
-          console.log(_this.hotGoodsList)
+          _this.searchCollectionFun()
         }
       }).catch(() => {
         wx.showToast({
@@ -195,6 +206,74 @@ export default {
           duration: 2000
         })
       })
+    },
+    // 收藏接口
+    toCollectionFun (data) {
+      let _this = this
+      wx.showLoading({
+        title: '加载中'
+      })
+      toCollection('mini/toCollection', data).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          _this.isCollection = !_this.isCollection
+          Toast.success('收藏成功')
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 取消收藏接口
+    cancelCollectionFun (data) {
+      let _this = this
+      wx.showLoading({
+        title: '加载中'
+      })
+      cancelCollection('mini/cancelCollection', data).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          _this.isCollection = !_this.isCollection
+          Toast.success('取消收藏成功')
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 根据用户id和商品id查找该条商品有没有收藏过
+    searchCollectionFun (data) {
+      let _this = this
+      let value = wx.getStorageSync('userMegList')
+      if (value) {
+        let data = {
+          userId: value.id,
+          shopId: _this.hotGoodsList.id
+        }
+        wx.showLoading({
+          title: '加载中'
+        })
+        searchCollection('mini/searchCollection', data).then(res => {
+          wx.hideLoading()
+          if (res.data.data) {
+            _this.isCollection = false
+          } else {
+            _this.isCollection = true
+          }
+        }).catch(() => {
+          wx.showToast({
+            title: '网络出现问题，请稍后再试！',
+            icon: 'none',
+            duration: 2000
+          })
+        })
+      }
     },
     // 返回顶部
     fatherMethod (e) { // 一键回到顶部
@@ -223,13 +302,51 @@ export default {
     },
     // 收藏
     collection () {
-      this.isCollection = !this.isCollection
-      Toast.success('收藏成功')
-      // Toast.fail('失败文案')
+      let _this = this
+      wx.checkSession({
+        success (res) {
+          let value = wx.getStorageSync('userMegList')
+          if (!value) {
+            Dialog.alert({
+              title: '提示',
+              message: '很抱歉，您需要先进行登录才可以收藏商品哦 ~'
+            }).then(() => {
+              wx.navigateTo({
+                url: `/pages/loginPage/main`
+              })
+            })
+          } else {
+            // session_key 未过期，并且在本生命周期一直有效
+            let data = {
+              userId: value.id,
+              shopId: _this.hotGoodsList.id
+            }
+            if (_this.isCollection === false) {
+              _this.cancelCollectionFun(data)
+            } else {
+              _this.toCollectionFun(data)
+            }
+          }
+        },
+        fail () {
+          // session_key 已经失效，需要重新执行登录流程
+          // wx.login() // 重新登录
+          Dialog.alert({
+            title: '提示',
+            message: '很抱歉，您需要先进行登录才可以收藏商品哦 ~'
+          }).then(() => {
+            wx.navigateTo({
+              url: `/pages/loginPage/main`
+            })
+          })
+        }
+      })
     },
     // 打开评论
     commentFun () {
       this.isComment = true
+      let goodsId = UNENCODE(this.$root.$mp.query.id)
+      this.getGoodsCommentFun({ goodsId })
     },
     // 关闭评论
     onCloseComment () {
@@ -253,19 +370,77 @@ export default {
     },
     // 立即购买
     ordernowFun () {
-      if (this.hotGoodsList.goodsStatus === 2) {
-        wx.showToast({
-          title: '抱歉，该商品暂时没有货啦，具体到货日期可咨询商家。',
-          icon: 'none',
-          duration: 4000
-        })
-      } else if (this.hotGoodsList.goodsStatus === 1) {
-        let data = {
-          hotGoodsList: this.hotGoodsList,
-          isOrderNow: true
+      let _this = this
+      wx.checkSession({
+        success (res) {
+          let value = wx.getStorageSync('userMegList')
+          if (!value) {
+            Dialog.alert({
+              title: '提示',
+              message: '很抱歉，您需要先进行登录才可以购买商品哦 ~'
+            }).then(() => {
+              wx.navigateTo({
+                url: `/pages/loginPage/main`
+              })
+            })
+          } else {
+            // session_key 未过期，并且在本生命周期一直有效
+            // wx.showToast({
+            //   title: '抱歉，本店由于突发情况暂时停业，恢复时间可查看小程序内公告或拨打电话联系商家，感谢理解！',
+            //   icon: 'none',
+            //   duration: 4000
+            // })
+
+            if (_this.hotGoodsList.goodsStatus === 2) {
+              wx.showToast({
+                title: '抱歉，该商品暂时没有货啦，具体到货日期可咨询商家。',
+                icon: 'none',
+                duration: 4000
+              })
+            } else if (_this.hotGoodsList.goodsStatus === 1) {
+              let data = {
+                hotGoodsList: _this.hotGoodsList,
+                isOrderNow: true
+              }
+              _this.$refs.ordernow.$emit('ordernowMethod', data)
+            }
+          }
+        },
+        fail () {
+          // session_key 已经失效，需要重新执行登录流程
+          // wx.login() // 重新登录
+          Dialog.alert({
+            title: '提示',
+            message: '很抱歉，您需要先进行登录才可以购买商品哦 ~'
+          }).then(() => {
+            wx.navigateTo({
+              url: `/pages/loginPage/main`
+            })
+          })
         }
-        this.$refs.ordernow.$emit('ordernowMethod', data)
-      }
+      })
+    },
+    // 获取评论接口
+    getGoodsCommentFun (data) {
+      let _this = this
+      wx.showLoading({
+        title: '加载中'
+      })
+      getGoodsComment('mini/getGoodsComment', data).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          for (let i = 0; i < res.data.data.length; i++) {
+            res.data.data[i].createTime = formatDate(Number(res.data.data[i].createTime))
+          }
+          _this.commentsList = res.data.data
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
     }
   },
   // 分享
@@ -276,11 +451,7 @@ export default {
       path: `/pages/goodsDetails/main?id=${UNENCODE(that.$root.$mp.query.id)}`,
       imageUrl: that.hotGoodsList.swiperList[0].url
     }
-  },
-  onHide () {
-    console.log('121212')
   }
-
 }
 </script>
 
@@ -328,7 +499,7 @@ export default {
   justify-content: center;
   flex-direction: column;
   background-color: #fff;
-  background: url("http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GB2CP3utt1KPLGkcXJkfXfRtdTifa3XqQQLyRyeiCUeL05CISxCOzVuKWNM4I5bW64o2r5d*Z9EAxMxqzzsvUBY!/b&bo=owJpAKMCaQADFzI!&rf=viewer_4&t=5")
+  background: url('http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GB2CP3utt1KPLGkcXJkfXfRtdTifa3XqQQLyRyeiCUeL05CISxCOzVuKWNM4I5bW64o2r5d*Z9EAxMxqzzsvUBY!/b&bo=owJpAKMCaQADFzI!&rf=viewer_4&t=5')
     no-repeat;
   background-size: 100% 100%;
   padding: 0 20rpx;
@@ -483,7 +654,7 @@ export default {
 } */
 .comment {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -491,13 +662,17 @@ export default {
 .comment .comment-title {
   font-size: 20px;
   line-height: 100rpx;
+  width: 100%;
+  text-align: center;
+  background-color: #fff;
 }
 .comment .comment-content {
   width: 100%;
   height: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
+  overflow-y: scroll;
 }
 .comment .comment-null {
   width: 100%;
@@ -514,7 +689,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 40rpx;
-  align-items: center;
+  align-items: start;
 }
 .comment .comment-content-box .comment-content-box-top {
   width: 100%;

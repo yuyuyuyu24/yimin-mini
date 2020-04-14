@@ -2,6 +2,7 @@
   "navigationBarTitleText": "购物车",
   "usingComponents": {
     "van-checkbox": "/static/vant/dist/checkbox/index",
-    "van-checkbox-group": "/static/vant/dist/checkbox-group/index"
+    "van-checkbox-group": "/static/vant/dist/checkbox-group/index",
+    "van-dialog": "/static/vant/dist/dialog/index"
   }
 }

@@ -49,24 +49,24 @@
 			"current": -1,
 			"list": [
 				{
-					"id": -1,
-					"name": "pages/index/main",
-					"pathName": "pages/index/main",
+					"id": 0,
+					"name": "pages/shopCard/main",
+					"pathName": "pages/shopCard/main",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": -1,
-					"name": "pages/index/main",
-					"pathName": "pages/index/main",
-					"query": "",
+					"id": 1,
+					"name": "pages/orderDetails/main",
+					"pathName": "pages/orderDetails/main",
+					"query": "id=312",
 					"scene": null
 				},
 				{
 					"id": 2,
-					"name": "pages/goodsDetails/main",
-					"pathName": "pages/goodsDetails/main",
-					"query": "id=1008",
+					"name": "pages/confirmOrder/main",
+					"pathName": "pages/confirmOrder/main",
+					"query": "data=[{\"id\":42,\"num\":1},{\"id\":50,\"num\":2}]",
 					"scene": null
 				}
 			]

@@ -4,6 +4,7 @@
   "navigationBarTextStyle": "black",
   "usingComponents": {
     "van-popup": "/static/vant/dist/popup/index",
-    "van-toast": "/static/vant/dist/toast/index"
+    "van-toast": "/static/vant/dist/toast/index",
+    "van-dialog": "/static/vant/dist/dialog/index"
   }
 }

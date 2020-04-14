@@ -10,7 +10,10 @@
         <p>搜索你想要的商品...</p>
       </div>
     </div>
-    <div class="notice-box">
+    <div
+      class="notice-box"
+      @click="openNotice"
+    >
       <div class="notice">
         <i class="iconfont icongonggao"></i>
         <div class="notice-view">
@@ -24,6 +27,7 @@
         </div>
       </div>
     </div>
+
     <div class="swiper-box">
       <swiper
         class="swiper"
@@ -131,6 +135,8 @@
       <hot-tabs v-else-if="currentData === 2" />
       <new-tabs v-else />
     </div>
+    <van-dialog id="van-dialog" />
+
   </div>
 </template>
 
@@ -144,6 +150,8 @@ import newTabs from '@/components/newTabs'
 // 导入精选商品数据
 import { getSwiper } from '@/api/swiper'
 import { getNotice } from '@/api/notice'
+
+import Dialog from '../../../static/vant/dist/dialog/dialog'
 
 export default {
   data () {
@@ -225,7 +233,13 @@ export default {
         that.marquee_margin = '1000' // 只显示一条不滚动右边间距加大，防止重复显示
       }
     },
-
+    // 打开滚动公告
+    openNotice () {
+      Dialog.alert({
+        title: this.pageNotice.noticeTitle,
+        message: this.pageNotice.noticeContent
+      })
+    },
     // 获取全部轮播图 接口
     getSwiperFun () {
       let _this = this
@@ -256,7 +270,6 @@ export default {
         })
       })
     },
-
     // 返回顶部
     fatherMethod (e) { // 一键回到顶部=
       if (wx.pageScrollTo) {
@@ -395,7 +408,6 @@ export default {
       let _this = this
       _this.currentData = index
     }
-
   }
 }
 </script>
