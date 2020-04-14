@@ -7,6 +7,7 @@
         @click="reviewBackground"
         mode="aspectFill"
         :src="adminData.background.url"
+        v-if="adminData.background"
       ></image>
       <div class="about-headimg">
         <image
@@ -14,6 +15,7 @@
           @click="reviewHeadimg"
           mode="widthFile"
           :src="adminData.head.url"
+          v-if="adminData.head"
         ></image>
       </div>
     </div>
@@ -80,7 +82,7 @@ export default {
       adminData: {}
     }
   },
-  created () {
+  mounted () {
     this.getAdminDetailFun()
   },
   methods: {
@@ -93,6 +95,7 @@ export default {
           res.data.data.head = querystring.parse(res.data.data.head)
           res.data.data.background = querystring.parse(res.data.data.background)
           _this.adminData = res.data.data
+          console.log(res.data.data.head)
           _this.headimg = res.data.data.head.url
           _this.headimgList.push(res.data.data.head.url)
           _this.backgroundImg = res.data.data.background.url
@@ -123,7 +126,8 @@ export default {
     // 拨打电话
     callPhone (phone) {
       wx.makePhoneCall({
-        phoneNumber: phone
+        phoneNumber: phone,
+        fail () { }
       })
     },
     // 查看图集

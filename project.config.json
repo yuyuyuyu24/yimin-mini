@@ -50,8 +50,8 @@
 			"list": [
 				{
 					"id": 0,
-					"name": "pages/shopCard/main",
-					"pathName": "pages/shopCard/main",
+					"name": "pages/editAddress/main",
+					"pathName": "pages/editAddress/main",
 					"query": "",
 					"scene": null
 				},

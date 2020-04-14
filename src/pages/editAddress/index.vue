@@ -27,7 +27,7 @@
           <van-field
             v-model="addressFrom.address"
             type="textarea"
-            placeholder="请输入尽可能详细的地址"
+            :placeholder="bindplaceholder"
             autosize
             border="false"
             @change="changeAddressFromAddress"
@@ -75,13 +75,15 @@ export default {
           150426: '翁牛特旗'
         }
       },
-      showAddr: ''
+      showAddr: '',
+      bindplaceholder: '请输入尽可能详细的地址'
     }
   },
   onShow () {
     this.addressFrom.name = ''
     this.addressFrom.phone = ''
     this.addressFrom.address = ''
+    this.bindplaceholder = '请输入尽可能详细的地址'
   },
   methods: {
     // 打开地址选择框
@@ -111,6 +113,7 @@ export default {
       this.addressFrom.phone = e.mp.detail
     },
     changeAddressFromAddress (e) {
+      console.log(e)
       this.addressFrom.address = e.mp.detail
     },
     // 保存地址
@@ -118,23 +121,32 @@ export default {
       let _this = this
       // 效验表单
       if (this.addressFrom.name === '') {
+        _this.bindplaceholder = ''
         Dialog.alert({
           title: '提示',
           message: '收货人姓名不能为空'
+        }).then(() => {
+          _this.bindplaceholder = '请输入尽可能详细的地址'
         })
         return false
       }
       if (this.checkNumber(this.addressFrom.phone) === false || this.addressFrom.phone.length > 11) {
+        _this.bindplaceholder = ''
         Dialog.alert({
           title: '提示',
           message: '联系电话格式不正确'
+        }).then(() => {
+          _this.bindplaceholder = '请输入尽可能详细的地址'
         })
         return false
       }
       if (this.addressFrom.address === '') {
+        _this.bindplaceholder = ''
         Dialog.alert({
           title: '提示',
           message: '收货地址不能为空'
+        }).then(() => {
+          _this.bindplaceholder = '请输入尽可能详细的地址'
         })
         return false
       }
@@ -147,6 +159,7 @@ export default {
           key: 'yiminAddress',
           data: address,
           success (res) {
+            _this.bindplaceholder = ''
             Dialog.alert({
               title: '提示',
               message: '创建收货地址成功！'
@@ -154,6 +167,7 @@ export default {
               _this.addressFrom.name = ''
               _this.addressFrom.phone = ''
               _this.addressFrom.address = ''
+              _this.bindplaceholder = '请输入尽可能详细的地址'
               wx.navigateBack({
                 delta: 1
               })

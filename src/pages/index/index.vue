@@ -203,7 +203,11 @@ export default {
   },
   mounted () {
     var that = this
-    var length = that.pageNotice.noticeContent.length * that.size// 文字长度
+    console.log(that.pageNotice)
+    var length
+    if (that.pageNotice.noticeContent) {
+      length = that.pageNotice.noticeContent.length * that.size// 文字长度
+    }
     var windowWidth = wx.getSystemInfoSync().windowWidth// 屏幕宽度
     that.length = length
     that.windowWidth = windowWidth
@@ -261,6 +265,7 @@ export default {
       getNotice('notice/getNotice').then(res => {
         if (res.data.data) {
           _this.pageNotice = res.data.data[1]
+          console.log(_this.pageNotice)
         }
       }).catch(() => {
         wx.showToast({

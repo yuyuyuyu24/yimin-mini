@@ -34,12 +34,13 @@
       </div>
     </div>
     <van-field
+      v-if="placeholderShow"
       :value="message"
       label="留言"
       type="textarea"
       placeholder="请输入留言"
       autosize
-      border="fasle"
+      border="false"
       @change="remarkFun"
     />
     <div
@@ -104,13 +105,15 @@ export default {
       cartData: [],
       message: '',
       deliveryMoney: 5,
-      isDelivery: true
+      isDelivery: true,
+      placeholderShow: true
     }
   },
   onShow () {
     this.cartData = []
     this.orderData = []
     this.total = 0
+    this.placeholderShow = true
     this.cartData = JSON.parse(this.$root.$mp.query.data)
     this.cartFun()
     this.getAddress()
@@ -194,6 +197,7 @@ export default {
     },
     // 提交订单
     submitOrder () {
+      let _that = this
       if (this.isAddressNull) {
         wx.showToast({
           title: '请先添加收货地址！',
@@ -227,6 +231,7 @@ export default {
         }
         queryWaitPayOrders('mini/queryWaitPayOrders', data).then(res => {
           if (res.data.data.length > 0) {
+            _that.placeholderShow = false
             Dialog.alert({
               title: '提示',
               message: '您还有待支付的订单，请先去完成支付或取消订单。'
@@ -323,6 +328,8 @@ export default {
                     orderStatus: '2'
                   }
                   _this.changeOrderStatusFun(data)
+                  _this.placeholderShow = false
+
                   Dialog.alert({
                     title: '恭喜',
                     message: '支付成功，可到我的订单查看'
@@ -345,6 +352,7 @@ export default {
                         orderStatus: '2'
                       }
                       _this.changeOrderStatusFun(data)
+                      _this.placeholderShow = false
                       Dialog.alert({
                         title: '恭喜',
                         message: '支付成功，可到我的订单查看'
@@ -360,6 +368,7 @@ export default {
                         orderStatus: '1'
                       }
                       _this.changeOrderStatusFun(data)
+                      _this.placeholderShow = false
                       Dialog.alert({
                         title: '提示',
                         message: '取消支付，可到我的订单完成支付'

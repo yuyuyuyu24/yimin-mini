@@ -187,7 +187,8 @@ export default {
         message: '现在是营业高峰期，电话有可能暂时无法接通，请您耐心等待或稍等几分钟后再次拨打。'
       }).then(() => {
         wx.makePhoneCall({
-          phoneNumber: '15924536788'
+          phoneNumber: '15924536788',
+          fail () { }
         })
       })
     },
