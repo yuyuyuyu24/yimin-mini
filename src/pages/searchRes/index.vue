@@ -196,7 +196,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
-  margin: 0 auto;
+  margin: 20rpx auto;
 }
 .search-res-goods {
   width: 340rpx;

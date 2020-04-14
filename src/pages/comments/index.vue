@@ -5,10 +5,10 @@
         <van-field
           v-model="commentsFrom.comment"
           type="textarea"
-          placeholder="请输入商品评价 字数限制140"
           autosize
           border="false"
           @change="changeCommentsFrom"
+          :placeholder="bindplaceholder"
         />
       </van-cell-group>
     </div>
@@ -31,16 +31,20 @@ export default {
         comment: ''
       },
       userId: '',
-      goodsId: ''
+      goodsId: '',
+      bindplaceholder: '请输入商品评价 字数限制140'
     }
   },
   onShow () {
     this.commentsFrom.comment = ''
+    this.bindplaceholder = ''
     Dialog.alert({
       title: '提示',
       confirmButtonText: '我知道了，并会遵守',
       message: '根据互联网管理条例等相关规定，禁止发布色情，暴力等相关违法内容，违者会受到相应处罚！'
-    }).then(() => { })
+    }).then(() => {
+      this.bindplaceholder = '请输入商品评价 字数限制140'
+    })
   },
   mounted () {
     this.userId = UNENCODE(this.$root.$mp.query.userId)
@@ -93,6 +97,7 @@ export default {
       newComment('mini/newComment', data).then(res => {
         if (res.data.data) {
           wx.hideLoading()
+          this.bindplaceholder = ''
           Dialog.alert({
             title: '提示',
             message: '评论成功！'
