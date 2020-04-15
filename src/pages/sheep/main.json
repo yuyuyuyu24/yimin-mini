@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "羊肉"
+  "navigationBarTitleText": "羊肉",
+  "onReachBottomDistance": 10
 }

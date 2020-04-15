@@ -38,7 +38,7 @@
   </div>
 </template>
 <script>
-import { miniGetGoods } from '@/api/goods'
+import { miniGetNewsGoods } from '@/api/goods'
 import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
@@ -48,15 +48,19 @@ export default {
     }
   },
   mounted () {
-    this.miniGetGoodsFun()
+    this.miniGetNewsGoodsFun()
   },
   methods: {
     // 获取最新的10条商品 接口
-    miniGetGoodsFun () {
+    miniGetNewsGoodsFun () {
       let _this = this
-      miniGetGoods('goods/miniGetGoods').then(res => {
+      wx.showLoading({
+        title: '加载中'
+      })
+      miniGetNewsGoods('goods/miniGetNewsGoods').then(res => {
+        wx.hideLoading()
         if (res.data.data) {
-          _this.newGoods = changeQuerystring(res.data.data.slice(-5).reverse())
+          _this.newGoods = changeQuerystring(res.data.data)
         }
       }).catch(() => {
         wx.showToast({

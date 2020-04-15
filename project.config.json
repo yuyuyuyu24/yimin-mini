@@ -1,7 +1,7 @@
 {
 	"description": "项目配置文件。",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -23,7 +23,7 @@
 	"projectname": "yiminmeat",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"libVersion": "2.10.2",
+	"libVersion": "2.10.4",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -57,9 +57,9 @@
 				},
 				{
 					"id": 1,
-					"name": "pages/orderDetails/main",
-					"pathName": "pages/orderDetails/main",
-					"query": "id=312",
+					"name": "pages/orders/main",
+					"pathName": "pages/order/main",
+					"query": "",
 					"scene": null
 				},
 				{

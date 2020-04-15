@@ -13,6 +13,7 @@
     <div
       class="notice-box"
       @click="openNotice"
+      v-if="pageNoticeShow"
     >
       <div class="notice">
         <i class="iconfont icongonggao"></i>
@@ -20,7 +21,7 @@
           <view
             class="message-title"
             :animation="animationData"
-            :style="{'transform': 'translateX('+-marqueeDistance+'px)'}"
+            :style="{'transform': 'translateX('+-marqueeDistance+'px)','width':length+'px'}"
           >
             {{pageNotice.noticeContent}}
           </view>
@@ -162,7 +163,7 @@ export default {
       marqueePace: 1, // 滚动速度
       marqueeDistance: 0, // 初始滚动距离
       marquee_margin: 30,
-      size: 14,
+      size: 12,
       interval: 100,
       length: '',
       windowWidth: '',
@@ -173,7 +174,8 @@ export default {
         { 'title': '特价商品', 'content': '低价抢购', 'tabs': 1, 'class': 'goodsTab-special' },
         { 'title': '精选商品', 'content': '好物放心购', 'tabs': 2, 'class': 'goodsTab-hot' },
         { 'title': '新品专区', 'content': '春季上新', 'tabs': 3, 'class': 'goodsTab-new' }
-      ]
+      ],
+      pageNoticeShow: true
     }
   },
   components: {
@@ -197,21 +199,9 @@ export default {
       this.isBack = false
     }
   },
-  created () {
+  mounted () {
     this.getSwiperFun()
     this.getNoticeFun()
-  },
-  mounted () {
-    var that = this
-    console.log(that.pageNotice)
-    var length
-    if (that.pageNotice.noticeContent) {
-      length = that.pageNotice.noticeContent.length * that.size// 文字长度
-    }
-    var windowWidth = wx.getSystemInfoSync().windowWidth// 屏幕宽度
-    that.length = length
-    that.windowWidth = windowWidth
-    that.scrolltxt()
   },
   methods: {
     // 滚动公告动画
@@ -219,6 +209,7 @@ export default {
       var that = this
       var length = that.length// 滚动文字的宽度
       var windowWidth = that.windowWidth// 屏幕宽度
+
       if (length > windowWidth) {
         var interval = setInterval(function () {
           var maxscrollwidth = windowWidth * 0.9 * 0.9 + 50// 滚动的最大宽度，文字宽度+间距，如果需要一行文字滚完后再显示第二行可以修改marquee_margin值等于windowWidth即可
@@ -262,10 +253,24 @@ export default {
     // 获取全部公告 接口
     getNoticeFun () {
       let _this = this
+      // let data = await getNotice('notice/getNotice')
+      // if (data.data.data) {
+      //   _this.pageNotice = data.data.data[1]
+      //   console.log(_this.pageNotice)
+      // }
       getNotice('notice/getNotice').then(res => {
         if (res.data.data) {
-          _this.pageNotice = res.data.data[1]
-          console.log(_this.pageNotice)
+          if (res.data.data[1].noticeStatus === 1) {
+            _this.pageNoticeShow = true
+            _this.pageNotice = res.data.data[1]
+            var length = _this.pageNotice.noticeContent.length * _this.size// 文字长度
+            var windowWidth = wx.getSystemInfoSync().windowWidth// 屏幕宽度
+            _this.length = length
+            _this.windowWidth = windowWidth
+            _this.scrolltxt()
+          } else {
+            _this.pageNoticeShow = false
+          }
         }
       }).catch(() => {
         wx.showToast({
@@ -440,9 +445,8 @@ export default {
   overflow: hidden;
 }
 .notice-box .notice .message-title {
-  width: 100%;
   height: 100%;
-  font-size: 25rpx;
+  font-size: 24rpx;
   line-height: 60rpx;
   padding-left: 60rpx;
   color: #666;

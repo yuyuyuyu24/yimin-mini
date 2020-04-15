@@ -6,6 +6,23 @@ export async function miniGetGoods (api, data) {
     wx.request({
       url: `${config.api}/${api}`,
       data,
+      method: 'POST',
+      success (res) {
+        resolve(res)
+      },
+      fail (err) {
+        reject(err)
+      }
+    })
+  })
+}
+
+// 小程序内获取新的十条商品
+export async function miniGetNewsGoods (api, data) {
+  return new Promise(function (resolve, reject) {
+    wx.request({
+      url: `${config.api}/${api}`,
+      data,
       method: 'GET',
       success (res) {
         resolve(res)

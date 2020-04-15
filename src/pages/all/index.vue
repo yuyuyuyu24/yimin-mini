@@ -46,7 +46,8 @@ export default {
   data () {
     return {
       allGoods: [],
-      isBack: false
+      isBack: false,
+      conut: 0
     }
   },
   components: {
@@ -62,13 +63,28 @@ export default {
   mounted () {
     this.miniGetGoodsFun()
   },
+  onReachBottom () {
+    this.miniGetGoodsFun()
+  },
   methods: {
     // 获取全部商品 接口
     miniGetGoodsFun () {
       let _this = this
-      miniGetGoods('goods/miniGetGoods').then(res => {
+      this.conut += 1
+      let data = {
+        pageNumber: _this.conut,
+        pageSize: 10
+      }
+      miniGetGoods('goods/miniGetGoods', data).then(res => {
         if (res.data.data) {
-          _this.allGoods = changeQuerystring(res.data.data)
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+          _this.allGoods = _this.allGoods.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({

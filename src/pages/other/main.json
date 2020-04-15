@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "其他"
+  "navigationBarTitleText": "其他",
+  "onReachBottomDistance": 10
 }

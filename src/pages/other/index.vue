@@ -45,7 +45,8 @@ export default {
   data () {
     return {
       otherGoods: [],
-      isBack: false
+      isBack: false,
+      conut: 0
     }
   },
   components: {
@@ -61,12 +62,18 @@ export default {
   mounted () {
     this.queryClassGoodsFun()
   },
+  onReachBottom () {
+    this.queryClassGoodsFun()
+  },
   methods: {
     // 根据分类显示商品 接口
     queryClassGoodsFun () {
       let _this = this
+      this.conut += 1
       let data = {
-        goodsType: 'O'
+        goodsType: 'O',
+        pageNumber: _this.conut,
+        pageSize: 10
       }
       wx.showLoading({
         title: '加载中'
@@ -74,7 +81,14 @@ export default {
       queryClassGoods('goods/queryClassGoods', data).then(res => {
         wx.hideLoading()
         if (res.data.data) {
-          _this.otherGoods = changeQuerystring(res.data.data)
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+          _this.otherGoods = _this.otherGoods.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({

@@ -39,27 +39,42 @@
 </template>
 <script>
 import { querySpecialGoods } from '@/api/goods'
-import { changeQuerystring } from '@/utils/function'
+import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
   data () {
     return {
-      specialGoods: []
+      specialGoods: [],
+      conut: 0
+
     }
   },
   mounted () {
+    this.querySpecialGoodsFun()
+  },
+  onReachBottom () {
     this.querySpecialGoodsFun()
   },
   methods: {
     // 获取特价商品 接口
     querySpecialGoodsFun () {
       let _this = this
+      this.conut += 1
       let data = {
-        isSpecial: 1
+        isSpecial: 1,
+        pageNumber: _this.conut,
+        pageSize: 5
       }
       querySpecialGoods('goods/querySpecialGoods', data).then(res => {
         if (res.data.data) {
-          _this.specialGoods = changeQuerystring(res.data.data)
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+          _this.specialGoods = _this.specialGoods.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({
@@ -67,6 +82,19 @@ export default {
           icon: 'none',
           duration: 2000
         })
+      })
+    },
+    // 跳转至商品详情页面
+    toDetails (item) {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      wx.navigateTo({
+        url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
+        success: function (res) {
+          wx.hideToast()
+        }
       })
     }
   }

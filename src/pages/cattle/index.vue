@@ -25,6 +25,12 @@
           ></image>
           <p>{{item.goodsName}}</p>
           <span class="price"><span class="price-sign">￥</span>{{item.goodsPrice}}</span>
+          <div
+            v-if="item.isSpecial === 1"
+            class="hot-goods-div-message-right"
+          >
+            特价
+          </div>
         </div>
       </div>
     </div>
@@ -40,7 +46,8 @@ export default {
   data () {
     return {
       cattleGoods: [],
-      isBack: false
+      isBack: false,
+      conut: 0
     }
   },
   components: {
@@ -56,12 +63,18 @@ export default {
   mounted () {
     this.queryClassGoodsFun()
   },
+  onReachBottom () {
+    this.queryClassGoodsFun()
+  },
   methods: {
     // 根据分类显示商品 接口
     queryClassGoodsFun () {
       let _this = this
+      this.conut += 1
       let data = {
-        goodsType: 'B'
+        goodsType: 'B',
+        pageNumber: _this.conut,
+        pageSize: 10
       }
       wx.showLoading({
         title: '加载中'
@@ -69,7 +82,14 @@ export default {
       queryClassGoods('goods/queryClassGoods', data).then(res => {
         wx.hideLoading()
         if (res.data.data) {
-          _this.cattleGoods = changeQuerystring(res.data.data)
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+          _this.cattleGoods = _this.cattleGoods.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({
@@ -190,5 +210,17 @@ export default {
 .cattle-goods-box .cattle-goods .cattle-goods-div .price-unit {
   font-size: 14px;
   color: #222;
+}
+.cattle-goods-box .hot-goods-div-message-right {
+  width: 80rpx;
+  height: 60rpx;
+  background-color: #b4db9a;
+  color: #fff;
+  text-align: center;
+  line-height: 60rpx;
+  border-radius: 15rpx;
+  position: absolute;
+  bottom: 37rpx;
+  right: 20rpx;
 }
 </style>

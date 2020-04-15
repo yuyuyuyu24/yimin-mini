@@ -46,19 +46,39 @@ import { changeQuerystring, ENCODE } from '@/utils/function'
 export default {
   data () {
     return {
-      allGoods: []
+      allGoods: [],
+      conut: 0
     }
   },
-  created () {
+  mounted () {
+    this.miniGetGoodsFun()
+  },
+  onReachBottom () {
     this.miniGetGoodsFun()
   },
   methods: {
     // 获取全部商品 接口
     miniGetGoodsFun () {
       let _this = this
-      miniGetGoods('goods/miniGetGoods').then(res => {
+      this.conut += 1
+      let data = {
+        pageNumber: _this.conut,
+        pageSize: 5
+      }
+      wx.showLoading({
+        title: '加载中'
+      })
+      miniGetGoods('goods/miniGetGoods', data).then(res => {
+        wx.hideLoading()
         if (res.data.data) {
-          _this.allGoods = changeQuerystring(res.data.data)
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+          _this.allGoods = _this.allGoods.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({

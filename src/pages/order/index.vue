@@ -107,8 +107,8 @@ export default {
                 }
                 if (count === num) {
                   _this.isGoods = true
+                  _this.allOrderData = orderData
                 }
-                _this.allOrderData = orderData
               }
             }).catch(() => {
               wx.showToast({

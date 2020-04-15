@@ -105,7 +105,7 @@
 <script>
 import { changeOrderStatus, pay, searchOrder, queryOrderStatus, deleteOrders } from '@/api/pay'
 import { searchComment } from '@/api/comment'
-import { ENCODE, UNENCODE, formatDate, changeQuerystringDetail, isDuringDate } from '@/utils/function'
+import { ENCODE, UNENCODE, formatDate, changeQuerystringDetail } from '@/utils/function'
 import { getGoodsDetail } from '@/api/goods'
 import Dialog from '../../../static/vant/dist/dialog/dialog'
 
@@ -206,17 +206,16 @@ export default {
     },
     // 立即支付
     pay () {
-      let morning = isDuringDate('9:00', '12:00')
-      let afternoon = isDuringDate('14:00', '24:00')
-      if (morning || afternoon) {
-        this.payFun()
-      } else {
+      let userList = wx.getStorageSync('userMegList') || {}
+      if (userList.userStatus === '2') {
         wx.showToast({
-          title: '抱歉，本店的配送时间为上午9:00-中午12:00 下午14：00-下午18:00',
+          title: '抱歉，您的账号暂时被冻结，无法进行支付操作。如有疑问，请到我的页面内点击联系客服进行咨询。',
           icon: 'none',
-          duration: 4000
+          duration: 3000
         })
+        return false
       }
+      this.payFun()
     },
     // 取消订单
     closeOrders () {

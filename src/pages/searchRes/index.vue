@@ -61,7 +61,8 @@ export default {
     return {
       searchResGoods: data.allData,
       searchResGoodsList: [],
-      query: ''
+      query: '',
+      conut: 0
     }
   },
   components: {
@@ -70,10 +71,11 @@ export default {
   mounted () {
     // 取路由参数
     this.query = this.$root.$mp.query.search
-    let goodsName = this.query
-    this.searchGoodsFun({ goodsName })
+    this.searchResGoodsList = []
+    this.conut = 0
+    console.log(this.conut)
+    this.searchGoodsFun()
   },
-
   onPageScroll (e) {
     if (e.scrollTop > this.GLOBAL.SCROLL_TOP) {
       this.isBack = true
@@ -81,18 +83,35 @@ export default {
       this.isBack = false
     }
   },
+  onReachBottom () {
+    this.searchGoodsFun()
+  },
 
   methods: {
     // 搜索商品接口 模糊查询
-    searchGoodsFun (goodsName) {
+    searchGoodsFun () {
       let _this = this
+      this.conut += 1
+
       wx.showLoading({
         title: '加载中'
       })
-      searchGoods('goods/searchGoods', goodsName).then(res => {
+      let data = {
+        goodsName: this.query,
+        pageNumber: _this.conut,
+        pageSize: 10
+      }
+      searchGoods('goods/searchGoods', data).then(res => {
         wx.hideLoading()
         if (res.data.data) {
-          _this.searchResGoodsList = changeQuerystring(res.data.data)
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+          _this.searchResGoodsList = _this.searchResGoodsList.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({
@@ -155,6 +174,9 @@ export default {
   height: 100rpx;
   border-top: 2rpx solid #f4f4f4;
   border-bottom: 2rpx solid #f4f4f4;
+  position: fixed;
+  top: 0;
+  z-index: 99;
 }
 .search-box .search {
   background-color: #f6f6f6;
@@ -177,6 +199,7 @@ export default {
 .search-res-box {
   width: 100%;
   height: auto;
+  margin-top: 124rpx;
 }
 .search-res-box .no-search-res {
   width: 100%;

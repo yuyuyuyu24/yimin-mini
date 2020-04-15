@@ -26,7 +26,7 @@
       <h2>五、其他</h2>
       <span>1、本规则由清真伊民肉业制定并公示，清真伊民肉业有权利对本规则进行修改和调整，并向买家进行公示后执行。</span>
       <span>2、如有任何问题，可联系商家进行咨询。</span>
-      <span>生效时间 2020年4月1日</span>
+      <span>生效时间 2020年4月15日</span>
     </div>
   </div>
 </template>
@@ -52,7 +52,7 @@ export default {
 .buyerNotice-title {
   width: 100%;
   height: 300rpx;
-  background: url("http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GI6MFesEiAmSHTjt*MflESYD9Z4NVg89N8YffZzm7xgdxqUjoBOg9CTlgoOaCBlddbbw*dQcf8Xvs55X5TbgRbo!/b&bo=OASwATgEsAEDNxI!&rf=viewer_4&t=5")
+  background: url('http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GI6MFesEiAmSHTjt*MflESYD9Z4NVg89N8YffZzm7xgdxqUjoBOg9CTlgoOaCBlddbbw*dQcf8Xvs55X5TbgRbo!/b&bo=OASwATgEsAEDNxI!&rf=viewer_4&t=5')
     no-repeat;
   background-size: 100% 100%;
 }

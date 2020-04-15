@@ -34,14 +34,13 @@
       </div>
     </div>
     <van-field
-      v-if="placeholderShow"
       :value="message"
       label="留言"
       type="textarea"
-      placeholder="请输入留言"
       autosize
       border="false"
       @change="remarkFun"
+      :placeholder="bindplaceholder"
     />
     <div
       class="shipping-methods"
@@ -64,7 +63,7 @@
       </van-radio-group>
     </div>
     <div class="confirmOrder-notice">
-      购买前请确保您已经阅读<span @click="toBuyerNotice">买家须知</span> , 提交订单即表示同意<span @click="toBuyerNotice">买家须知</span>。
+      购买前请确保您已经阅读<span @click="toBuyerNotice">买家须知</span> , 配送时间为每天上午11:00前的订单，当天下午配送。下午5:00后的订单，第二天上午配送。提交订单即表示同意<span @click="toBuyerNotice">买家须知</span>。
     </div>
     <div class="confirmOrder-submit">
       <div class="confirmOrder-submit-button">
@@ -88,7 +87,7 @@
   </div>
 </template>
 <script>
-import { changeQuerystringDetail, isDuringDate } from '@/utils/function'
+import { changeQuerystringDetail } from '@/utils/function'
 import { getGoodsDetail } from '@/api/goods'
 import { newOrder, changeOrderStatus, pay, queryOrderStatus, queryWaitPayOrders } from '@/api/pay'
 import Dialog from '../../../static/vant/dist/dialog/dialog'
@@ -106,14 +105,15 @@ export default {
       message: '',
       deliveryMoney: 5,
       isDelivery: true,
-      placeholderShow: true
+      bindplaceholder: '请输入留言'
     }
   },
   onShow () {
     this.cartData = []
     this.orderData = []
     this.total = 0
-    this.placeholderShow = true
+    this.message = ''
+    // this.bindplaceholder = '请输入留言'
     this.cartData = JSON.parse(this.$root.$mp.query.data)
     this.cartFun()
     this.getAddress()
@@ -223,40 +223,31 @@ export default {
         })
         return false
       }
-      let morning = isDuringDate('9:00', '12:00')
-      let afternoon = isDuringDate('14:00', '18:00')
-      if (morning || afternoon) {
-        let data = {
-          userId: userList.id
-        }
-        queryWaitPayOrders('mini/queryWaitPayOrders', data).then(res => {
-          if (res.data.data.length > 0) {
-            _that.placeholderShow = false
-            Dialog.alert({
-              title: '提示',
-              message: '您还有待支付的订单，请先去完成支付或取消订单。'
-            }).then(() => {
-              wx.switchTab({
-                url: '/pages/my/main'
-              })
-            })
-          } else {
-            this.payFun()
-          }
-        }).catch(() => {
-          wx.showToast({
-            title: '网络出现问题，请稍后再试！',
-            icon: 'none',
-            duration: 2000
-          })
-        })
-      } else {
-        wx.showToast({
-          title: '抱歉，本店的配送时间为上午9:00-中午12:00 下午14：00-下午18:00',
-          icon: 'none',
-          duration: 4000
-        })
+      let data = {
+        userId: userList.id
       }
+      queryWaitPayOrders('mini/queryWaitPayOrders', data).then(res => {
+        if (res.data.data.length > 0) {
+          _that.bindplaceholder = ''
+          Dialog.alert({
+            title: '提示',
+            message: '您还有待支付的订单，请先去完成支付或取消订单。'
+          }).then(() => {
+            _that.bindplaceholder = '请输入留言'
+            wx.switchTab({
+              url: '/pages/my/main'
+            })
+          })
+        } else {
+          this.payFun()
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
     },
     // 支付信息接口
     payFun () {
@@ -323,17 +314,17 @@ export default {
                 signType: signType, // 签名算法
                 paySign: paySign, // 签名
                 success (res) {
+                  _this.bindplaceholder = ''
                   let data = {
                     id: orderId,
                     orderStatus: '2'
                   }
                   _this.changeOrderStatusFun(data)
-                  _this.placeholderShow = false
-
                   Dialog.alert({
                     title: '恭喜',
-                    message: '支付成功，可到我的订单查看'
+                    message: '支付成功，可到我的订单查看！'
                   }).then(() => {
+                    _this.bindplaceholder = '请输入留言'
                     wx.switchTab({
                       url: '/pages/my/main'
                     })
@@ -352,11 +343,12 @@ export default {
                         orderStatus: '2'
                       }
                       _this.changeOrderStatusFun(data)
-                      _this.placeholderShow = false
+                      _this.bindplaceholder = ''
                       Dialog.alert({
                         title: '恭喜',
                         message: '支付成功，可到我的订单查看'
                       }).then(() => {
+                        _this.bindplaceholder = '请输入留言'
                         wx.switchTab({
                           url: '/pages/my/main'
                         })
@@ -368,11 +360,12 @@ export default {
                         orderStatus: '1'
                       }
                       _this.changeOrderStatusFun(data)
-                      _this.placeholderShow = false
+                      _this.bindplaceholder = ''
                       Dialog.alert({
                         title: '提示',
                         message: '取消支付，可到我的订单完成支付'
                       }).then(() => {
+                        _this.bindplaceholder = '请输入留言'
                         wx.switchTab({
                           url: '/pages/my/main'
                         })

@@ -167,6 +167,7 @@ export default {
       let _this = this
       _this.cartData = []
       let value = wx.getStorageSync('yiminCart') || []
+      console.log(value)
       if (value.length === 0) {
         this.isCartNull = true
       } else {
@@ -672,6 +673,7 @@ export default {
   display: flex;
   flex-direction: column;
   background-color: #fff;
+  margin-bottom: 100rpx;
 }
 .guess-love .guess-love-head {
   width: 100%;

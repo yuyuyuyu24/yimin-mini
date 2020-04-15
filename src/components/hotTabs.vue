@@ -39,27 +39,41 @@
 </template>
 <script>
 import { queryHotGoods } from '@/api/goods'
-import { changeQuerystring } from '@/utils/function'
+import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
   data () {
     return {
-      hotGoods: []
+      hotGoods: [],
+      conut: 0
     }
   },
-  created () {
+  mounted () {
+    this.queryHotGoodsFun()
+  },
+  onReachBottom () {
     this.queryHotGoodsFun()
   },
   methods: {
     // 获取精选商品 接口
     queryHotGoodsFun () {
       let _this = this
+      this.conut += 1
       let data = {
-        isHot: '1'
+        isHot: '1',
+        pageNumber: _this.conut,
+        pageSize: 5
       }
       queryHotGoods('goods/queryHotGoods', data).then(res => {
         if (res.data.data) {
-          _this.hotGoods = changeQuerystring(res.data.data)
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+          _this.hotGoods = _this.hotGoods.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({
@@ -67,6 +81,19 @@ export default {
           icon: 'none',
           duration: 2000
         })
+      })
+    },
+    // 跳转至商品详情页面
+    toDetails (item) {
+      wx.showToast({
+        title: '跳转中...',
+        icon: 'loading'
+      })
+      wx.navigateTo({
+        url: `/pages/goodsDetails/main?id=${ENCODE(item.id)}`,
+        success: function (res) {
+          wx.hideToast()
+        }
       })
     }
   }

@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "特价商品"
+  "navigationBarTitleText": "特价商品",
+  "onReachBottomDistance": 10
 }
