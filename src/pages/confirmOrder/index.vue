@@ -89,6 +89,7 @@
 <script>
 import { changeQuerystringDetail } from '@/utils/function'
 import { getGoodsDetail } from '@/api/goods'
+import { searchOpenid } from '@/api/user'
 import { newOrder, changeOrderStatus, pay, queryOrderStatus, queryWaitPayOrders } from '@/api/pay'
 import Dialog from '../../../static/vant/dist/dialog/dialog'
 
@@ -215,39 +216,57 @@ export default {
         return false
       }
       let userList = wx.getStorageSync('userMegList') || {}
-      if (userList.userStatus === '2') {
-        wx.showToast({
-          title: '抱歉，您的账号暂时被冻结，无法进行支付操作。如有疑问，请到我的页面内点击联系客服进行咨询。',
-          icon: 'none',
-          duration: 3000
-        })
-        return false
-      }
-      let data = {
-        userId: userList.id
-      }
-      queryWaitPayOrders('mini/queryWaitPayOrders', data).then(res => {
-        if (res.data.data.length > 0) {
-          _that.bindplaceholder = ''
-          Dialog.alert({
-            title: '提示',
-            message: '您还有待支付的订单，请先去完成支付或取消订单。'
-          }).then(() => {
-            _that.bindplaceholder = '请输入留言'
-            wx.switchTab({
-              url: '/pages/my/main'
-            })
-          })
-        } else {
-          this.payFun()
+      if (userList !== {}) {
+        let data = {
+          openid: userList.openId
         }
-      }).catch(() => {
-        wx.showToast({
-          title: '网络出现问题，请稍后再试！',
-          icon: 'none',
-          duration: 2000
+
+        searchOpenid('mini/searchOpenid', data).then(res => {
+          if (res.data.data) {
+            wx.setStorageSync('userMegList', res.data.data[0])
+            if (res.data.data[0].userStatus === '2') {
+              wx.showToast({
+                title: '抱歉，您的账号暂时被冻结，无法进行支付操作。如有疑问，请到我的页面内点击联系客服进行咨询。',
+                icon: 'none',
+                duration: 3000
+              })
+              return false
+            } else {
+              let data = {
+                userId: userList.id
+              }
+              queryWaitPayOrders('mini/queryWaitPayOrders', data).then(res => {
+                if (res.data.data.length > 0) {
+                  _that.bindplaceholder = ''
+                  Dialog.alert({
+                    title: '提示',
+                    message: '您还有待支付的订单，请先去完成支付或取消订单。'
+                  }).then(() => {
+                    _that.bindplaceholder = '请输入留言'
+                    wx.switchTab({
+                      url: '/pages/my/main'
+                    })
+                  })
+                } else {
+                  this.payFun()
+                }
+              }).catch(() => {
+                wx.showToast({
+                  title: '网络出现问题，请稍后再试！',
+                  icon: 'none',
+                  duration: 2000
+                })
+              })
+            }
+          }
+        }).catch(() => {
+          wx.showToast({
+            title: '网络出现问题，请稍后再试！',
+            icon: 'none',
+            duration: 2000
+          })
         })
-      })
+      }
     },
     // 支付信息接口
     payFun () {

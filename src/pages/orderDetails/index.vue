@@ -15,7 +15,9 @@
     <div
       class="orderDetails-head-successPay"
       v-if="orderData.orderStatus === '3'"
-    ></div>
+    >
+      <p>订单完成！商家已发货，请您耐心等待。如有疑问请点击下方'致电商家'联系商家。</p>
+    </div>
 
     <div
       class="orderDetails-head-closePay"
@@ -104,19 +106,20 @@
 </template>
 <script>
 import { changeOrderStatus, pay, searchOrder, queryOrderStatus, deleteOrders } from '@/api/pay'
+import { searchOpenid } from '@/api/user'
 import { searchComment } from '@/api/comment'
 import { ENCODE, UNENCODE, formatDate, changeQuerystringDetail } from '@/utils/function'
 import { getGoodsDetail } from '@/api/goods'
 import Dialog from '../../../static/vant/dist/dialog/dialog'
 
 export default {
-  data () {
+  data() {
     return {
       orderData: {},
       orderList: []
     }
   },
-  mounted () {
+  mounted() {
     this.orderData = {}
     this.orderList = []
     let id = UNENCODE(this.$root.$mp.query.id)
@@ -129,7 +132,7 @@ export default {
   },
   methods: {
     // 根据用户id和订单id查找该条订单
-    searchOrderFun (data) {
+    searchOrderFun(data) {
       let _this = this
       wx.showLoading({
         title: '加载中'
@@ -145,7 +148,7 @@ export default {
             res.data.data.deliveryMthods = '自提'
           }
           _this.orderData = res.data.data
-          for (let i = 0; i < _this.orderData.goodsInfo.length; i++) {
+          for (let i = 0;i < _this.orderData.goodsInfo.length;i++) {
             let id = _this.orderData.goodsInfo[i].id
             let goodsNum = _this.orderData.goodsInfo[i].num
             _this.getGoodsDetailFun({ id }, goodsNum)
@@ -160,7 +163,7 @@ export default {
       })
     },
     // 获取商品详情接口
-    getGoodsDetailFun (id, goodsNum) {
+    getGoodsDetailFun(id, goodsNum) {
       let _this = this
       wx.showLoading({
         title: '加载中'
@@ -181,19 +184,19 @@ export default {
       })
     },
     // 致电商家
-    callShop () {
+    callShop() {
       Dialog.alert({
         title: '提示',
         message: '现在是营业高峰期，电话有可能暂时无法接通，请您耐心等待或稍等几分钟后再次拨打。'
       }).then(() => {
         wx.makePhoneCall({
           phoneNumber: '15924536788',
-          fail () { }
+          fail() { }
         })
       })
     },
     // 复制订单编号
-    copyOrderNumber (data) {
+    copyOrderNumber(data) {
       wx.setClipboardData({
         // 准备复制的数据
         data,
@@ -205,25 +208,35 @@ export default {
       })
     },
     // 立即支付
-    pay () {
+    pay() {
       let userList = wx.getStorageSync('userMegList') || {}
-      if (userList.userStatus === '2') {
-        wx.showToast({
-          title: '抱歉，您的账号暂时被冻结，无法进行支付操作。如有疑问，请到我的页面内点击联系客服进行咨询。',
-          icon: 'none',
-          duration: 3000
+      if (userList !== {}) {
+        let data = {
+          openid: userList.openId
+        }
+        searchOpenid('mini/searchOpenid', data).then(res => {
+          if (res.data.data) {
+            wx.setStorageSync('userMegList', res.data.data[0])
+            if (res.data.data[0].userStatus === '2') {
+              wx.showToast({
+                title: '抱歉，您的账号暂时被冻结，无法进行支付操作。如有疑问，请到我的页面内点击联系客服进行咨询。',
+                icon: 'none',
+                duration: 3000
+              })
+            } else {
+              this.payFun()
+            }
+          }
         })
-        return false
       }
-      this.payFun()
     },
     // 取消订单
-    closeOrders () {
+    closeOrders() {
       let _this = this
       wx.showModal({
         title: '提示',
         content: '是否要取消订单?',
-        success (res) {
+        success(res) {
           if (res.confirm) {
             let orderId = _this.orderData.id
             let data = {
@@ -255,10 +268,10 @@ export default {
       })
     },
     // 支付接口
-    payFun () {
+    payFun() {
       let _this = this
       let str = ''
-      for (let i = 0; i < _this.orderList.length; i++) {
+      for (let i = 0;i < _this.orderList.length;i++) {
         str += _this.orderList[i].goodsName + ','
       }
       if (str.length > 0) {
@@ -288,7 +301,7 @@ export default {
             package: packages, // repay_id
             signType: signType, // 签名算法
             paySign: paySign, // 签名
-            success (res) {
+            success(res) {
               let data = {
                 id: orderId,
                 orderStatus: '2'
@@ -303,7 +316,7 @@ export default {
                 })
               })
             },
-            fail () {
+            fail() {
               let data = {
                 time
               }
@@ -359,7 +372,7 @@ export default {
       })
     },
     // 更改订单状态 接口
-    changeOrderStatusFun (data) {
+    changeOrderStatusFun(data) {
       wx.showLoading({
         title: '加载中'
       })
@@ -374,12 +387,12 @@ export default {
       })
     },
     // 删除订单
-    deleteOrders () {
+    deleteOrders() {
       let _this = this
       wx.showModal({
         title: '提示',
         content: '是否要删除订单?',
-        success (res) {
+        success(res) {
           if (res.confirm) {
             let id = UNENCODE(_this.$root.$mp.query.id)
             let userList = wx.getStorageSync('userMegList') || {}
@@ -398,7 +411,7 @@ export default {
               }).then(() => {
                 wx.switchTab({
                   url: '/pages/my/main',
-                  fail (err) {
+                  fail(err) {
                     console.log(err)
                   }
                 })
@@ -415,7 +428,7 @@ export default {
       })
     },
     // 评论
-    toComment (index) {
+    toComment(index) {
       let data = {
         userId: this.orderData.userId,
         goodsId: this.orderList[index].id
@@ -461,10 +474,19 @@ export default {
 .orderDetails-head-successPay {
   width: 100%;
   height: 200rpx;
-  background: url('http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GJvjBC1QGJkJnDrTLDgNqPoHb6oXK5SXDLfsnPzBhpcU0BLv1z0IWuX2iWiDzKwhvFgQFC01UbbrUQeqVTHxkto!/b&bo=mAMBAZgDAQEDFzI!&rf=viewer_4&t=5')
+  background: url('http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GAP2gAOoVtYSPNzXwX6U1vZZDR7s9HrrfB*VbOrnn5iEXyZLJVGXafUVJYfGxSlPq80dNJB*gZhTZ6VN*QIU7y4!/b&bo=mAMBAZgDAQEDFzI!&rf=viewer_4&t=5')
     no-repeat;
   background-size: 100% 100%;
 }
+.orderDetails-head-successPay p {
+  position: absolute;
+  font-size: 12px;
+  color: #fff;
+  left: 33rpx;
+  top: 110rpx;
+  width: 60%;
+}
+
 .orderDetails-head-watingPay {
   width: 100%;
   height: 200rpx;

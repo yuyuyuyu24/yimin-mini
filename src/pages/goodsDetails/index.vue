@@ -725,7 +725,6 @@ export default {
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  border: 1px solid #ccc;
 }
 .comment .comment-content-box .comment-content-box-bottom {
   margin-top: 20rpx;
