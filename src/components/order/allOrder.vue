@@ -68,6 +68,9 @@ export default {
       this.isGoods = val
     }
   },
+  onUnload () {
+    this.conut = 1
+  },
   onReachBottom () {
     this.getUserOrderFun()
   },

@@ -52,6 +52,7 @@ export default {
       isGoods: false
     }
   },
+
   onShow () {
     this.currentData = 0
     this.allOrderData = []

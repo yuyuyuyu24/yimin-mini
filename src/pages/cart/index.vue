@@ -155,10 +155,11 @@ export default {
   onShow () {
     this.cartFun()
     this.total = 0
-  },
-  mounted () {
     let number = 10
     this.randomGoodsFun({ number })
+  },
+  mounted () {
+
   },
   methods: {
     // 根据缓存获取购物车数据
@@ -341,7 +342,7 @@ export default {
         let removeLength = this.cartData.length - this.removeCartList.length
         wx.showModal({
           title: '提示',
-          content: `确认将这${removeLength}个商品移出购物车2？`,
+          content: `确认将这${removeLength}个商品移出购物车？`,
           success (res) {
             if (res.confirm) {
               let cart = []
@@ -440,19 +441,22 @@ export default {
                   })
                   return false
                 }
-                if (seleteList[i].goodsStatus === 1 && seleteList[i].goodsStatus !== 2 && seleteList[i].goodsStatus !== 3) {
-                  wx.showToast({
-                    title: '跳转中...',
-                    icon: 'loading'
-                  })
-                  let query = JSON.stringify(list)
-                  wx.navigateTo({
-                    url: `/pages/confirmOrder/main?data=${query}`,
-                    success: function (res) {
-                      wx.hideToast()
-                    }
-                  })
-                }
+              }
+              let chuck = seleteList.every(function (value, index, array) {
+                return value.goodsStatus === 1
+              })
+              if (chuck) {
+                wx.showToast({
+                  title: '跳转中...',
+                  icon: 'loading'
+                })
+                let query = JSON.stringify(list)
+                wx.navigateTo({
+                  url: `/pages/confirmOrder/main?data=${query}`,
+                  success: function (res) {
+                    wx.hideToast()
+                  }
+                })
               }
             }
           }
@@ -471,6 +475,7 @@ export default {
         }
       })
     },
+
     // 点击猜你喜欢跳转
     toDetails (item) {
       wx.showToast({

@@ -221,7 +221,6 @@ export default {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
-  border: 1px solid #ccc;
   margin: 0 30rpx 0 80rpx;
 }
 .my .my-head .my-head-img span {

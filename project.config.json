@@ -57,8 +57,8 @@
 				},
 				{
 					"id": 1,
-					"name": "pages/orders/main",
-					"pathName": "pages/order/main",
+					"name": "pages/cart/main",
+					"pathName": "pages/cart/main",
 					"query": "",
 					"scene": null
 				},
@@ -67,6 +67,13 @@
 					"name": "pages/confirmOrder/main",
 					"pathName": "pages/confirmOrder/main",
 					"query": "data=[{\"id\":42,\"num\":1},{\"id\":50,\"num\":2}]",
+					"scene": null
+				},
+				{
+					"id": 3,
+					"name": "pages/orderDetails/main",
+					"pathName": "pages/orderDetails/main",
+					"query": "id=1488",
 					"scene": null
 				}
 			]

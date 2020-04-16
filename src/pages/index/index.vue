@@ -131,7 +131,10 @@
         goodsTab-box"
       :class="{isFixedClassGoodsTab:isFixed}"
     >
-      <all-tabs v-if="currentData === 0" />
+      <all-tabs
+        :allGoods=allGoods
+        v-if="currentData === 0"
+      />
       <special-tabs v-else-if="currentData === 1" />
       <hot-tabs v-else-if="currentData === 2" />
       <new-tabs v-else />
@@ -142,6 +145,9 @@
 </template>
 
 <script>
+import { changeQuerystring } from '@/utils/function'
+import { miniGetGoods } from '@/api/goods'
+
 import backTop from '@/components/backTop'
 import allTabs from '@/components/allTabs'
 import specialTabs from '@/components/specialTabs'
@@ -175,7 +181,9 @@ export default {
         { 'title': '精选商品', 'content': '好物放心购', 'tabs': 2, 'class': 'goodsTab-hot' },
         { 'title': '新品专区', 'content': '春季上新', 'tabs': 3, 'class': 'goodsTab-new' }
       ],
-      pageNoticeShow: true
+      pageNoticeShow: true,
+      allGoods: [],
+      conut: 0
     }
   },
   components: {
@@ -202,6 +210,11 @@ export default {
   mounted () {
     this.getSwiperFun()
     this.getNoticeFun()
+  },
+  onShow () {
+    this.conut = 0
+    this.allGoods = []
+    this.miniGetGoodsFun()
   },
   methods: {
     // 滚动公告动画
@@ -271,6 +284,37 @@ export default {
           } else {
             _this.pageNoticeShow = false
           }
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 获取全部商品 接口
+    miniGetGoodsFun () {
+      let _this = this
+      let data = {
+        pageNumber: 1,
+        pageSize: 5
+      }
+      wx.showLoading({
+        title: '加载中'
+      })
+      // 获取全部商品 接口
+      miniGetGoods('goods/miniGetGoods', data).then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 1000
+            })
+          }
+          _this.allGoods = _this.allGoods.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
         wx.showToast({

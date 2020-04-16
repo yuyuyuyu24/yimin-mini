@@ -209,6 +209,7 @@ export default {
     },
     // 立即支付
     pay () {
+      let _this = this
       let userList = wx.getStorageSync('userMegList') || {}
       if (userList !== {}) {
         let data = {
@@ -224,7 +225,30 @@ export default {
                 duration: 3000
               })
             } else {
-              this.payFun()
+              for (let i = 0; i < _this.orderList.length; i++) {
+                if (_this.orderList[i].goodsStatus === 2) {
+                  wx.showToast({
+                    title: `抱歉，${_this.orderList[i].goodsName}暂时没有货啦，具体到货日期可咨询商家。`,
+                    icon: 'none',
+                    duration: 4000
+                  })
+                  return false
+                }
+                if (_this.orderList[i].goodsStatus === 3) {
+                  wx.showToast({
+                    title: `抱歉，${_this.orderList[i].goodsName}暂时已被商家下架，具体上架日期可咨询商家。`,
+                    icon: 'none',
+                    duration: 4000
+                  })
+                  return false
+                }
+              }
+              let chuck = _this.orderList.every(function (value, index, array) {
+                return value.goodsStatus === 1
+              })
+              if (chuck) {
+                _this.payFun()
+              }
             }
           }
         })

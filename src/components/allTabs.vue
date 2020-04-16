@@ -44,14 +44,20 @@ import { miniGetGoods } from '@/api/goods'
 import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
+  props: ['allGoods'],
   data () {
     return {
       allGoods: [],
-      conut: 0
+      conut: 1
     }
   },
-  mounted () {
-    this.miniGetGoodsFun()
+  watch: {
+    allGoods (val) {
+      this.allGoods = val
+    }
+  },
+  onHide () {
+    this.conut = 1
   },
   onReachBottom () {
     this.miniGetGoodsFun()
