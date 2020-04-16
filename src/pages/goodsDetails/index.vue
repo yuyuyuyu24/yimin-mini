@@ -40,7 +40,7 @@
             v-if="hotGoodsList.isSpecial === 1"
             class="before-price"
           >￥{{hotGoodsList.beforeGoodsPrice}}</span>
-          <span class="stock">库存：500</span>
+          <span class="stock">库存：{{hotGoodsList.goodsStock}}</span>
         </span>
       </view>
     </div>
@@ -360,6 +360,12 @@ export default {
           icon: 'none',
           duration: 4000
         })
+      } else if (this.hotGoodsList.goodsStatus === 3) {
+        wx.showToast({
+          title: '抱歉，该商品暂时已被商家下架，具体上架日期可咨询商家。',
+          icon: 'none',
+          duration: 4000
+        })
       } else if (this.hotGoodsList.goodsStatus === 1) {
         let data = {
           hotGoodsList: this.hotGoodsList,
@@ -394,6 +400,12 @@ export default {
             if (_this.hotGoodsList.goodsStatus === 2) {
               wx.showToast({
                 title: '抱歉，该商品暂时没有货啦，具体到货日期可咨询商家。',
+                icon: 'none',
+                duration: 4000
+              })
+            } else if (_this.hotGoodsList.goodsStatus === 3) {
+              wx.showToast({
+                title: '抱歉，该商品暂时已被商家下架，具体上架日期可咨询商家。',
                 icon: 'none',
                 duration: 4000
               })

@@ -60,6 +60,8 @@ export default {
     }
   },
   mounted () {
+    this.conut = 0
+    this.otherGoods = []
     this.queryClassGoodsFun()
   },
   onReachBottom () {
@@ -85,7 +87,7 @@ export default {
             wx.showToast({
               title: '商品加载完毕！',
               icon: 'none',
-              duration: 2000
+              duration: 1000
             })
           }
           _this.otherGoods = _this.otherGoods.concat(changeQuerystring(res.data.data))

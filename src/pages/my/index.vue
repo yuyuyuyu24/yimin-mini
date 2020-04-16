@@ -74,6 +74,7 @@
       v-if="false"
       class="lag-out"
     >退出登录</div>
+    <div class="support">技术支持：<i class="iconfont iconicon"></i>wxdzy777</div>
     <van-dialog id="van-dialog" />
 
   </div>
@@ -304,6 +305,7 @@ export default {
 .my-content-about div .iconyou {
   font-size: 18px;
 }
+
 .my .lag-out {
   width: 70%;
   height: 80rpx;
@@ -313,6 +315,17 @@ export default {
   line-height: 80rpx;
   color: #fff;
   margin: 40rpx auto;
+}
+.support {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40rpx;
+  color: #666;
+}
+.support i {
+  padding-right: 10rpx;
 }
 button::after {
   border: none;

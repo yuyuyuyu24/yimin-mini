@@ -95,7 +95,7 @@
     <div class="guess-love">
       <div class="guess-love-head">
         <span class="guess-love-head-left"></span>
-        猜你喜欢
+        <i class="iconfont iconcainixihuan"></i>
         <span class="guess-love-head-right"></span>
       </div>
       <div class="cattle-goods-box">
@@ -407,9 +407,11 @@ export default {
           } else {
             let list = []
             let unList = []
+            let seleteList = []
             for (let i = 0; i < _this.cartData.length; i++) {
               if (_this.cartData[i].selete === true) {
                 list.push({ 'id': _this.cartData[i].id, 'num': _this.cartData[i].goodsNum })
+                seleteList.push(_this.cartData[i])
               } else {
                 unList.push(_this.cartData[i])
               }
@@ -421,17 +423,37 @@ export default {
                 duration: 3000
               })
             } else {
-              wx.showToast({
-                title: '跳转中...',
-                icon: 'loading'
-              })
-              let query = JSON.stringify(list)
-              wx.navigateTo({
-                url: `/pages/confirmOrder/main?data=${query}`,
-                success: function (res) {
-                  wx.hideToast()
+              for (let i = 0; i < seleteList.length; i++) {
+                if (seleteList[i].goodsStatus === 2) {
+                  wx.showToast({
+                    title: `抱歉，${seleteList[i].goodsName}暂时没有货啦，具体到货日期可咨询商家。`,
+                    icon: 'none',
+                    duration: 4000
+                  })
+                  return false
                 }
-              })
+                if (seleteList[i].goodsStatus === 3) {
+                  wx.showToast({
+                    title: `抱歉，${seleteList[i].goodsName}暂时已被商家下架，具体上架日期可咨询商家。`,
+                    icon: 'none',
+                    duration: 4000
+                  })
+                  return false
+                }
+                if (seleteList[i].goodsStatus === 1 && seleteList[i].goodsStatus !== 2 && seleteList[i].goodsStatus !== 3) {
+                  wx.showToast({
+                    title: '跳转中...',
+                    icon: 'loading'
+                  })
+                  let query = JSON.stringify(list)
+                  wx.navigateTo({
+                    url: `/pages/confirmOrder/main?data=${query}`,
+                    success: function (res) {
+                      wx.hideToast()
+                    }
+                  })
+                }
+              }
             }
           }
         },
@@ -687,6 +709,9 @@ export default {
   width: 30%;
   height: 2rpx;
   background-color: #ddd;
+}
+.guess-love .guess-love-head i {
+  font-size: 22px;
 }
 .guess-love .guess-love-head .guess-love-head-left {
   margin-right: 30rpx;

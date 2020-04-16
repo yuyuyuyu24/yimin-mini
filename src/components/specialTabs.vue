@@ -46,7 +46,6 @@ export default {
     return {
       specialGoods: [],
       conut: 0
-
     }
   },
   mounted () {
@@ -71,7 +70,7 @@ export default {
             wx.showToast({
               title: '商品加载完毕！',
               icon: 'none',
-              duration: 2000
+              duration: 1000
             })
           }
           _this.specialGoods = _this.specialGoods.concat(changeQuerystring(res.data.data))
