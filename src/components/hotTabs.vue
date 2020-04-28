@@ -1,12 +1,5 @@
 <template>
   <div class="hot-goods-box">
-    <view
-      class="hot-search-not"
-      v-if="hotGoods.length === 0"
-    >
-      <i class="iconfont iconno_result"></i>
-      <h2>即将上新，敬请期待！</h2>
-    </view>
     <div class="hot-goods">
       <div
         v-for="(item,index) in hotGoods"
@@ -42,14 +35,16 @@ import { queryHotGoods } from '@/api/goods'
 import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
+  props: ['hotGood'],
   data () {
     return {
       hotGoods: [],
-      conut: 0
+      conut: 1
     }
   },
   mounted () {
-    this.queryHotGoodsFun()
+    this.hotGoods = this.hotGood
+    // this.queryHotGoodsFun()
   },
   onReachBottom () {
     this.queryHotGoodsFun()

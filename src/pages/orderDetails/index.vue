@@ -1,108 +1,116 @@
 <template>
-  <div class="orderDetails">
-    <div
-      class="orderDetails-head-watingPay"
-      v-if="orderData.orderStatus === '1'"
-    >
-      <p>未支付的订单将于每天23点59分59秒关闭订单，请您合理安排时间尽快支付。</p>
-    </div>
-    <div
-      class="orderDetails-head-waitingDeliver"
-      v-if="orderData.orderStatus === '2'"
-    >
-      <p>商家将立刻处理您的订单，请耐心等待</p>
-    </div>
-    <div
-      class="orderDetails-head-successPay"
-      v-if="orderData.orderStatus === '3'"
-    >
-      <p>订单完成！商家已发货，请您耐心等待。如有疑问请点击下方'致电商家'联系商家。</p>
-    </div>
-
-    <div
-      class="orderDetails-head-closePay"
-      v-if="orderData.orderStatus === '4'"
-    ></div>
-    <div class="orderDetails-address">
-      <div>
-        <p>收货人：{{orderData.userName}}</p>
-        <span>{{orderData.userPhone}}</span>
-      </div>
-      <h3>{{orderData.userAddress}}</h3>
-    </div>
-    <div
-      class="orderDetails-goods"
-      v-for="(item,index) in orderList"
-      :key="index"
-    >
-      <img :src="item.coverList[0].url" />
-      <div class="orderDetails-goods-right">
-        <p>{{item.goodsName}} {{item.goodsUnit}}</p>
-        <span>数量 × {{item.goodsNum}}</span>
-        <h3>￥ {{item.goodsPrice}}</h3>
-      </div>
+  <van-skeleton
+    avatar
+    avatar-shape="square"
+    row="3"
+    :loading="skeletonLoading"
+    class="van-skeleton-order"
+  >
+    <div class="orderDetails">
       <div
-        @click="toComment(index)"
-        class="orderDetails-comment"
-        v-if="orderData.orderStatus === '2' || orderData.orderStatus === '3'"
-      >评论</div>
-    </div>
-    <div class="orderDetails-total">
-      <p>总计：</p>
-      <span>￥ {{orderData.goodsPrice+orderData.deliveryMoney}} (商品总金额 {{orderData.goodsPrice}}+{{orderData.deliveryMoney}}元配送费)</span>
-    </div>
-    <div
-      class="orderDetails-remarks"
-      v-if="orderData.remarks"
-    >
-      <p>留言：</p>
-      <span>{{orderData.remarks}}</span>
-    </div>
-    <div class="orderDetails-message">
-      <div>
-        <p>订单编号:</p>
-        <span>{{orderData.orderNumber}}<span
-            class="copyButton"
-            @click="copyOrderNumber(orderData.orderNumber)"
-          >复制</span></span>
-      </div>
-      <div>
-        <p>创建时间:</p>
-        <span>{{orderData.createdTime}}</span>
-      </div>
-      <div>
-        <p>配送方式:</p>
-        <span>{{orderData.deliveryMthods}}</span>
-      </div>
-    </div>
-    <div class="orderDetails-handle">
-      <div
-        class="orderDetails-listen"
-        v-if="false"
-      >申请售后</div>
-      <div
-        class="orderDetails-listen"
-        @click="deleteOrders"
-      >删除订单</div>
-      <div
-        class="orderDetails-closeOrder"
+        class="orderDetails-head-watingPay"
         v-if="orderData.orderStatus === '1'"
-        @click="closeOrders"
-      >取消订单</div>
+      >
+        <p>未支付的订单将于每天23点59分59秒关闭订单，请您合理安排时间尽快支付。</p>
+      </div>
       <div
-        class="orderDetails-pay"
-        v-if="orderData.orderStatus === '1'"
-        @click="pay"
-      >立即支付</div>
+        class="orderDetails-head-waitingDeliver"
+        v-if="orderData.orderStatus === '2'"
+      >
+        <p>商家将立刻处理您的订单，请耐心等待</p>
+      </div>
       <div
-        class="orderDetails-call"
-        v-if="orderData.orderStatus === '2' || orderData.orderStatus === '3'"
-        @click="callShop"
-      >致电商家</div>
+        class="orderDetails-head-successPay"
+        v-if="orderData.orderStatus === '3'"
+      >
+        <p>订单完成！商家已发货，请您耐心等待。如有疑问请点击下方'致电商家'联系商家。</p>
+      </div>
 
+      <div
+        class="orderDetails-head-closePay"
+        v-if="orderData.orderStatus === '4'"
+      ></div>
+      <div class="orderDetails-address">
+        <div>
+          <p>收货人：{{orderData.userName}}</p>
+          <span>{{orderData.userPhone}}</span>
+        </div>
+        <h3>{{orderData.userAddress}}</h3>
+      </div>
+      <div
+        class="orderDetails-goods"
+        v-for="(item,index) in orderList"
+        :key="index"
+      >
+        <img :src="item.coverList[0].url" />
+        <div class="orderDetails-goods-right">
+          <p>{{item.goodsName}} {{item.goodsUnit}}</p>
+          <span>数量 × {{item.goodsNum}}</span>
+          <h3>￥ {{item.goodsPrice}}</h3>
+        </div>
+        <div
+          @click="toComment(index)"
+          class="orderDetails-comment"
+          v-if="orderData.orderStatus === '2' || orderData.orderStatus === '3'"
+        >评论</div>
+      </div>
+      <div class="orderDetails-total">
+        <p>总计：</p>
+        <span>￥ {{orderData.goodsPrice+orderData.deliveryMoney}} (商品总金额 {{orderData.goodsPrice}}+{{orderData.deliveryMoney}}元配送费)</span>
+      </div>
+      <div
+        class="orderDetails-remarks"
+        v-if="orderData.remarks"
+      >
+        <p>留言：</p>
+        <span>{{orderData.remarks}}</span>
+      </div>
+      <div class="orderDetails-message">
+        <div>
+          <p>订单编号:</p>
+          <span>{{orderData.orderNumber}}<span
+              class="copyButton"
+              @click="copyOrderNumber(orderData.orderNumber)"
+            >复制</span></span>
+        </div>
+        <div>
+          <p>创建时间:</p>
+          <span>{{orderData.createdTime}}</span>
+        </div>
+        <div>
+          <p>配送方式:</p>
+          <span>{{orderData.deliveryMthods}}</span>
+        </div>
+      </div>
+      <div class="orderDetails-handle">
+        <div
+          class="orderDetails-listen"
+          v-if="false"
+        >申请售后</div>
+        <div
+          class="orderDetails-listen"
+          @click="deleteOrders"
+        >删除订单</div>
+        <div
+          class="orderDetails-closeOrder"
+          v-if="orderData.orderStatus === '1'"
+          @click="closeOrders"
+        >取消订单</div>
+        <div
+          class="orderDetails-pay"
+          v-if="orderData.orderStatus === '1'"
+          @click="pay"
+        >立即支付</div>
+        <div
+          class="orderDetails-call"
+          v-if="orderData.orderStatus === '2' || orderData.orderStatus === '3'"
+          @click="callShop"
+        >致电商家</div>
+
+      </div>
+      <van-dialog id="van-dialog" />
     </div>
-    <van-dialog id="van-dialog" />
-  </div>
+  </van-skeleton>
 </template>
 <script>
 import { changeOrderStatus, pay, searchOrder, queryOrderStatus, deleteOrders } from '@/api/pay'
@@ -110,13 +118,15 @@ import { searchOpenid } from '@/api/user'
 import { searchComment } from '@/api/comment'
 import { ENCODE, UNENCODE, formatDate, changeQuerystringDetail } from '@/utils/function'
 import { getGoodsDetail } from '@/api/goods'
+import { getAdminDetail } from '@/api/admin'
 import Dialog from '../../../static/vant/dist/dialog/dialog'
 
 export default {
   data () {
     return {
       orderData: {},
-      orderList: []
+      orderList: [],
+      skeletonLoading: true
     }
   },
   mounted () {
@@ -174,6 +184,7 @@ export default {
           res.data.data.goodsNum = goodsNum
           // _this.total += res.data.data.goodsPrice * res.data.data.goodsNum
           _this.orderList.push(changeQuerystringDetail(res.data.data))
+          this.skeletonLoading = false
         }
       }).catch(() => {
         wx.showToast({
@@ -225,30 +236,43 @@ export default {
                 duration: 3000
               })
             } else {
-              for (let i = 0; i < _this.orderList.length; i++) {
-                if (_this.orderList[i].goodsStatus === 2) {
-                  wx.showToast({
-                    title: `抱歉，${_this.orderList[i].goodsName}暂时没有货啦，具体到货日期可咨询商家。`,
-                    icon: 'none',
-                    duration: 4000
+              let id = 1
+              getAdminDetail('admin/getAdminDetail', { id }).then(res => {
+                if (res.data.data) {
+                  if (res.data.data.business === '2') {
+                    wx.showToast({
+                      title: '抱歉，本店由于特殊原因暂时停止对外派送，恢复时间可查看小程序内公告或联系商家，感谢理解！',
+                      icon: 'none',
+                      duration: 4000
+                    })
+                    return false
+                  }
+                  for (let i = 0; i < _this.orderList.length; i++) {
+                    if (_this.orderList[i].goodsStatus === 2) {
+                      wx.showToast({
+                        title: `抱歉，${_this.orderList[i].goodsName}暂时没有货啦，具体到货日期可咨询商家。`,
+                        icon: 'none',
+                        duration: 4000
+                      })
+                      return false
+                    }
+                    if (_this.orderList[i].goodsStatus === 3) {
+                      wx.showToast({
+                        title: `抱歉，${_this.orderList[i].goodsName}暂时已被商家下架，具体上架日期可咨询商家。`,
+                        icon: 'none',
+                        duration: 4000
+                      })
+                      return false
+                    }
+                  }
+                  let chuck = _this.orderList.every(function (value, index, array) {
+                    return value.goodsStatus === 1
                   })
-                  return false
+                  if (chuck) {
+                    _this.payFun()
+                  }
                 }
-                if (_this.orderList[i].goodsStatus === 3) {
-                  wx.showToast({
-                    title: `抱歉，${_this.orderList[i].goodsName}暂时已被商家下架，具体上架日期可咨询商家。`,
-                    icon: 'none',
-                    duration: 4000
-                  })
-                  return false
-                }
-              }
-              let chuck = _this.orderList.every(function (value, index, array) {
-                return value.goodsStatus === 1
               })
-              if (chuck) {
-                _this.payFun()
-              }
             }
           }
         })

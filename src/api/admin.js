@@ -1,6 +1,6 @@
 import config from '../utils/parameter'
 
-// 获取全部商品
+// 获取admin全部信息
 export async function getAdminDetail (api, data) {
   return new Promise(function (resolve, reject) {
     wx.request({

@@ -1,12 +1,5 @@
 <template>
   <div class="hot-goods-box">
-    <view
-      class="hot-search-not"
-      v-if="newGoods.length === 0"
-    >
-      <i class="iconfont iconno_result"></i>
-      <h2>即将上新，敬请期待！</h2>
-    </view>
     <div class="hot-goods">
       <div
         v-for="(item,index) in newGoods"
@@ -42,13 +35,15 @@ import { miniGetNewsGoods } from '@/api/goods'
 import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
+  props: ['newGood'],
   data () {
     return {
       newGoods: []
     }
   },
   mounted () {
-    this.miniGetNewsGoodsFun()
+    this.newGoods = this.newGood
+    // this.miniGetNewsGoodsFun()
   },
   methods: {
     // 获取最新的10条商品 接口

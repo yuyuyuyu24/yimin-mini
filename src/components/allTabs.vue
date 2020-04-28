@@ -1,12 +1,5 @@
 <template>
   <div class="hot-goods-box">
-    <view
-      class="hot-search-not"
-      v-if="allGoods.length === 0"
-    >
-      <i class="iconfont iconno_result"></i>
-      <h2>即将上新，敬请期待！</h2>
-    </view>
     <div class="hot-goods">
       <div
         v-for="(item,index) in allGoods"
@@ -42,22 +35,17 @@
 <script>
 import { miniGetGoods } from '@/api/goods'
 import { changeQuerystring, ENCODE } from '@/utils/function'
-
 export default {
-  props: ['allGoods'],
+  props: ['allGood'],
   data () {
     return {
       allGoods: [],
       conut: 1
     }
   },
-  watch: {
-    allGoods (val) {
-      this.allGoods = val
-    }
-  },
-  onHide () {
-    this.conut = 1
+  mounted () {
+    this.allGoods = this.allGood
+    // this.miniGetGoodsFun()
   },
   onReachBottom () {
     this.miniGetGoodsFun()
@@ -108,7 +96,6 @@ export default {
       })
     }
   }
-
 }
 </script>
 <style scoped>
@@ -163,7 +150,6 @@ export default {
   bottom: 37rpx;
   right: 20rpx;
 }
-
 .hot-goods-box .hot-goods .hot-goods-div p {
   font-size: 16px;
   font-weight: 600;
@@ -172,7 +158,6 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
 .hot-goods-box .hot-goods .hot-goods-div .price {
   font-size: 20px;
   font-weight: 600;
@@ -204,7 +189,6 @@ export default {
   font-size: 30px;
   padding: 40rpx 0;
 }
-
 .hot-search-not h2 {
   font-size: 20px;
 }

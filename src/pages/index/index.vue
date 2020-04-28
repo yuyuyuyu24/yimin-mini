@@ -15,7 +15,13 @@
       @click="openNotice"
       v-if="pageNoticeShow"
     >
-      <div class="notice">
+      <van-notice-bar
+        custom-class="vant-notice"
+        speed="10"
+        left-icon="http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GDg.tWbg3heEIAi3S2J8Y1PSm9UA3CIWa9ro4.gm6xqE6mUtdsbRk5yu0wjki9D*gSK9VY2qsX2JYzeq4gSZCNE!/b&bo=IAAgACAAIAADFzI!&rf=viewer_4&t=5"
+        :text="pageNotice.noticeContent"
+      />
+      <!-- <div class="notice">
         <i class="iconfont icongonggao"></i>
         <div class="notice-view">
           <view
@@ -26,7 +32,7 @@
             {{pageNotice.noticeContent}}
           </view>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div class="swiper-box">
@@ -132,12 +138,21 @@
       :class="{isFixedClassGoodsTab:isFixed}"
     >
       <all-tabs
-        :allGoods=allGoods
-        v-if="currentData === 0"
+        :allGood=allGood
+        v-if="currentData === 0 && allGood.length>0"
       />
-      <special-tabs v-else-if="currentData === 1" />
-      <hot-tabs v-else-if="currentData === 2" />
-      <new-tabs v-else />
+      <special-tabs
+        :specialGood=specialGood
+        v-else-if="currentData === 1 && specialGood.length>0"
+      />
+      <hot-tabs
+        :hotGood=hotGood
+        v-else-if="currentData === 2 && hotGood.length>0"
+      />
+      <new-tabs
+        :newGood=newGood
+        v-else-if="currentData === 3 && newGood.length>0"
+      />
     </div>
     <van-dialog id="van-dialog" />
 
@@ -146,7 +161,7 @@
 
 <script>
 import { changeQuerystring } from '@/utils/function'
-import { miniGetGoods } from '@/api/goods'
+import { miniGetGoods, queryHotGoods, querySpecialGoods, miniGetNewsGoods } from '@/api/goods'
 
 import backTop from '@/components/backTop'
 import allTabs from '@/components/allTabs'
@@ -166,9 +181,6 @@ export default {
       isBack: false,
       swiperList: [],
       pageNotice: {},
-      marqueePace: 1, // 滚动速度
-      marqueeDistance: 0, // 初始滚动距离
-      marquee_margin: 30,
       size: 12,
       interval: 100,
       length: '',
@@ -182,7 +194,10 @@ export default {
         { 'title': '新品专区', 'content': '春季上新', 'tabs': 3, 'class': 'goodsTab-new' }
       ],
       pageNoticeShow: true,
-      allGoods: [],
+      allGood: [],
+      hotGood: [],
+      specialGood: [],
+      newGood: [],
       conut: 0
     }
   },
@@ -195,11 +210,10 @@ export default {
   },
   // 页面滚动 选项卡吸顶
   onPageScroll (e) {
-    let _this = this
     if (e.scrollTop >= 418) {
-      _this.isFixed = true
+      this.isFixed = true
     } else {
-      _this.isFixed = false
+      this.isFixed = false
     }
     if (e.scrollTop > this.GLOBAL.SCROLL_TOP) {
       this.isBack = true
@@ -213,34 +227,16 @@ export default {
   },
   onShow () {
     this.conut = 0
-    this.allGoods = []
+    this.allGood = []
+    this.hotGood = []
+    this.specialGood = []
+    this.newGood = []
     this.miniGetGoodsFun()
+    this.querySpecialGoodsFun()
+    this.queryHotGoodsFun()
+    this.miniGetNewsGoodsFun()
   },
   methods: {
-    // 滚动公告动画
-    scrolltxt: function () {
-      var that = this
-      var length = that.length// 滚动文字的宽度
-      var windowWidth = that.windowWidth// 屏幕宽度
-
-      if (length > windowWidth) {
-        var interval = setInterval(function () {
-          var maxscrollwidth = windowWidth * 0.9 * 0.9 + 50// 滚动的最大宽度，文字宽度+间距，如果需要一行文字滚完后再显示第二行可以修改marquee_margin值等于windowWidth即可
-
-          var crentleft = that.marqueeDistance
-          if (crentleft < maxscrollwidth) { // 判断是否滚动到最大宽度
-            that.marqueeDistance = crentleft + that.marqueePace
-          } else {
-            that.marqueeDistance = 0 // 直接重新滚动
-
-            clearInterval(interval)
-            that.scrolltxt()
-          }
-        }, that.interval)
-      } else {
-        that.marquee_margin = '1000' // 只显示一条不滚动右边间距加大，防止重复显示
-      }
-    },
     // 打开滚动公告
     openNotice () {
       Dialog.alert({
@@ -250,10 +246,10 @@ export default {
     },
     // 获取全部轮播图 接口
     getSwiperFun () {
-      let _this = this
+      // let this = this
       getSwiper('swiper/getSwiper').then(res => {
         if (res.data.data) {
-          _this.swiperList = res.data.data
+          this.swiperList = res.data.data
         }
       }).catch(() => {
         wx.showToast({
@@ -265,24 +261,13 @@ export default {
     },
     // 获取全部公告 接口
     getNoticeFun () {
-      let _this = this
-      // let data = await getNotice('notice/getNotice')
-      // if (data.data.data) {
-      //   _this.pageNotice = data.data.data[1]
-      //   console.log(_this.pageNotice)
-      // }
       getNotice('notice/getNotice').then(res => {
         if (res.data.data) {
           if (res.data.data[1].noticeStatus === 1) {
-            _this.pageNoticeShow = true
-            _this.pageNotice = res.data.data[1]
-            var length = _this.pageNotice.noticeContent.length * _this.size// 文字长度
-            var windowWidth = wx.getSystemInfoSync().windowWidth// 屏幕宽度
-            _this.length = length
-            _this.windowWidth = windowWidth
-            _this.scrolltxt()
+            this.pageNoticeShow = true
+            this.pageNotice = res.data.data[1]
           } else {
-            _this.pageNoticeShow = false
+            this.pageNoticeShow = false
           }
         }
       }).catch(() => {
@@ -295,7 +280,7 @@ export default {
     },
     // 获取全部商品 接口
     miniGetGoodsFun () {
-      let _this = this
+      // let this = this
       let data = {
         pageNumber: 1,
         pageSize: 5
@@ -314,7 +299,78 @@ export default {
               duration: 1000
             })
           }
-          _this.allGoods = _this.allGoods.concat(changeQuerystring(res.data.data))
+          this.allGood = this.allGood.concat(changeQuerystring(res.data.data))
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 获取特价商品 接口
+    querySpecialGoodsFun () {
+      let data = {
+        isSpecial: 1,
+        pageNumber: 1,
+        pageSize: 5
+      }
+      querySpecialGoods('goods/querySpecialGoods', data).then(res => {
+        if (res.data.data) {
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 1000
+            })
+          }
+          this.specialGood = this.specialGood.concat(changeQuerystring(res.data.data))
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 获取精选商品 接口
+    queryHotGoodsFun () {
+      // let this = this
+      let data = {
+        isHot: '1',
+        pageNumber: 1,
+        pageSize: 5
+      }
+      queryHotGoods('goods/queryHotGoods', data).then(res => {
+        if (res.data.data) {
+          if (res.data.data.length === 0) {
+            wx.showToast({
+              title: '商品加载完毕！',
+              icon: 'none',
+              duration: 1000
+            })
+          }
+          this.hotGood = this.hotGood.concat(changeQuerystring(res.data.data))
+        }
+      }).catch(() => {
+        wx.showToast({
+          title: '网络出现问题，请稍后再试！',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    },
+    // 获取最新的10条商品 接口
+    miniGetNewsGoodsFun () {
+      wx.showLoading({
+        title: '加载中'
+      })
+      miniGetNewsGoods('goods/miniGetNewsGoods').then(res => {
+        wx.hideLoading()
+        if (res.data.data) {
+          this.newGood = changeQuerystring(res.data.data)
         }
       }).catch(() => {
         wx.showToast({
@@ -459,8 +515,7 @@ export default {
       })
     },
     checkCurrent (index) {
-      let _this = this
-      _this.currentData = index
+      this.currentData = index
     }
   }
 }
@@ -472,38 +527,6 @@ export default {
   width: 100%;
   height: 60rpx;
   margin-top: 102rpx;
-}
-.notice-box .notice {
-  background-color: #fff;
-  width: 90%;
-  height: 60rpx;
-  margin: 10rpx auto;
-  border-radius: 46rpx;
-  display: flex;
-  align-items: center;
-  box-shadow: darkgrey 0 0 30rpx -10rpx;
-}
-.notice-box .notice .notice-view {
-  width: 90%;
-  height: 100%;
-  overflow: hidden;
-}
-.notice-box .notice .message-title {
-  height: 100%;
-  font-size: 24rpx;
-  line-height: 60rpx;
-  padding-left: 60rpx;
-  color: #666;
-}
-.notice-box .notice i {
-  padding-left: 10rpx;
-  font-size: 50rpx;
-  color: red;
-}
-.notice-box .notice p {
-  padding-left: 10rpx;
-  font-size: 12px;
-  color: #666;
 }
 .search-box {
   background-color: #00bf6f;

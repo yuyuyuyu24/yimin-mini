@@ -3,6 +3,7 @@ import App from './App'
 
 // eslint-disable-next-line no-unused-vars
 import Config from './utils/parameter'
+import './style/resetVant.css'
 Vue.config.productionTip = false
 App.mpType = 'app'
 Vue.prototype.GLOBAL = Config
@@ -18,6 +19,9 @@ export default {
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: '第一个小程序',
       navigationBarTextStyle: 'black'
+    },
+    'usingComponents': {
+      'van-dialog': '/static/vant/dist/dialog/index'
     }
   }
 }

@@ -135,6 +135,7 @@
 <script>
 import { getGoodsDetail, randomGoods } from '@/api/goods'
 import { changeQuerystringDetail, changeQuerystring, ENCODE } from '@/utils/function'
+import { getAdminDetail } from '@/api/admin'
 import Dialog from '../../../static/vant/dist/dialog/dialog'
 
 export default {
@@ -155,11 +156,10 @@ export default {
   onShow () {
     this.cartFun()
     this.total = 0
-    let number = 10
-    this.randomGoodsFun({ number })
   },
   mounted () {
-
+    let number = 10
+    this.randomGoodsFun({ number })
   },
   methods: {
     // 根据缓存获取购物车数据
@@ -168,7 +168,6 @@ export default {
       let _this = this
       _this.cartData = []
       let value = wx.getStorageSync('yiminCart') || []
-      console.log(value)
       if (value.length === 0) {
         this.isCartNull = true
       } else {
@@ -424,40 +423,53 @@ export default {
                 duration: 3000
               })
             } else {
-              for (let i = 0; i < seleteList.length; i++) {
-                if (seleteList[i].goodsStatus === 2) {
-                  wx.showToast({
-                    title: `抱歉，${seleteList[i].goodsName}暂时没有货啦，具体到货日期可咨询商家。`,
-                    icon: 'none',
-                    duration: 4000
-                  })
-                  return false
-                }
-                if (seleteList[i].goodsStatus === 3) {
-                  wx.showToast({
-                    title: `抱歉，${seleteList[i].goodsName}暂时已被商家下架，具体上架日期可咨询商家。`,
-                    icon: 'none',
-                    duration: 4000
-                  })
-                  return false
-                }
-              }
-              let chuck = seleteList.every(function (value, index, array) {
-                return value.goodsStatus === 1
-              })
-              if (chuck) {
-                wx.showToast({
-                  title: '跳转中...',
-                  icon: 'loading'
-                })
-                let query = JSON.stringify(list)
-                wx.navigateTo({
-                  url: `/pages/confirmOrder/main?data=${query}`,
-                  success: function (res) {
-                    wx.hideToast()
+              let id = 1
+              getAdminDetail('admin/getAdminDetail', { id }).then(res => {
+                if (res.data.data) {
+                  if (res.data.data.business === '2') {
+                    wx.showToast({
+                      title: '抱歉，本店由于特殊原因暂时停止对外派送，恢复时间可查看小程序内公告或联系商家，感谢理解！',
+                      icon: 'none',
+                      duration: 4000
+                    })
+                    return false
                   }
-                })
-              }
+                  for (let i = 0; i < seleteList.length; i++) {
+                    if (seleteList[i].goodsStatus === 2) {
+                      wx.showToast({
+                        title: `抱歉，${seleteList[i].goodsName}暂时没有货啦，具体到货日期可咨询商家。`,
+                        icon: 'none',
+                        duration: 4000
+                      })
+                      return false
+                    }
+                    if (seleteList[i].goodsStatus === 3) {
+                      wx.showToast({
+                        title: `抱歉，${seleteList[i].goodsName}暂时已被商家下架，具体上架日期可咨询商家。`,
+                        icon: 'none',
+                        duration: 4000
+                      })
+                      return false
+                    }
+                  }
+                  let chuck = seleteList.every(function (value, index, array) {
+                    return value.goodsStatus === 1
+                  })
+                  if (chuck) {
+                    wx.showToast({
+                      title: '跳转中...',
+                      icon: 'loading'
+                    })
+                    let query = JSON.stringify(list)
+                    wx.navigateTo({
+                      url: `/pages/confirmOrder/main?data=${query}`,
+                      success: function (res) {
+                        wx.hideToast()
+                      }
+                    })
+                  }
+                }
+              })
             }
           }
         },

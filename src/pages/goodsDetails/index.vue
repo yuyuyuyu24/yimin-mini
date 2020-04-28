@@ -1,148 +1,157 @@
 <template>
-  <div class="goods-details-page">
-    <back-top v-if="false"></back-top>
-    <div class="swiper-box">
-      <swiper
-        class="swiper"
-        indicator-dots=true
-        autoplay=true
-        interval=5000
-      >
-        <swiper-item
-          v-for="(item,index) in hotGoodsList.swiperList"
-          :key=index
-          @click="viewSwiper(index)"
+  <van-skeleton
+    title
+    avatar
+    avatar-shape="square"
+    row="3"
+    :loading="skeletonLoading"
+    class="van-skeleton-goods"
+  >
+    <div class="goods-details-page">
+      <back-top v-if="false"></back-top>
+      <div class="swiper-box">
+        <swiper
+          class="swiper"
+          indicator-dots=true
+          autoplay=true
+          interval=5000
         >
-          <view>
-            <image
-              lazy-load=true
-              mode="aspectFit"
-              :src="item.url"
-            ></image>
-          </view>
-        </swiper-item>
-      </swiper>
-      <button
-        class="collection-iconfont"
-        open-type="contact"
-      >
-        <i class="iconfont iconlianxikefu"></i>
-      </button>
-    </div>
-    <div class="details">
-      <view>
-        <span class="price">
-          <span class="price-sign">￥</span>{{hotGoodsList.goodsPrice}}
-          <span class="price-unit"></span>
-        </span>
-        <span class="stock-before-price">
-          <span
-            v-if="hotGoodsList.isSpecial === 1"
-            class="before-price"
-          >￥{{hotGoodsList.beforeGoodsPrice}}</span>
-          <span class="stock">库存：{{hotGoodsList.goodsStock}}</span>
-        </span>
-      </view>
-    </div>
-    <div>
-    </div>
-    <div class="store-message">
-      <p>{{hotGoodsList.goodsName}} {{hotGoodsList.goodsUnit}}</p>
-      <span>{{hotGoodsList.goodsInfo}}</span>
-    </div>
-    <div
-      class="store-videos"
-      v-if="hotGoodsList.isVideos"
-    >
-      <p>商品视频</p>
-      <div class="store-videos-video">
+          <swiper-item
+            v-for="(item,index) in hotGoodsList.swiperList"
+            :key=index
+            @click="viewSwiper(index)"
+          >
+            <view>
+              <image
+                lazy-load=true
+                mode="aspectFit"
+                :src="item.url"
+              ></image>
+            </view>
+          </swiper-item>
+        </swiper>
+        <button
+          class="collection-iconfont"
+          open-type="contact"
+        >
+          <i class="iconfont iconlianxikefu"></i>
+        </button>
+      </div>
+      <div class="details">
         <view>
-          <video
-            muted=true
-            :src="hotGoodsList.videoList[0].url"
-          ></video>
+          <span class="price">
+            <span class="price-sign">￥</span>{{hotGoodsList.goodsPrice}}
+            <span class="price-unit"></span>
+          </span>
+          <span class="stock-before-price">
+            <span
+              v-if="hotGoodsList.isSpecial === 1"
+              class="before-price"
+            >￥{{hotGoodsList.beforeGoodsPrice}}</span>
+            <span class="stock">库存：{{hotGoodsList.goodsStock}}</span>
+          </span>
         </view>
       </div>
-    </div>
-    <div class="bottom-nav">
-      <div class="bottom-nav-iconfont">
-        <div @click="commentFun">
-          <i class="iconfont iconpinglun"></i>
-          评论
-        </div>
-        <div @click="collection()">
-          <i
-            v-if="isCollection"
-            class="iconfont iconshoucang1"
-          ></i>
-          <i
-            v-if="!isCollection"
-            class="iconfont iconshoucang"
-          ></i>
-          收藏
-        </div>
-        <div>
-          <button open-type="share">
-            <i class="iconfont iconshare"></i>
-            分享
-          </button>
+      <div>
+      </div>
+      <div class="store-message">
+        <p>{{hotGoodsList.goodsName}} {{hotGoodsList.goodsUnit}}</p>
+        <span>{{hotGoodsList.goodsInfo}}</span>
+      </div>
+      <div
+        class="store-videos"
+        v-if="hotGoodsList.isVideos"
+      >
+        <p>商品视频</p>
+        <div class="store-videos-video">
+          <view>
+            <video
+              muted=true
+              :src="hotGoodsList.videoList[0].url"
+            ></video>
+          </view>
         </div>
       </div>
-      <div class="bottom-nav-button">
-        <div
-          class="add-to-cart"
-          @click="addtocartFun"
-        >加入购物车</div>
-        <div
-          class="order-now"
-          @click="ordernowFun"
-        >立即购买</div>
-      </div>
-    </div>
-    <van-popup
-      :show="isComment"
-      closeable
-      position="bottom"
-      custom-style="height: 70%"
-      @close="onCloseComment"
-      round
-    >
-      <div class="comment">
-        <span class="comment-title">评论 ( {{commentsList.length}} )</span>
-        <div class="comment-content">
-          <div
-            class="comment-null"
-            v-if="commentsList.length === 0"
-          >
-            <i class="iconfont iconno_result"></i>
-            暂时还没有商品评论，快去购买商品后评论吧！
+      <div class="bottom-nav">
+        <div class="bottom-nav-iconfont">
+          <div @click="commentFun">
+            <i class="iconfont iconpinglun"></i>
+            评论
           </div>
-          <div v-if="commentsList.length > 0">
+          <div @click="collection()">
+            <i
+              v-if="isCollection"
+              class="iconfont iconshoucang1"
+            ></i>
+            <i
+              v-if="!isCollection"
+              class="iconfont iconshoucang"
+            ></i>
+            收藏
+          </div>
+          <div>
+            <button open-type="share">
+              <i class="iconfont iconshare"></i>
+              分享
+            </button>
+          </div>
+        </div>
+        <div class="bottom-nav-button">
+          <div
+            class="add-to-cart"
+            @click="addtocartFun"
+          >加入购物车</div>
+          <div
+            class="order-now"
+            @click="ordernowFun"
+          >立即购买</div>
+        </div>
+      </div>
+      <van-popup
+        :show="isComment"
+        closeable
+        position="bottom"
+        custom-style="height: 70%"
+        @close="onCloseComment"
+        round
+      >
+        <div class="comment">
+          <span class="comment-title">评论 ( {{commentsList.length}} )</span>
+          <div class="comment-content">
             <div
-              class="comment-content-box"
-              v-for="(item,index) in commentsList"
-              :key="index"
+              class="comment-null"
+              v-if="commentsList.length === 0"
             >
-              <div class="comment-content-box-top">
-                <img :src="item.userImg" />
-                <div class="comment-content-box-top-right">
-                  <p>{{item.userName}}</p>
-                  <span>{{item.createTime}}</span>
+              <i class="iconfont iconno_result"></i>
+              暂时还没有商品评论，快去购买商品后评论吧！
+            </div>
+            <div v-if="commentsList.length > 0">
+              <div
+                class="comment-content-box"
+                v-for="(item,index) in commentsList"
+                :key="index"
+              >
+                <div class="comment-content-box-top">
+                  <img :src="item.userImg" />
+                  <div class="comment-content-box-top-right">
+                    <p>{{item.userName}}</p>
+                    <span>{{item.createTime}}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="comment-content-box-bottom">
-                {{item.comment}}
+                <div class="comment-content-box-bottom">
+                  {{item.comment}}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </van-popup>
-    <van-toast id="van-toast" />
-    <add-to-cart ref="addtocart"></add-to-cart>
-    <order-now ref="ordernow"></order-now>
-    <van-dialog id="van-dialog" />
-  </div>
+      </van-popup>
+      <van-toast id="van-toast" />
+      <add-to-cart ref="addtocart"></add-to-cart>
+      <order-now ref="ordernow"></order-now>
+      <van-dialog id="van-dialog" />
+    </div>
+  </van-skeleton>
 </template>
 
 <script>
@@ -151,6 +160,7 @@ import { getGoodsDetail } from '@/api/goods'
 import { toCollection, cancelCollection, searchCollection } from '@/api/collection'
 import { getGoodsComment } from '@/api/comment'
 import { UNENCODE, changeQuerystringDetail, formatDate } from '@/utils/function'
+import { getAdminDetail } from '@/api/admin'
 import Toast from '../../../static/vant/dist/toast/toast'
 import addToCart from '@/components/goodsDetail/addToCart'
 import orderNow from '@/components/goodsDetail/orderNow'
@@ -162,7 +172,8 @@ export default {
       isBack: false,
       isCollection: true,
       isComment: false,
-      commentsList: []
+      commentsList: [],
+      skeletonLoading: true
     }
   },
   components: {
@@ -178,6 +189,9 @@ export default {
     this.getGoodsDetailFun({ id })
   },
   onShow () {
+  },
+  onUnload () {
+    this.hotGoodsList = {} // 清除数据
   },
   onPageScroll (e) {
     if (e.scrollTop > this.GLOBAL.SCROLL_TOP) {
@@ -198,6 +212,7 @@ export default {
         if (res.data.data) {
           _this.hotGoodsList = changeQuerystringDetail(res.data.data)
           _this.searchCollectionFun()
+          this.skeletonLoading = false
         }
       }).catch(() => {
         wx.showToast({
@@ -391,31 +406,42 @@ export default {
             })
           } else {
             // session_key 未过期，并且在本生命周期一直有效
-            // wx.showToast({
-            //   title: '抱歉，本店由于突发情况暂时停业，恢复时间可查看小程序内公告或拨打电话联系商家，感谢理解！',
-            //   icon: 'none',
-            //   duration: 4000
-            // })
-
-            if (_this.hotGoodsList.goodsStatus === 2) {
-              wx.showToast({
-                title: '抱歉，该商品暂时没有货啦，具体到货日期可咨询商家。',
-                icon: 'none',
-                duration: 4000
-              })
-            } else if (_this.hotGoodsList.goodsStatus === 3) {
-              wx.showToast({
-                title: '抱歉，该商品暂时已被商家下架，具体上架日期可咨询商家。',
-                icon: 'none',
-                duration: 4000
-              })
-            } else if (_this.hotGoodsList.goodsStatus === 1) {
-              let data = {
-                hotGoodsList: _this.hotGoodsList,
-                isOrderNow: true
+            let id = 1
+            getAdminDetail('admin/getAdminDetail', { id }).then(res => {
+              if (res.data.data) {
+                if (res.data.data.business === '2') {
+                  wx.showToast({
+                    title: '抱歉，本店由于特殊原因暂时停止对外派送，恢复时间可查看小程序内公告或联系商家，感谢理解！',
+                    icon: 'none',
+                    duration: 4000
+                  })
+                } else if (_this.hotGoodsList.goodsStatus === 2) {
+                  wx.showToast({
+                    title: '抱歉，该商品暂时没有货啦，具体到货日期可咨询商家。',
+                    icon: 'none',
+                    duration: 4000
+                  })
+                } else if (_this.hotGoodsList.goodsStatus === 3) {
+                  wx.showToast({
+                    title: '抱歉，该商品暂时已被商家下架，具体上架日期可咨询商家。',
+                    icon: 'none',
+                    duration: 4000
+                  })
+                } else if (_this.hotGoodsList.goodsStatus === 1) {
+                  let data = {
+                    hotGoodsList: _this.hotGoodsList,
+                    isOrderNow: true
+                  }
+                  _this.$refs.ordernow.$emit('ordernowMethod', data)
+                }
               }
-              _this.$refs.ordernow.$emit('ordernowMethod', data)
-            }
+            }).catch(() => {
+              wx.showToast({
+                title: '网络出现问题，请稍后再试！',
+                icon: 'none',
+                duration: 2000
+              })
+            })
           }
         },
         fail () {

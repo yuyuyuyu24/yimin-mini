@@ -77,7 +77,11 @@ export default {
         pageNumber: _this.conut,
         pageSize: 10
       }
+      wx.showLoading({
+        title: '加载中'
+      })
       miniGetGoods('goods/miniGetGoods', data).then(res => {
+        wx.hideLoading()
         if (res.data.data) {
           if (res.data.data.length === 0) {
             wx.showToast({

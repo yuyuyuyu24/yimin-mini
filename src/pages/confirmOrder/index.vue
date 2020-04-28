@@ -63,7 +63,7 @@
       </van-radio-group>
     </div>
     <div class="confirmOrder-notice">
-      购买前请确保您已经阅读<span @click="toBuyerNotice">买家须知</span> , 配送时间为每天上午11:00前的订单，当天下午配送。下午5:00后的订单，第二天上午配送。提交订单即表示同意<span @click="toBuyerNotice">买家须知</span>。
+      购买前请确保您已经阅读<span @click="toBuyerNotice">买家须知</span> , 配送时间为每天上午11:00前的订单，当天下午配送。上午11:00后的订单，第二天上午配送。提交订单即表示同意<span @click="toBuyerNotice">买家须知</span>。
     </div>
     <div class="confirmOrder-submit">
       <div class="confirmOrder-submit-button">

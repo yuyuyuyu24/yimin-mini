@@ -46,7 +46,8 @@ export default {
           if (_this.alertNotice.noticeStatus === 1) {
             wx.showModal({
               title: _this.alertNotice.noticeTitle,
-              content: _this.alertNotice.noticeContent
+              content: _this.alertNotice.noticeContent,
+              showCancel: false
             })
           }
         }
@@ -63,7 +64,7 @@ export default {
 </script>
 
 <style  lang="wxss">
-@import "../static/font/iconfont.css";
+@import '../static/font/iconfont.css';
 page {
   height: 100%;
 }

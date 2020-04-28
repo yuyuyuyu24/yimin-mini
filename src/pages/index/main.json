@@ -2,6 +2,9 @@
   "navigationBarTitleText": "清真伊民肉业",
   "onReachBottomDistance": 10,
   "usingComponents": {
-    "van-dialog": "/static/vant/dist/dialog/index"
+    "van-dialog": "/static/vant/dist/dialog/index",
+    "van-tab": "/static/vant/dist/tab/index",
+    "van-tabs": "/static/vant/dist/tabs/index",
+    "van-notice-bar": "/static/vant/dist/notice-bar/index"
   }
 }

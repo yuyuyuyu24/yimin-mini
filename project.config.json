@@ -75,6 +75,13 @@
 					"pathName": "pages/orderDetails/main",
 					"query": "id=1488",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/goodsDetails/main",
+					"pathName": "pages/goodsDetails/main",
+					"query": "id=24",
+					"scene": null
 				}
 			]
 		}
