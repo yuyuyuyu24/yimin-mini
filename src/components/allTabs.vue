@@ -45,7 +45,6 @@ export default {
   },
   mounted () {
     this.allGoods = this.allGood
-    // this.miniGetGoodsFun()
   },
   onReachBottom () {
     this.miniGetGoodsFun()

@@ -182,7 +182,6 @@ export default {
         wx.hideLoading()
         if (res.data.data) {
           res.data.data.goodsNum = goodsNum
-          // _this.total += res.data.data.goodsPrice * res.data.data.goodsNum
           _this.orderList.push(changeQuerystringDetail(res.data.data))
           this.skeletonLoading = false
         }
@@ -327,9 +326,10 @@ export default {
       }
       let orderId = _this.orderData.id
       let userList = wx.getStorageSync('userMegList') || {}
+      let totalPrice = this.orderData.goodsPrice + this.orderData.deliveryMoney
       let data = {
         openid: userList.openId,
-        money: 0.01,
+        money: totalPrice,
         goodsMessage: str
       }
       pay('mini/pay', data).then(res => {

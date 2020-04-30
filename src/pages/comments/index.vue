@@ -134,7 +134,7 @@ export default {
 .comments .comments-box {
   width: 100%;
   height: auto;
-  border: 1px solid #ccc;
+  
 }
 .comments .button {
   width: 100%;

@@ -310,9 +310,10 @@ export default {
             str = str.substr(0, str.length - 1)
           }
           let orderId = res.data.data.id
+          let totalPrice = this.total + this.deliveryMoney
           let data = {
             openid: userList.openId,
-            money: 0.01,
+            money: totalPrice,
             goodsMessage: str
           }
           pay('mini/pay', data).then(res => {

@@ -176,7 +176,7 @@ export default {
 .collection .collection-box .collection-box-content img {
   width: 200rpx;
   height: 200rpx;
-  border: 1px solid #ccc;
+  
   margin-left: 20rpx;
   border-radius: 10rpx;
 }

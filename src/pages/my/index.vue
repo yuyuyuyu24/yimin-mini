@@ -74,7 +74,10 @@
       v-if="false"
       class="lag-out"
     >退出登录</div>
-    <div class="support">技术支持：<i class="iconfont iconicon"></i>wxdzy777</div>
+    <div
+      class="support"
+      @click="call"
+    >技术支持：<i class="iconfont iconicon"></i>wxdzy777</div>
     <van-dialog id="van-dialog" />
 
   </div>
@@ -184,6 +187,13 @@ export default {
         success: function (res) {
           wx.hideToast()
         }
+      })
+    },
+    // 拨打电话
+    call () {
+      wx.makePhoneCall({
+        phoneNumber: '18647604886',
+        fail () { }
       })
     }
 

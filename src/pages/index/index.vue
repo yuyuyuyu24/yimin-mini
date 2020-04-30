@@ -224,8 +224,6 @@ export default {
   mounted () {
     this.getSwiperFun()
     this.getNoticeFun()
-  },
-  onShow () {
     this.conut = 0
     this.allGood = []
     this.hotGood = []
@@ -292,13 +290,6 @@ export default {
       miniGetGoods('goods/miniGetGoods', data).then(res => {
         wx.hideLoading()
         if (res.data.data) {
-          if (res.data.data.length === 0) {
-            wx.showToast({
-              title: '商品加载完毕！',
-              icon: 'none',
-              duration: 1000
-            })
-          }
           this.allGood = this.allGood.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
@@ -318,13 +309,6 @@ export default {
       }
       querySpecialGoods('goods/querySpecialGoods', data).then(res => {
         if (res.data.data) {
-          if (res.data.data.length === 0) {
-            wx.showToast({
-              title: '商品加载完毕！',
-              icon: 'none',
-              duration: 1000
-            })
-          }
           this.specialGood = this.specialGood.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {
@@ -345,13 +329,6 @@ export default {
       }
       queryHotGoods('goods/queryHotGoods', data).then(res => {
         if (res.data.data) {
-          if (res.data.data.length === 0) {
-            wx.showToast({
-              title: '商品加载完毕！',
-              icon: 'none',
-              duration: 1000
-            })
-          }
           this.hotGood = this.hotGood.concat(changeQuerystring(res.data.data))
         }
       }).catch(() => {

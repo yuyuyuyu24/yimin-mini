@@ -555,7 +555,6 @@ export default {
   width: 180rpx;
   height: 180rpx;
   border-radius: 10rpx;
-  border: 1px solid #ccc;
   margin-right: 20rpx;
   margin-left: 20rpx;
 }
@@ -636,7 +635,7 @@ export default {
 .cart-null div {
   width: 160rpx;
   height: 70rpx;
-  border: 1px solid #ccc;
+
   background-color: #fff;
   display: flex;
   align-items: center;
@@ -712,7 +711,7 @@ export default {
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  margin-bottom: 100rpx;
+  padding-bottom: 100rpx;
 }
 .guess-love .guess-love-head {
   width: 100%;

@@ -186,7 +186,6 @@ export default {
   width: 200rpx;
   height: 200rpx;
   border-radius: 15rpx;
-  border: 1px solid #ccc;
 }
 .cart .cart-header .cart-header-right {
   width: auto;
