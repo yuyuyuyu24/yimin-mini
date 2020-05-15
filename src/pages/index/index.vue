@@ -105,7 +105,7 @@
           mode='widthFix'
           src="../../static/images/hot.png"
         ></image>
-        精选商品
+        不定量商品
       </div>
       <div @click="toNew">
         <image
@@ -494,6 +494,12 @@ export default {
     checkCurrent (index) {
       this.currentData = index
     }
+  },
+  onShareAppMessage (res) {
+    return {
+      title: '清真伊民肉业小程序欢迎您的关注！',
+      path: '/pages/index/main'
+    }
   }
 }
 </script>
@@ -573,6 +579,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-size: 32rpx;
 }
 .classification div image {
   width: 65rpx;

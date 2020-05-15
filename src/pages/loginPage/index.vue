@@ -50,8 +50,7 @@ export default {
             })
           }
         },
-        fail (err) {
-          console.log(err)
+        fail () {
           wx.showToast({
             title: '登录失败，请稍后再试2。',
             icon: 'none',
@@ -60,16 +59,7 @@ export default {
         }
       })
     },
-    getUserInfo () {
-      wx.getUserInfo({
-        success: function (res) {
-          console.log(res)
-        },
-        fail: function (err) {
-          console.log(err)
-        }
-      })
-    },
+    getUserInfo () { },
     bindGetUserInfo (e) {
       let _this = this
       if (e.mp.detail.rawData) {

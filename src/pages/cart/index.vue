@@ -451,6 +451,14 @@ export default {
                       })
                       return false
                     }
+                    if (seleteList[i].isFixed === 1) {
+                      wx.showToast({
+                        title: `抱歉，${seleteList[i].goodsName}是不定量商品。如您想要购买，请联系商家客服或拨打商家电话进行咨询`,
+                        icon: 'none',
+                        duration: 4000
+                      })
+                      return false
+                    }
                   }
                   let chuck = seleteList.every(function (value, index, array) {
                     return value.goodsStatus === 1
@@ -565,6 +573,7 @@ export default {
   width: 60%;
 }
 .cart-body .cart-body-box-content .cart-body-box-content-right p {
+  font-size: 32rpx;
   line-height: 40rpx;
 }
 .cart-body .cart-body-box-content .cart-body-box-content-right span {

@@ -122,6 +122,14 @@ export default {
         })
       } else {
         // 先循环 查看该条商品是否已存在购物车内
+        if (value.length > 10) {
+          wx.showToast({
+            title: '抱歉，加入购物车数量超出上限',
+            icon: 'none',
+            duration: 4000
+          })
+          return false
+        }
         for (let i = 0; i < value.length; i++) {
           if (_this.cartData.id === value[i].goodsId) {
             wx.showToast({

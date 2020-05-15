@@ -102,6 +102,23 @@ export async function querySpecialGoods (api, data) {
   })
 }
 
+// 小程序内查找非定量商品
+export async function queryFixedGoods (api, data) {
+  return new Promise(function (resolve, reject) {
+    wx.request({
+      url: `${config.api}/${api}`,
+      data,
+      method: 'POST',
+      success (res) {
+        resolve(res)
+      },
+      fail (err) {
+        reject(err)
+      }
+    })
+  })
+}
+
 // 小程序内根据分类显示商品
 export async function queryClassGoods (api, data) {
   return new Promise(function (resolve, reject) {

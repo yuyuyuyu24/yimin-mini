@@ -2,8 +2,8 @@
   <div class="page">
     <back-top v-if="isBack"></back-top>
     <div class="cattle-title">
-      <h2>精选商品</h2>
-      <p>好物放心购</p>
+      <h2>不定量商品</h2>
+      <p>商品不定量，保证肉品的完整，买前先咨询客服哦 ~ </p>
     </div>
     <div class="cattle-goods-box">
       <div class="cattle-goods">
@@ -39,7 +39,7 @@
 
 <script>
 import backTop from '@/components/backTop'
-import { queryHotGoods } from '@/api/goods'
+import { queryFixedGoods } from '@/api/goods'
 import { changeQuerystring, ENCODE } from '@/utils/function'
 
 export default {
@@ -63,26 +63,26 @@ export default {
   mounted () {
     this.conut = 0
     this.hotGoods = []
-    this.queryHotGoodsFun()
+    this.queryFixedGoodsFun()
   },
   onReachBottom () {
-    this.queryHotGoodsFun()
+    this.queryFixedGoodsFun()
   },
 
   methods: {
-    // 获取精选商品 接口
-    queryHotGoodsFun () {
+    // 获取不定量商品 接口
+    queryFixedGoodsFun () {
       let _this = this
       this.conut += 1
       let data = {
-        isHot: '1',
+        isFixed: 1,
         pageNumber: _this.conut,
         pageSize: 10
       }
       wx.showLoading({
         title: '加载中'
       })
-      queryHotGoods('goods/queryHotGoods', data).then(res => {
+      queryFixedGoods('goods/queryFixedGoods', data).then(res => {
         wx.hideLoading()
         if (res.data.data) {
           if (res.data.data.length === 0) {

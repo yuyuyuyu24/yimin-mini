@@ -427,6 +427,12 @@ export default {
                     icon: 'none',
                     duration: 4000
                   })
+                } else if (_this.hotGoodsList.isFixed === 1) {
+                  wx.showToast({
+                    title: '抱歉，该商品是不定量商品。如您想要购买，请联系商家客服或拨打商家电话进行咨询',
+                    icon: 'none',
+                    duration: 4000
+                  })
                 } else if (_this.hotGoodsList.goodsStatus === 1) {
                   let data = {
                     hotGoodsList: _this.hotGoodsList,
@@ -485,8 +491,8 @@ export default {
   onShareAppMessage (res) {
     let that = this
     return {
-      title: that.hotGoodsList.title,
-      path: `/pages/goodsDetails/main?id=${UNENCODE(that.$root.$mp.query.id)}`,
+      title: that.hotGoodsList.goodsName,
+      path: `/pages/goodsDetails/main?id=${that.$root.$mp.query.id}`,
       imageUrl: that.hotGoodsList.swiperList[0].url
     }
   }

@@ -73,7 +73,6 @@ export default {
     this.query = this.$root.$mp.query.search
     this.searchResGoodsList = []
     this.conut = 0
-    console.log(this.conut)
     this.searchGoodsFun()
   },
   onPageScroll (e) {
@@ -150,7 +149,6 @@ export default {
     },
     // 跳转至商品详情页面
     toDetails (item) {
-      console.log(item)
       wx.showToast({
         title: '跳转中...',
         icon: 'loading'

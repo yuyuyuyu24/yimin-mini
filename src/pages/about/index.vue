@@ -95,7 +95,6 @@ export default {
           res.data.data.head = querystring.parse(res.data.data.head)
           res.data.data.background = querystring.parse(res.data.data.background)
           _this.adminData = res.data.data
-          console.log(res.data.data.head)
           _this.headimg = res.data.data.head.url
           _this.headimgList.push(res.data.data.head.url)
           _this.backgroundImg = res.data.data.background.url

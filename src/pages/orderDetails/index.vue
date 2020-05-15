@@ -459,9 +459,7 @@ export default {
               }).then(() => {
                 wx.switchTab({
                   url: '/pages/my/main',
-                  fail (err) {
-                    console.log(err)
-                  }
+                  fail () { }
                 })
               })
             }).catch(() => {
