@@ -410,10 +410,9 @@ export default {
             getAdminDetail('admin/getAdminDetail', { id }).then(res => {
               if (res.data.data) {
                 if (res.data.data.business === '2') {
-                  wx.showToast({
-                    title: '抱歉，本店由于特殊原因暂时停止对外派送，恢复时间可查看小程序内公告或联系商家，感谢理解！',
-                    icon: 'none',
-                    duration: 4000
+                  Dialog.alert({
+                    title: '提示',
+                    message: '抱歉，本店由于特殊原因暂时停止对外派送，恢复时间可查看小程序内公告或联系商家，感谢理解！'
                   })
                 } else if (_this.hotGoodsList.goodsStatus === 2) {
                   wx.showToast({
@@ -428,10 +427,9 @@ export default {
                     duration: 4000
                   })
                 } else if (_this.hotGoodsList.isFixed === 1) {
-                  wx.showToast({
-                    title: '抱歉，该商品是不定量商品。如您想要购买，请联系商家客服或拨打商家电话进行咨询',
-                    icon: 'none',
-                    duration: 4000
+                  Dialog.alert({
+                    title: '提示',
+                    message: '抱歉，该商品是不定量商品。如您想要购买，请联系商家客服或拨打商家电话进行咨询，感谢理解！'
                   })
                 } else if (_this.hotGoodsList.goodsStatus === 1) {
                   let data = {

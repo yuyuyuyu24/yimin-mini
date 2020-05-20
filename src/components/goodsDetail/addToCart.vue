@@ -106,7 +106,7 @@ export default {
           data: cart,
           success (res) {
             wx.showToast({
-              title: '加入购物车成功',
+              title: '添加成功',
               icon: 'success',
               duration: 2000
             })
@@ -151,7 +151,7 @@ export default {
           data: cartData,
           success (res) {
             wx.showToast({
-              title: '加入购物车成功',
+              title: '添加成功',
               icon: 'success',
               duration: 2000
             })
