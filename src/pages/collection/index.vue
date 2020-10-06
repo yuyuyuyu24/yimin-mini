@@ -1,17 +1,11 @@
 <template>
   <div class="collection">
-    <div
-      class="collection-null"
-      v-if="isCollectionNull"
-    >
+    <div class="collection-null" v-if="isCollectionNull">
       <i class="iconfont iconno_result"></i>
       没有找到收藏的商品哦 ~
       <div @click="toIndex">去逛逛</div>
     </div>
-    <div
-      class="collections"
-      v-if="!isCollectionNull"
-    >
+    <div class="collections" v-if="!isCollectionNull">
       <div
         class="collection-box"
         v-for="(item,index) in collectionData"
@@ -19,11 +13,16 @@
         @click="toGoodsDetails (item)"
       >
         <div class="collection-box-content">
-          <img :src="item.coverList[0].url" />
+          <div
+            class="bg"
+            :style="{
+                  background: 'url('+item.coverList[0].url+') no-repeat center/cover'
+                }"
+          ></div>
           <div class="collection-box-content-right">
-            <p>{{item.goodsName}} {{item.goodsUnit}}</p>
+            <h3>{{item.goodsName}} {{item.goodsUnit}}</h3>
+            <p>￥ {{item.goodsPrice}}</p>
             <span>库存量： {{item.goodsStock}}</span>
-            <h3>￥ {{item.goodsPrice}}</h3>
           </div>
         </div>
       </div>
@@ -123,7 +122,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="less"scoped>
 .collection {
   width: 100%;
   height: auto;
@@ -160,7 +159,7 @@ export default {
 }
 .collection .collection-box {
   width: 100%;
-  height: 300rpx;
+  height: 230rpx;
   background-color: #fff;
   border-bottom: 10rpx solid #f4f4f4;
   display: flex;
@@ -173,46 +172,45 @@ export default {
   display: flex;
   align-items: center;
 }
-.collection .collection-box .collection-box-content img {
-  width: 200rpx;
-  height: 200rpx;
-  
+.collection .collection-box .collection-box-content .bg {
+  width: 172rpx;
+  height: 172rpx;
+  border-radius: 12rpx;
   margin-left: 20rpx;
-  border-radius: 10rpx;
 }
 .collection
   .collection-box
   .collection-box-content
   .collection-box-content-right {
   width: auto;
-  height: 200rpx;
+  height: 172rpx;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  margin-left: 40rpx;
-}
-.collection
-  .collection-box
-  .collection-box-content
-  .collection-box-content-right
-  p {
-  font-size: 18px;
-}
-.collection
-  .collection-box
-  .collection-box-content
-  .collection-box-content-right
-  span {
-  font-size: 12px;
-  color: #666;
-  padding-top: 20rpx;
-}
-.collection
-  .collection-box
-  .collection-box-content
-  .collection-box-content-right
+  justify-content: center;
+  margin-left: 20rpx;
   h3 {
-  font-size: 20px;
-  padding-top: 40rpx;
+    width: 486rpx;
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 32rpx;
+    margin-bottom: 20rpx;
+  }
+  p {
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ff443d;
+    line-height: 28rpx;
+    margin-bottom: 20rpx;
+  }
+  span {
+    font-size: 24rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 24rpx;
+  }
 }
 </style>

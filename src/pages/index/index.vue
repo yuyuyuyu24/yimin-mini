@@ -58,56 +58,56 @@
       </swiper>
     </div>
     <div class="classification">
-      <div @click="toCattle">
+      <div @click="toLinks('/pages/cattle/main')">
         <image
           mode='widthFix'
           src="../../static/images/cattle.png"
         ></image>
         牛肉
       </div>
-      <div @click="toSheep">
+      <div @click="toLinks('/pages/sheep/main')">
         <image
           mode='widthFix'
           src="../../static/images/sheep.png"
         ></image>
         羊肉
       </div>
-      <div @click="toChicken">
+      <div @click="toLinks('/pages/chicken/main')">
         <image
           mode='widthFix'
           src="../../static/images/chicken.png"
         ></image>
         鸡产品
       </div>
-      <div @click="toOther">
+      <div @click="toLinks('/pages/other/main')">
         <image
           mode='widthFix'
           src="../../static/images/other.png"
         ></image>
         其他
       </div>
-      <div @click="toAll">
+      <div @click="toLinks('/pages/all/main')">
         <image
           mode='widthFix'
           src="../../static/images/all.png"
         ></image>
         全部商品
       </div>
-      <div @click="toSpecial">
+      <div @click="toLinks('/pages/special/main')">
         <image
           mode='widthFix'
           src="../../static/images/special.png"
         ></image>
         特价商品
       </div>
-      <div @click="toHot">
+      <div @click="toLinks('/pages/hot/main')">
         <image
           mode='widthFix'
           src="../../static/images/hot.png"
         ></image>
         不定量商品
       </div>
-      <div @click="toNew">
+      <div @click="toLinks('/pages/new/main')">
         <image
           mode='widthFix'
           src="../../static/images/new.png"
@@ -395,97 +395,13 @@ export default {
       })
     },
     // 分类跳转
-    toCattle () {
+    toLinks (url) {
       wx.showToast({
         title: '跳转中...',
         icon: 'loading'
       })
       wx.navigateTo({
-        url: '/pages/cattle/main',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
-    toSheep () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/sheep/main',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
-    toChicken () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/chicken/main',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
-    toOther () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/other/main',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
-    toAll () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/all/main',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
-    toSpecial () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/special/main',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
-    toHot () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/hot/main',
-        success: function (res) {
-          wx.hideToast()
-        }
-      })
-    },
-    toNew () {
-      wx.showToast({
-        title: '跳转中...',
-        icon: 'loading'
-      })
-      wx.navigateTo({
-        url: '/pages/new/main',
+        url: url,
         success: function (res) {
           wx.hideToast()
         }
@@ -579,12 +495,16 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 32rpx;
+  font-size: 28rpx;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #333333;
+  line-height: 28rpx;
 }
 .classification div image {
   width: 65rpx;
   display: block;
-  margin-bottom: 15rpx;
+  margin-bottom: 20rpx;
 }
 .goodsTab {
   width: 100%;

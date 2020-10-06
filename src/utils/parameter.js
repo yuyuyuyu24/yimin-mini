@@ -8,8 +8,8 @@ const ADDRESS_ONE_JING = 119.0131330500
 const ADDRESS_ONE_WEI = 42.9345936300
 const ADDRESS_TWO_JING = 119.0158313500
 const ADDRESS_TWO_WEI = 42.9365337600
-const api = 'https://api.ymry.xyz:3000/api'
-// const api = 'https://localhost:3000/api'
+// const api = 'https://api.ymry.xyz:3000/api'
+const api = 'https://localhost:3000/api'
 const deliveryMoney = 5
 
 export default {

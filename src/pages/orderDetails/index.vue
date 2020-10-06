@@ -7,29 +7,37 @@
     class="van-skeleton-order"
   >
     <div class="orderDetails">
-      <div
-        class="orderDetails-head-watingPay"
-        v-if="orderData.orderStatus === '1'"
-      >
+      <div class="orderDetails-head-watingPay" v-if="orderData.orderStatus === '1'">
         <p>未支付的订单将于每天23点59分59秒关闭订单，请您合理安排时间尽快支付。</p>
       </div>
       <div
         class="orderDetails-head-waitingDeliver"
-        v-if="orderData.orderStatus === '2'"
+        v-if="orderData.orderStatus === '2' && orderData.deliveryMthods === 'delivery'"
       >
+        <h3>等待发货</h3>
         <p>商家将立刻处理您的订单，请耐心等待</p>
       </div>
       <div
+        class="orderDetails-head-waitingDeliver"
+        v-if="orderData.orderStatus === '2'  && orderData.deliveryMthods === 'self'"
+      >
+        <h3>等待自提</h3>
+        <p>请您按照约定时间自提商品，如有变动，请点击下方'致电商家'及时联系商家。</p>
+      </div>
+      <div
         class="orderDetails-head-successPay"
-        v-if="orderData.orderStatus === '3'"
+        v-if="orderData.orderStatus === '3' && orderData.deliveryMthods === 'delivery'"
       >
         <p>订单完成！商家已发货，请您耐心等待。如有疑问请点击下方'致电商家'联系商家。</p>
       </div>
-
       <div
-        class="orderDetails-head-closePay"
-        v-if="orderData.orderStatus === '4'"
-      ></div>
+        class="orderDetails-head-successPay"
+        v-if="orderData.orderStatus === '3'  && orderData.deliveryMthods === 'self'"
+      >
+        <p>自提成功！如有疑问请点击下方'致电商家'联系商家。</p>
+      </div>
+
+      <div class="orderDetails-head-closePay" v-if="orderData.orderStatus === '4'"></div>
       <div class="orderDetails-address">
         <div>
           <p>收货人：{{orderData.userName}}</p>
@@ -37,16 +45,17 @@
         </div>
         <h3>{{orderData.userAddress}}</h3>
       </div>
-      <div
-        class="orderDetails-goods"
-        v-for="(item,index) in orderList"
-        :key="index"
-      >
-        <img :src="item.coverList[0].url" />
+      <div class="orderDetails-goods" v-for="(item,index) in orderList" :key="index">
+        <div
+          class="bg"
+          :style="{
+                  background: 'url('+item.coverList[0].url+') no-repeat center/cover'
+                }"
+        ></div>
         <div class="orderDetails-goods-right">
-          <p>{{item.goodsName}} {{item.goodsUnit}}</p>
+          <h3>{{item.goodsName}} {{item.goodsUnit}}</h3>
+          <p>￥ {{item.goodsPrice}}</p>
           <span>数量 × {{item.goodsNum}}</span>
-          <h3>￥ {{item.goodsPrice}}</h3>
         </div>
         <div
           @click="toComment(index)"
@@ -58,55 +67,50 @@
         <p>总计：</p>
         <span>￥ {{orderData.goodsPrice+orderData.deliveryMoney}} (商品总金额 {{orderData.goodsPrice}}+{{orderData.deliveryMoney}}元配送费)</span>
       </div>
-      <div
-        class="orderDetails-remarks"
-        v-if="orderData.remarks"
-      >
+      <div class="orderDetails-remarks" v-if="orderData.remarks">
         <p>留言：</p>
         <span>{{orderData.remarks}}</span>
       </div>
       <div class="orderDetails-message">
         <div>
-          <p>订单编号:</p>
-          <span>{{orderData.orderNumber}}<span
+          <p>订单编号</p>
+          <span>
+            {{orderData.orderNumber}}
+            <span
               class="copyButton"
               @click="copyOrderNumber(orderData.orderNumber)"
-            >复制</span></span>
+            >复制</span>
+          </span>
         </div>
         <div>
-          <p>创建时间:</p>
+          <p>创建时间</p>
           <span>{{orderData.createdTime}}</span>
         </div>
         <div>
-          <p>配送方式:</p>
-          <span>{{orderData.deliveryMthods}}</span>
+          <p>配送方式</p>
+          <span>{{orderData.deliveryMthods === 'delivery'?'专员配送':'自提'}}</span>
         </div>
       </div>
+      <div class="shop-location" v-if="orderData.deliveryMthods === 'self'">
+        <van-cell title="查看自提商家位置" @click="checkAddressOne">
+          <van-icon slot="right-icon" name="location-o" class="custom-icon" />
+        </van-cell>
+      </div>
+
       <div class="orderDetails-handle">
-        <div
-          class="orderDetails-listen"
-          v-if="false"
-        >申请售后</div>
-        <div
-          class="orderDetails-listen"
-          @click="deleteOrders"
-        >删除订单</div>
+        <div class="orderDetails-listen" v-if="false">申请售后</div>
+        <div class="orderDetails-listen" @click="deleteOrders">删除订单</div>
         <div
           class="orderDetails-closeOrder"
           v-if="orderData.orderStatus === '1'"
           @click="closeOrders"
         >取消订单</div>
-        <div
-          class="orderDetails-pay"
-          v-if="orderData.orderStatus === '1'"
-          @click="pay"
-        >立即支付</div>
+        <div class="orderDetails-pay" v-if="orderData.orderStatus === '1'" @click="pay">立即支付</div>
         <div
           class="orderDetails-call"
           v-if="orderData.orderStatus === '2' || orderData.orderStatus === '3'"
           @click="callShop"
         >致电商家</div>
-
       </div>
       <van-dialog id="van-dialog" />
     </div>
@@ -152,17 +156,19 @@ export default {
         if (res.data.data) {
           res.data.data.createdTime = formatDate(Number(res.data.data.createdTime))
           res.data.data.goodsInfo = JSON.parse(res.data.data.goodsInfo)
-          if (res.data.data.deliveryMthods === 'delivery') {
-            res.data.data.deliveryMthods = '专员配送'
-          } else {
-            res.data.data.deliveryMthods = '自提'
-          }
+
           _this.orderData = res.data.data
           for (let i = 0; i < _this.orderData.goodsInfo.length; i++) {
             let id = _this.orderData.goodsInfo[i].id
             let goodsNum = _this.orderData.goodsInfo[i].num
             _this.getGoodsDetailFun({ id }, goodsNum)
           }
+        } else {
+          wx.showToast({
+            title: '网络出现问题，请稍后再试！',
+            icon: 'none',
+            duration: 2000
+          })
         }
       }).catch(() => {
         wx.showToast({
@@ -505,12 +511,61 @@ export default {
           duration: 2000
         })
       })
+    },
+    // 查看新华店
+    checkAddressOne () {
+      let that = this
+      that.getLocation()
+      wx.getLocation({
+        type: 'gcj02',
+        success: function (res) {
+          wx.openLocation({
+            latitude: that.GLOBAL.ADDRESS_ONE_WEI, // 要去的纬度-地址
+            longitude: that.GLOBAL.ADDRESS_ONE_JING, // 要去的经度-地址
+            name: '新华店',
+            address: that.GLOBAL.ADDRESS_ONE
+          })
+        }
+      })
+    },
+    // 拒绝授权方法
+    getLocation () {
+      wx.getSetting({
+        success (res) {
+          if (!res.authSetting['scope.userLocation']) {
+            wx.authorize({
+              scope: 'scope.userLocation',
+              fail () {
+                wx.hideLoading()
+                wx.showModal({
+                  title: '温馨提示',
+                  content: '您已拒绝授权，是否去设置打开？',
+                  confirmText: '确认',
+                  cancelText: '取消',
+                  success: function (res) {
+                    if (res.confirm) {
+                      wx.openSetting({
+                        success: (res) => {
+                          res.authSetting = {
+                            'scope.userLocation': true
+                          }
+                        }
+                      })
+                    }
+                  }
+                })
+              }
+            })
+          }
+        }
+      })
     }
+
   }
 
 }
 </script>
-<style scoped>
+<style lang="less"scoped>
 .orderDetails {
   width: 100%;
   height: auto;
@@ -553,16 +608,24 @@ export default {
 .orderDetails-head-waitingDeliver {
   width: 100%;
   height: 200rpx;
-  background: url('http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GKeYqhosuSw3SRbtcfA.VaiXt1eXBlSUo7LbezD3Af6o.Lc7PY0jxgwQfJ5ddcF8oahi3WKM4kLPUG3vDEnC8TE!/b&bo=5gGHAOYBhwADFzI!&rf=viewer_4&t=5')
+  background: url('http://m.qpic.cn/psc?/V12Mh4N601guT1/bqQfVz5yrrGYSXMvKr.cqeNXWf1dSnkHasXqfZDceEMIitI94SwFJ9IodHBW4cyAJpfMdXiFxPbtmL*0nNzb48XbiHBhKqxmEMH23zjC.rs!/b&bo=5gGHAOYBhwADByI!&rf=viewer_4')
     no-repeat;
   background-size: 100% 100%;
-}
-.orderDetails-head-waitingDeliver p {
-  position: absolute;
-  font-size: 12px;
-  color: #fff;
-  left: 33rpx;
-  top: 110rpx;
+  h3 {
+    position: absolute;
+    font-size: 34rpx;
+    left: 33rpx;
+    top: 40rpx;
+    color: #fff;
+  }
+  p {
+    position: absolute;
+    font-size: 12px;
+    color: #fff;
+    left: 33rpx;
+    top: 110rpx;
+    width: 60%;
+  }
 }
 .orderDetails-head-closePay {
   width: 100%;
@@ -590,11 +653,11 @@ export default {
 }
 .orderDetails-goods {
   width: auto;
-  height: 280rpx;
+  height: 230rpx;
   display: flex;
   padding: 0 40rpx;
   align-items: center;
-  border-bottom: 10rpx solid #f4f4f4;
+  border-bottom: 4rpx dashed #f4f4f4;
   position: relative;
 }
 .orderDetails-goods .orderDetails-comment {
@@ -607,24 +670,42 @@ export default {
   position: absolute;
   right: 40rpx;
 }
-.orderDetails-goods img {
-  width: 200rpx;
-  height: 200rpx;
-  border: 1px solid #f4f4f4;
+.orderDetails-goods .bg {
+  width: 172rpx;
+  height: 172rpx;
+  border-radius: 12rpx;
 }
 .orderDetails-goods .orderDetails-goods-right {
+  width: auto;
+  height: 172rpx;
   display: flex;
-  height: 200rpx;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   margin-left: 20rpx;
-}
-.orderDetails-goods .orderDetails-goods-right span {
-  font-size: 14px;
-  color: #888;
-}
-.orderDetails-goods .orderDetails-goods-right h3 {
-  font-size: 18px;
+  h3 {
+    width: 486rpx;
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 32rpx;
+    margin-bottom: 20rpx;
+  }
+  p {
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ff443d;
+    line-height: 28rpx;
+    margin-bottom: 20rpx;
+  }
+  span {
+    font-size: 24rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 24rpx;
+  }
 }
 .orderDetails-total {
   width: auto;
@@ -650,6 +731,13 @@ export default {
 .orderDetails-remarks span {
   width: 80%;
 }
+.shop-location {
+  width: auto;
+  height: auto;
+  font-size: 28rpx;
+  margin-bottom: 120rpx;
+}
+
 .orderDetails-message {
   width: auto;
   height: 240rpx;
@@ -660,7 +748,6 @@ export default {
   border-bottom: 10rpx solid #f4f4f4;
   font-size: 14px;
   color: #666;
-  margin-bottom: 130rpx;
   justify-content: space-around;
 }
 .orderDetails-message div {

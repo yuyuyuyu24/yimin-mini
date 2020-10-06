@@ -1,20 +1,14 @@
 <template>
   <div class="page">
     <back-top v-if="isBack"></back-top>
-    <div
-      class="search-box"
-      @click="toSearch"
-    >
+    <div class="search-box" @click="toSearch">
       <div class="search">
         <i class="iconfont iconsousuo-copy"></i>
         <p>{{query}}</p>
       </div>
     </div>
     <div class="search-res-box">
-      <view
-        class="no-search-res"
-        v-if="searchResGoodsList.length === 0"
-      >
+      <view class="no-search-res" v-if="searchResGoodsList.length === 0">
         <i class="iconfont iconno_result"></i>
         <h2>暂时没有找到商品</h2>
       </view>
@@ -25,24 +19,19 @@
           :key="index"
           @click="toDetails(item)"
         >
+          <div class="yishouqing" v-if="item.goodsStatus === 2">已 售 罄</div>
           <div
-            class="yishouqing"
-            v-if="item.goodsStatus === 2"
-          >已 售 罄
-          </div>
-          <image
-            lazy-load=true
-            mode="widthFile"
-            :src='item.coverList.url'
-          ></image>
+            class="bg"
+            :style="{
+                  background: 'url('+item.coverList.url+') no-repeat center/cover'
+                }"
+          ></div>
           <p>{{item.goodsName}}</p>
-          <span class="price"><span class="price-sign">￥</span>{{item.goodsPrice}}</span>
-          <div
-            v-if="item.isSpecial === 1"
-            class="hot-goods-div-message-right"
-          >
-            特价
-          </div>
+          <span class="price">
+            <span class="price-sign">￥</span>
+            {{item.goodsPrice}}
+          </span>
+          <div v-if="item.isSpecial === 1" class="hot-goods-div-message-right">特价</div>
         </div>
       </div>
     </div>
@@ -212,20 +201,19 @@ export default {
   font-size: 16px;
 }
 .search-res {
-  width: 700rpx;
-  height: auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
-  margin: 20rpx auto;
+  margin: 0 auto;
 }
 .search-res-goods {
-  width: 340rpx;
-  height: 400rpx;
-  border-radius: 8rpx;
-  margin: 0 10rpx 10rpx 0;
+  width: 330rpx;
+  border-radius: 6rpx;
+  margin: 0 30rpx 30rpx 30rpx;
   box-shadow: darkgrey 0 0 30rpx -10rpx;
   position: relative;
+}
+.search-res-goods:nth-child(even) {
+  margin: 0 0 30rpx 0;
 }
 .search-res-goods .yishouqing {
   position: absolute;
@@ -239,11 +227,11 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.search-res-goods image {
+.search-res-goods .bg {
   width: 100%;
-  height: 70%;
-  border-top-left-radius: 8rpx;
-  border-top-right-radius: 8rpx;
+  height: 260rpx;
+  border-top-left-radius: 6rpx;
+  border-top-right-radius: 6rpx;
 }
 .search-res-goods .hot-goods-div-message-right {
   width: 80rpx;
@@ -259,25 +247,28 @@ export default {
 }
 
 .search-res-goods p {
-  font-size: 16px;
-  font-weight: 600;
-  padding-left: 20rpx;
+  font-size: 28rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
+  line-height: 28rpx;
+  padding: 20rpx 0 0 20rpx;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .search-res-goods .price {
-  font-size: 20px;
-  padding-left: 20rpx;
-  font-weight: 600;
-  color: #ff5f5f;
+  font-size: 32rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #ff443d;
+  line-height: 32rpx;
+  padding: 20rpx 0 20rpx 0;
+  display: block;
 }
 .search-res-goods .price-sign {
-  font-size: 14px;
+  font-size: 12px;
+  padding-left: 20rpx;
   color: #ff5f5f;
-}
-.search-res-goods .price-unit {
-  font-size: 14px;
-  color: #222;
 }
 </style>

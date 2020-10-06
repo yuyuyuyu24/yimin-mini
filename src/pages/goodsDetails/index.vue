@@ -10,65 +10,54 @@
     <div class="goods-details-page">
       <back-top v-if="false"></back-top>
       <div class="swiper-box">
-        <swiper
-          class="swiper"
-          indicator-dots=true
-          autoplay=true
-          interval=5000
-        >
+        <swiper class="swiper" autoplay="true" interval="5000">
           <swiper-item
             v-for="(item,index) in hotGoodsList.swiperList"
-            :key=index
+            :key="index"
             @click="viewSwiper(index)"
           >
             <view>
-              <image
-                lazy-load=true
-                mode="aspectFit"
-                :src="item.url"
-              ></image>
+              <div
+                class="bg"
+                :style="{
+                  background: 'url('+item.url+') no-repeat center/cover'
+                }"
+              ></div>
             </view>
           </swiper-item>
         </swiper>
-        <button
-          class="collection-iconfont"
-          open-type="contact"
-        >
+        <button class="collection-iconfont" open-type="contact">
           <i class="iconfont iconlianxikefu"></i>
         </button>
       </div>
-      <div class="details">
-        <view>
-          <span class="price">
-            <span class="price-sign">￥</span>{{hotGoodsList.goodsPrice}}
-            <span class="price-unit"></span>
-          </span>
-          <span class="stock-before-price">
-            <span
-              v-if="hotGoodsList.isSpecial === 1"
-              class="before-price"
-            >￥{{hotGoodsList.beforeGoodsPrice}}</span>
-            <span class="stock">库存：{{hotGoodsList.goodsStock}}</span>
-          </span>
-        </view>
-      </div>
-      <div>
-      </div>
       <div class="store-message">
-        <p>{{hotGoodsList.goodsName}} {{hotGoodsList.goodsUnit}}</p>
-        <span>{{hotGoodsList.goodsInfo}}</span>
+        <h3>{{hotGoodsList.goodsName}}</h3>
+        <div class="price">
+          <p class="price-sign">￥</p>
+          <p class="price-num">{{hotGoodsList.goodsPrice}}</p>
+          <p
+            v-if="hotGoodsList.isSpecial === 1"
+            class="before-price"
+          >￥{{hotGoodsList.beforeGoodsPrice}}</p>
+        </div>
+        <span class="stock">库存：{{hotGoodsList.goodsStock}}</span>
       </div>
-      <div
-        class="store-videos"
-        v-if="hotGoodsList.isVideos"
-      >
-        <p>商品视频</p>
+      <div class="store-parameter">
+        <h3>商品参数</h3>
+        <div>
+          <span>商品简介</span>
+          <p>{{hotGoodsList.goodsInfo}}</p>
+        </div>
+        <div>
+          <span>商品规格</span>
+          <p>{{hotGoodsList.goodsUnit}}</p>
+        </div>
+      </div>
+      <div class="store-videos" v-if="hotGoodsList.isVideos">
+        <p>商品实拍</p>
         <div class="store-videos-video">
           <view>
-            <video
-              muted=true
-              :src="hotGoodsList.videoList[0].url"
-            ></video>
+            <video muted="true" :src="hotGoodsList.videoList[0].url"></video>
           </view>
         </div>
       </div>
@@ -79,14 +68,8 @@
             评论
           </div>
           <div @click="collection()">
-            <i
-              v-if="isCollection"
-              class="iconfont iconshoucang1"
-            ></i>
-            <i
-              v-if="!isCollection"
-              class="iconfont iconshoucang"
-            ></i>
+            <i v-if="isCollection" class="iconfont iconshoucang1"></i>
+            <i v-if="!isCollection" class="iconfont iconshoucang"></i>
             收藏
           </div>
           <div>
@@ -97,14 +80,8 @@
           </div>
         </div>
         <div class="bottom-nav-button">
-          <div
-            class="add-to-cart"
-            @click="addtocartFun"
-          >加入购物车</div>
-          <div
-            class="order-now"
-            @click="ordernowFun"
-          >立即购买</div>
+          <div class="add-to-cart" @click="addtocartFun">加入购物车</div>
+          <div class="order-now" @click="ordernowFun">立即购买</div>
         </div>
       </div>
       <van-popup
@@ -118,19 +95,12 @@
         <div class="comment">
           <span class="comment-title">评论 ( {{commentsList.length}} )</span>
           <div class="comment-content">
-            <div
-              class="comment-null"
-              v-if="commentsList.length === 0"
-            >
+            <div class="comment-null" v-if="commentsList.length === 0">
               <i class="iconfont iconno_result"></i>
               暂时还没有商品评论，快去购买商品后评论吧！
             </div>
             <div v-if="commentsList.length > 0">
-              <div
-                class="comment-content-box"
-                v-for="(item,index) in commentsList"
-                :key="index"
-              >
+              <div class="comment-content-box" v-for="(item,index) in commentsList" :key="index">
                 <div class="comment-content-box-top">
                   <img :src="item.userImg" />
                   <div class="comment-content-box-top-right">
@@ -138,9 +108,7 @@
                     <span>{{item.createTime}}</span>
                   </div>
                 </div>
-                <div class="comment-content-box-bottom">
-                  {{item.comment}}
-                </div>
+                <div class="comment-content-box-bottom">{{item.comment}}</div>
               </div>
             </div>
           </div>
@@ -497,7 +465,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .goods-details-page {
   height: 100%;
   background-color: #f4f4f4;
@@ -512,7 +480,7 @@ export default {
   width: 100%;
   height: 700rpx;
 }
-.swiper-box .swiper image {
+.swiper-box .swiper .bg {
   width: 100%;
   height: 700rpx;
 }
@@ -541,9 +509,6 @@ export default {
   justify-content: center;
   flex-direction: column;
   background-color: #fff;
-  background: url('http://m.qpic.cn/psc?/V12Mh4N601guT1/YWvjNfAyIVey1fwA2tD8GB2CP3utt1KPLGkcXJkfXfRtdTifa3XqQQLyRyeiCUeL05CISxCOzVuKWNM4I5bW64o2r5d*Z9EAxMxqzzsvUBY!/b&bo=owJpAKMCaQADFzI!&rf=viewer_4&t=5')
-    no-repeat;
-  background-size: 100% 100%;
   padding: 0 20rpx;
 }
 .details view {
@@ -565,15 +530,15 @@ export default {
   margin-left: 16rpx;
 }
 .details .stock-before-price .before-price {
-  color: #fff;
+  color: #333;
   text-decoration: line-through;
 }
 .details .stock-before-price .stock {
-  color: #fff;
+  color: #333;
 }
 .details .price {
   font-size: 40px;
-  color: #fff;
+  color: #333;
   font-weight: 500;
 }
 .details .price-sign {
@@ -586,33 +551,110 @@ export default {
   font-weight: 500;
 }
 .store-message {
-  background-color: #fff;
   width: 100%;
+  background: #fff;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 670rpx;
+  border-radius: 32rpx 32rpx 0px 0px;
+  h3 {
+    font-size: 36rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 36rpx;
+    margin: 30rpx 0 0 30rpx;
+    display: flex;
+    align-items: flex-end;
+    p {
+      font-size: 24rpx;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #333333;
+      line-height: 24rpx;
+    }
+  }
+  .price {
+    display: flex;
+    align-items: flex-end;
+    margin: 20rpx 0 0 30rpx;
+    .price-sign {
+      font-size: 24rpx;
+      color: #ff5f5f;
+    }
+    .price-num {
+      font-size: 36rpx;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #ff443d;
+      line-height: 36rpx;
+    }
+
+    .before-price {
+      font-size: 24rpx;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #333333;
+      line-height: 24rpx;
+      text-decoration: line-through;
+      margin-left: 8rpx;
+    }
+  }
+  .stock {
+    margin: 20rpx 0 20rpx 30rpx;
+    font-size: 20rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 20rpx;
+    display: block;
+  }
+}
+.store-parameter {
   height: auto;
-}
-.store-message p {
-  font-size: 18px;
-  padding: 20rpx 40rpx;
-}
-.store-message span {
-  font-size: 16px;
-  margin: 0 20rpx;
-  display: block;
-  padding: 0rpx 0 40rpx 20rpx;
-  line-height: 50rpx;
-  color: #666;
+  background: #fff;
+  padding-left: 30rpx;
+  overflow: hidden;
+  border-top: 16rpx solid #f7f8fa;
+  padding-bottom: 16rpx;
+  margin-top: 150rpx;
+  h3 {
+    font-size: 32rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 32rpx;
+    margin-top: 30rpx;
+  }
+  div {
+    margin-top: 20rpx;
+    display: flex;
+    font-size: 24rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #666666;
+    line-height: 24rpx;
+    p {
+      width: 538rpx;
+      margin-left: 40rpx;
+    }
+  }
 }
 .store-videos {
-  margin-top: 40rpx;
   background-color: #fff;
   width: 100%;
   height: auto;
   margin-bottom: 120rpx;
+  border-top: 16rpx solid #f7f8fa;
 }
 .store-videos p {
-  font-size: 18px;
-  padding: 35rpx 0;
-  text-align: center;
+  font-size: 32rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
+  line-height: 32rpx;
+  margin: 30rpx 0 20rpx 30rpx;
 }
 .store-videos span {
   font-size: 16px;

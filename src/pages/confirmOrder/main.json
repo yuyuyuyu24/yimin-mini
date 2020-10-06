@@ -6,6 +6,10 @@
     "van-radio": "/static/vant/dist/radio/index",
     "van-radio-group": "/static/vant/dist/radio-group/index",
     "van-field": "/static/vant/dist/field/index",
-    "van-dialog": "/static/vant/dist/dialog/index"
+    "van-dialog": "/static/vant/dist/dialog/index",
+    "van-popup": "/static/vant/dist/popup/index",
+    "van-cell": "/static/vant/dist/cell/index",
+    "van-datetime-picker": "/static/vant/dist/datetime-picker/index",
+    "van-icon": "/static/vant/dist/icon/index"
   }
 }

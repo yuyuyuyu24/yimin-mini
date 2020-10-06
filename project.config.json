@@ -3,19 +3,29 @@
 	"setting": {
 		"urlCheck": false,
 		"es6": true,
+		"enhance": false,
 		"postcss": true,
+		"preloadBackgroundData": false,
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
+		"nodeModules": false,
 		"autoAudits": false,
+		"showShadowRootInWxmlPanel": true,
+		"scopeDataCheck": false,
+		"uglifyFileName": false,
 		"checkInvalidKey": true,
 		"checkSiteMap": true,
 		"uploadWithSourceMap": true,
+		"compileHotReLoad": false,
 		"babelSetting": {
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		}
+		},
+		"useIsolateContext": true,
+		"useCompilerModule": false,
+		"userConfirmedUseCompilerModuleSwitch": false
 	},
 	"miniprogramRoot": "dist/wx/",
 	"compileType": "miniprogram",
@@ -66,20 +76,34 @@
 					"id": 2,
 					"name": "pages/confirmOrder/main",
 					"pathName": "pages/confirmOrder/main",
-					"query": "data=[{\"id\":42,\"num\":1},{\"id\":50,\"num\":2}]",
+					"query": "data=[{\"id\":1,\"num\":1}]",
 					"scene": null
 				},
 				{
 					"id": 3,
 					"name": "pages/orderDetails/main",
 					"pathName": "pages/orderDetails/main",
-					"query": "id=1488",
+					"query": "id=312",
+					"scene": null
+				},
+				{
+					"id": 4,
+					"name": "pages/goodsDetails/main",
+					"pathName": "pages/goodsDetails/main",
+					"query": "id=24",
 					"scene": null
 				},
 				{
 					"id": -1,
-					"name": "pages/goodsDetails/main",
-					"pathName": "pages/goodsDetails/main",
+					"name": "pages/order/main",
+					"pathName": "pages/order/main",
+					"query": "data=[{\"id\":1,\"num\":1}]",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/collection/main",
+					"pathName": "pages/collection/main",
 					"query": "id=24",
 					"scene": null
 				}

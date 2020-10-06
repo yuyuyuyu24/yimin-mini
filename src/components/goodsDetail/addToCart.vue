@@ -9,36 +9,31 @@
     <div class="cart">
       <span class="cart-title">加入购物车</span>
       <div class="cart-header">
-        <img
-          :src="cartData.coverList[0].url"
+        <div
+          class="bg"
           v-if="cartData.coverList"
-        />
+          :style="{
+                  background: 'url('+cartData.coverList[0].url+') no-repeat center/cover'
+                }"
+        ></div>
         <div class="cart-header-right">
+          <h3>{{cartData.goodsName}}</h3>
           <p>￥{{cartData.goodsPrice}}</p>
-          <span>库存 {{cartData.goodsStock}} </span>
+          <span>库存 {{cartData.goodsStock}}</span>
         </div>
       </div>
       <div class="cart-center">
-        购买数量
+        <p>购买数量</p>
         <view class="stepper">
           <!-- 减号 -->
-          <text
-            :class="minusStatus"
-            @click="bindMinus"
-          >-</text>
+          <text :class="minusStatus" @click="bindMinus">-</text>
           <!-- 数值 -->
           <text class="input">{{num}}</text>
           <!-- 加号 -->
-          <text
-            class="normal"
-            @click="bindPlus"
-          >+</text>
+          <text class="normal" @click="bindPlus">+</text>
         </view>
       </div>
-      <div
-        class="cart-footer"
-        @click="addCartFun"
-      >加入购物车</div>
+      <div class="cart-footer" @click="addCartFun">加入购物车</div>
     </div>
   </van-popup>
 </template>
@@ -170,7 +165,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="less" scoped>
 .cart {
   width: auto;
   height: 100%;
@@ -190,25 +185,42 @@ export default {
   margin: 20rpx;
   align-items: center;
 }
-.cart .cart-header img {
-  width: 200rpx;
-  height: 200rpx;
-  border-radius: 15rpx;
+.cart .cart-header .bg {
+  width: 172rpx;
+  height: 172rpx;
+  border-radius: 12rpx;
 }
 .cart .cart-header .cart-header-right {
   width: auto;
-  height: 100%;
+  height: 172rpx;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 15px;
-}
-.cart .cart-header .cart-header-right p {
-  font-size: 24px;
-  padding-bottom: 20px;
-}
-.cart .cart-header .cart-header-right span {
-  color: #888;
+  margin-left: 20rpx;
+  h3 {
+    width: 486rpx;
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 32rpx;
+    margin-bottom: 20rpx;
+  }
+  p {
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ff443d;
+    line-height: 28rpx;
+    margin-bottom: 20rpx;
+  }
+  span {
+    font-size: 24rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 24rpx;
+  }
 }
 
 .cart .cart-center {
@@ -216,6 +228,14 @@ export default {
   height: 40%;
   display: flex;
   justify-content: space-between;
+  p {
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 28rpx;
+    margin-top: 16rpx;
+  }
 }
 .cart .cart-footer {
   width: 90%;

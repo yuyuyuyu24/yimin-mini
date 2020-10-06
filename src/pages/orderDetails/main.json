@@ -4,6 +4,8 @@
   "navigationBarTextStyle": "black",
   "usingComponents": {
     "van-dialog": "/static/vant/dist/dialog/index",
-    "van-skeleton": "/static/vant/dist/skeleton/index"
+    "van-skeleton": "/static/vant/dist/skeleton/index",
+    "van-cell": "/static/vant/dist/cell/index",
+    "van-icon": "/static/vant/dist/icon/index"
   }
 }

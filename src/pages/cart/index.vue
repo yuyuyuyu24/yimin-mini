@@ -6,88 +6,59 @@
         伊民清真肉业实体店发货 品质保证
       </div>
       <div class="cart-body-box-manage">
-        <p>共 {{cartData.length}} 个宝贝</p>
-        <span
-          @click="manage"
-          v-if="!isDelete"
-        >管理</span>
-        <span
-          @click="manage"
-          v-if="isDelete"
-        >完成</span>
+        <p>共 {{ cartData.length }} 个宝贝</p>
+        <span @click="manage" v-if="!isDelete">管理</span>
+        <span @click="manage" v-if="isDelete">完成</span>
       </div>
     </div>
-    <div
-      v-if="isCartNull"
-      class="cart-null"
-    >
+    <div v-if="isCartNull" class="cart-null">
       <img src="/static/images/cartnull.jpg" />
       <p>购物车竟然是空的</p>
       <span>再忙，也要记得买点什么犒劳自己~</span>
       <div @click="toIndex">去逛逛</div>
     </div>
     <div v-if="!isCartNull">
-
-      <div
-        class="cart-body-box-content"
-        v-for="(item,index) in cartData"
-        :key="index"
-      >
+      <div class="cart-body-box-content" v-for="(item, index) in cartData" :key="index">
         <div class="van-checkbox">
-          <van-checkbox
-            class="vancheckbox"
-            :value="item.selete"
-            @click="checkboxOnChange(index)"
-          ></van-checkbox>
+          <van-checkbox class="vancheckbox" :value="item.selete" @click="checkboxOnChange(index)"></van-checkbox>
         </div>
-        <img
-          :src="item.coverList[0].url"
+        <div
+          class="bg"
           @click="toGoodsDetails(item)"
-        />
+          :style="{
+            background:
+              'url(' + item.coverList[0].url + ') no-repeat center/cover',
+          }"
+        ></div>
         <div class="cart-body-box-content-right">
-          <p>{{item.goodsName}} {{item.goodsUnit}}</p>
-          <span>库存 {{item.goodsStock}} </span>
+          <p>{{ item.goodsName }} {{ item.goodsUnit }}</p>
+          <span>库存 {{ item.goodsStock }}</span>
           <div class="cart-body-box-content-right-bottom">
-            <h3>￥ {{item.goodsPrice}}</h3>
+            <h3>￥{{ item.goodsPrice }}</h3>
             <view class="stepper">
               <!-- 减号 -->
-              <text
-                :class="minusStatus"
-                @click="bindMinus(index)"
-              >-</text>
+              <text :class="minusStatus" @click="bindMinus(index)">-</text>
               <!-- 数值 -->
-              <text class="input">{{item.goodsNum}}</text>
+              <text class="input">{{ item.goodsNum }}</text>
               <!-- 加号 -->
-              <text
-                class="normal"
-                @click="bindPlus(index)"
-              >+</text>
+              <text class="normal" @click="bindPlus(index)">+</text>
             </view>
           </div>
         </div>
       </div>
 
       <div class="to-settlement">
-        <div
-          class="to-settlement-checkbox"
-          @click="allChecked"
-        >
-          全选
-        </div>
+        <div class="to-settlement-checkbox" @click="allChecked">全选</div>
         <div class="to-settlement-price">
-          <p>合计: <span>￥ {{total}}</span></p>
+          <p>
+            合计:
+            <span>￥{{ total }}</span>
+          </p>
         </div>
-        <div
-          v-if="!isDelete"
-          class="to-settlement-button"
-        >
+        <div v-if="!isDelete" class="to-settlement-button">
           <span @click="toConfirmOrder">去结算</span>
         </div>
-        <div
-          v-if="isDelete"
-          class="to-settlement-delete"
-          @click="removeCart"
-        >
+        <div v-if="isDelete" class="to-settlement-delete" @click="removeCart">
           <span>删除</span>
         </div>
       </div>
@@ -102,39 +73,38 @@
         <div class="cattle-goods">
           <div
             class="cattle-goods-div"
-            v-for="(item,index) in randomList"
+            v-for="(item, index) in randomList"
             :key="index"
             @click="toDetails(item)"
           >
+            <div class="yishouqing" v-if="item.goodsStatus === 2">已 售 罄</div>
             <div
-              class="yishouqing"
-              v-if="item.goodsStatus === 2"
-            >已 售 罄
-            </div>
-            <image
-              lazy-load=true
-              mode="widthFile"
-              :src='item.coverList.url'
-            ></image>
-            <p>{{item.goodsName}}</p>
-            <span class="price"><span class="price-sign">￥</span>{{item.goodsPrice}}</span>
-            <div
-              v-if="item.isSpecial === 1"
-              class="hot-goods-div-message-right"
-            >
-              特价
-            </div>
+              class="bg"
+              :style="{
+                background:
+                  'url(' + item.coverList.url + ') no-repeat center/cover',
+              }"
+            ></div>
+            <p>{{ item.goodsName }}</p>
+            <span class="price">
+              <span class="price-sign">￥</span>
+              {{ item.goodsPrice }}
+            </span>
+            <div v-if="item.isSpecial === 1" class="hot-goods-div-message-right">特价</div>
           </div>
         </div>
       </div>
     </div>
     <van-dialog id="van-dialog" />
-
   </div>
 </template>
 <script>
 import { getGoodsDetail, randomGoods } from '@/api/goods'
-import { changeQuerystringDetail, changeQuerystring, ENCODE } from '@/utils/function'
+import {
+  changeQuerystringDetail,
+  changeQuerystring,
+  ENCODE
+} from '@/utils/function'
 import { getAdminDetail } from '@/api/admin'
 import Dialog from '../../../static/vant/dist/dialog/dialog'
 
@@ -227,20 +197,22 @@ export default {
       wx.showLoading({
         title: '加载中'
       })
-      getGoodsDetail('goods/getGoodsDetail', id).then(res => {
-        wx.hideLoading()
-        if (res.data.data) {
-          res.data.data.goodsNum = goodsNum
-          res.data.data.selete = false
-          _this.cartData.push(changeQuerystringDetail(res.data.data))
-        }
-      }).catch(() => {
-        wx.showToast({
-          title: '网络出现问题，请稍后再试！',
-          icon: 'none',
-          duration: 2000
+      getGoodsDetail('goods/getGoodsDetail', id)
+        .then((res) => {
+          wx.hideLoading()
+          if (res.data.data) {
+            res.data.data.goodsNum = goodsNum
+            res.data.data.selete = false
+            _this.cartData.push(changeQuerystringDetail(res.data.data))
+          }
         })
-      })
+        .catch(() => {
+          wx.showToast({
+            title: '网络出现问题，请稍后再试！',
+            icon: 'none',
+            duration: 2000
+          })
+        })
     },
     // 小程序内随机显示n条数据 在猜你喜欢中使用
     randomGoodsFun (number) {
@@ -248,18 +220,20 @@ export default {
       wx.showLoading({
         title: '加载中'
       })
-      randomGoods('goods/randomGoods', number).then(res => {
-        wx.hideLoading()
-        if (res.data.data) {
-          _this.randomList = changeQuerystring(res.data.data)
-        }
-      }).catch(() => {
-        wx.showToast({
-          title: '网络出现问题，请稍后再试！',
-          icon: 'none',
-          duration: 2000
+      randomGoods('goods/randomGoods', number)
+        .then((res) => {
+          wx.hideLoading()
+          if (res.data.data) {
+            _this.randomList = changeQuerystring(res.data.data)
+          }
         })
-      })
+        .catch(() => {
+          wx.showToast({
+            title: '网络出现问题，请稍后再试！',
+            icon: 'none',
+            duration: 2000
+          })
+        })
     },
     // 点击管理按钮切换状态
     manage () {
@@ -410,7 +384,10 @@ export default {
             let seleteList = []
             for (let i = 0; i < _this.cartData.length; i++) {
               if (_this.cartData[i].selete === true) {
-                list.push({ 'id': _this.cartData[i].id, 'num': _this.cartData[i].goodsNum })
+                list.push({
+                  id: _this.cartData[i].id,
+                  num: _this.cartData[i].goodsNum
+                })
                 seleteList.push(_this.cartData[i])
               } else {
                 unList.push(_this.cartData[i])
@@ -424,12 +401,13 @@ export default {
               })
             } else {
               let id = 1
-              getAdminDetail('admin/getAdminDetail', { id }).then(res => {
+              getAdminDetail('admin/getAdminDetail', { id }).then((res) => {
                 if (res.data.data) {
                   if (res.data.data.business === '2') {
                     Dialog.alert({
                       title: '提示',
-                      message: '抱歉，本店由于特殊原因暂时停止对外派送，恢复时间可查看小程序内公告或联系商家，感谢理解！'
+                      message:
+                        '抱歉，本店由于特殊原因暂时停止对外派送，恢复时间可查看小程序内公告或联系商家，感谢理解！'
                     })
                     return false
                   }
@@ -513,7 +491,6 @@ export default {
 <style scoped>
 .cart-body {
   width: 100%;
-  height: 100%;
   background-color: #f4f4f4;
 }
 .cart-body .cart-body-box {
@@ -557,9 +534,9 @@ export default {
   display: flex;
   align-items: center;
 }
-.cart-body .cart-body-box-content img {
-  width: 180rpx;
-  height: 180rpx;
+.cart-body .cart-body-box-content .bg {
+  width: 172rpx;
+  height: 172rpx;
   border-radius: 10rpx;
   margin-right: 20rpx;
   margin-left: 20rpx;
@@ -567,19 +544,31 @@ export default {
 .cart-body .cart-body-box-content .cart-body-box-content-right {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   width: 60%;
 }
 .cart-body .cart-body-box-content .cart-body-box-content-right p {
-  font-size: 32rpx;
-  line-height: 40rpx;
+  font-size: 28rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
+  line-height: 34rpx;
+  margin-bottom: 20rpx;
 }
 .cart-body .cart-body-box-content .cart-body-box-content-right span {
-  font-size: 14px;
-  color: #888;
+  font-size: 24rpx;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #999999;
+  line-height: 24rpx;
+  margin-bottom: 10rpx;
 }
 .cart-body .cart-body-box-content .cart-body-box-content-right h3 {
-  font-size: 18px;
+  font-size: 28rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #ff443d;
+  line-height: 28rpx;
 }
 .cart-body
   .cart-body-box-content
@@ -746,24 +735,23 @@ export default {
 .cattle-goods-box {
   width: 100%;
   height: auto;
-  background-color: #f4f4f4;
+  background: #f4f4f4;
 }
 .cattle-goods-box .cattle-goods {
-  width: 700rpx;
-  height: auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
-  margin: 20rpx auto;
-  background-color: #f4f4f4;
+  margin: 0 auto;
 }
 .cattle-goods-box .cattle-goods .cattle-goods-div {
-  width: 340rpx;
-  height: 400rpx;
-  border-radius: 8rpx;
-  margin: 0 10rpx 10rpx 0;
+  width: 330rpx;
+  border-radius: 6rpx;
+  margin: 0 30rpx 30rpx 30rpx;
+  box-shadow: darkgrey 0 0 30rpx -10rpx;
   position: relative;
-  background-color: #fff;
+  background: #fff;
+}
+.cattle-goods-box .cattle-goods .cattle-goods-div:nth-child(even) {
+  margin: 0 0 30rpx 0;
 }
 .cattle-goods-box .cattle-goods .cattle-goods-div .yishouqing {
   position: absolute;
@@ -778,11 +766,11 @@ export default {
   justify-content: center;
 }
 
-.cattle-goods-box .cattle-goods .cattle-goods-div image {
+.cattle-goods-box .cattle-goods .cattle-goods-div .bg {
   width: 100%;
-  height: 70%;
-  border-top-left-radius: 8rpx;
-  border-top-right-radius: 8rpx;
+  height: 260rpx;
+  border-top-left-radius: 6rpx;
+  border-top-right-radius: 6rpx;
 }
 .cattle-goods-box .hot-goods-div-message-right {
   width: 80rpx;
@@ -797,25 +785,28 @@ export default {
   right: 20rpx;
 }
 .cattle-goods-box .cattle-goods .cattle-goods-div p {
-  font-size: 16px;
-  font-weight: 600;
-  padding-left: 20rpx;
+  font-size: 28rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
+  line-height: 28rpx;
+  padding: 20rpx 0 0 20rpx;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .cattle-goods-box .cattle-goods .cattle-goods-div .price {
-  font-size: 20px;
-  padding-left: 20rpx;
-  font-weight: 600;
-  color: #ff5f5f;
+  font-size: 32rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #ff443d;
+  line-height: 32rpx;
+  padding: 20rpx 0 20rpx 0;
+  display: block;
 }
 .cattle-goods-box .cattle-goods .cattle-goods-div .price-sign {
-  font-size: 14px;
+  font-size: 12px;
+  padding-left: 20rpx;
   color: #ff5f5f;
-}
-.cattle-goods-box .cattle-goods .cattle-goods-div .price-unit {
-  font-size: 14px;
-  color: #222;
 }
 </style>

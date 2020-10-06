@@ -1,6 +1,6 @@
-.vant-notice{
+.vant-notice {
   background-color: #fff !important;
-  width: 620rpx ;
+  width: 620rpx;
   height: 60rpx !important;
   margin: 10rpx auto !important;
   border-radius: 46rpx !important;
@@ -8,23 +8,26 @@
   align-items: center !important;
   box-shadow: darkgrey 0 0 30rpx -10rpx !important;
   color: #666 !important;
-  font-size: 24rpx  !important;
+  font-size: 24rpx !important;
 }
-.van-skeleton-goods .van-skeleton{
-  display: flex;
-  flex-direction: column;
-}
-.van-skeleton-goods .van-skeleton .van-skeleton__avatar{
-  width: 690rpx !important;
-  height:700rpx !important;
-}
-.van-skeleton-order .van-skeleton{
+
+.van-skeleton-goods .van-skeleton {
   display: flex;
   flex-direction: column;
 }
 
-.van-skeleton-order .van-skeleton .van-skeleton__avatar{
+.van-skeleton-goods .van-skeleton .van-skeleton__avatar {
   width: 690rpx !important;
-  height:200rpx !important;
+  height: 700rpx !important;
+}
+
+.van-skeleton-order .van-skeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+.van-skeleton-order .van-skeleton .van-skeleton__avatar {
+  width: 690rpx !important;
+  height: 200rpx !important;
   justify-content: space-around
 }

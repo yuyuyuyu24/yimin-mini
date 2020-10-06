@@ -1,36 +1,28 @@
 <template>
   <div class="confirmOrder">
-    <div
-      class="confirmOrder-address-null"
-      v-if="isAddressNull"
-      @click="toAddAddress"
-    >
-      <span>添加收货地址</span>
+    <div class="confirmOrder-address-null" v-if="isAddressNull" @click="toAddAddress">
+      <span v-if="!isSelf">添加收货地址</span>
+      <span v-else>添加自提信息</span>
     </div>
-    <div
-      class="confirmOrder-address"
-      v-if="!isAddressNull"
-      @click="toAddAddress"
-    >
+    <div class="confirmOrder-address" v-if="!isAddressNull" @click="toAddAddress">
       <div>
         <p>收货人：{{addressData.name}}</p>
         <span>{{addressData.phone}}</span>
       </div>
       <h3>{{addressData.address}}</h3>
     </div>
-    <div
-      class="confirmOrder-goods"
-      v-for="(item,index) in orderData"
-      :key="index"
-    >
-      <img
+    <div class="confirmOrder-goods" v-for="(item,index) in orderData" :key="index">
+      <div
+        class="bg"
         v-if="item.coverList"
-        :src="item.coverList[0].url"
-      />
+        :style="{
+                  background: 'url('+item.coverList[0].url+') no-repeat center/cover'
+                }"
+      ></div>
       <div class="confirmOrder-goods-right">
-        <p>{{item.goodsName}} {{item.goodsUnit}}</p>
+        <h3>{{item.goodsName}} {{item.goodsUnit}}</h3>
+        <p>￥ {{item.goodsPrice}}</p>
         <span>数量 × {{item.goodsNum}}</span>
-        <h3>￥ {{item.goodsPrice}}</h3>
       </div>
     </div>
     <van-field
@@ -42,45 +34,36 @@
       @change="remarkFun"
       :placeholder="bindplaceholder"
     />
-    <div
-      class="shipping-methods"
-      v-if="false"
-    >
+    <div class="shipping-methods">
       请选择提货方式：
-      <van-radio-group
-        class="van-radio-group"
-        :value="radio"
-        @change="onChange"
-      >
-        <van-radio
-          checked-color="#00bf6f"
-          name="delivery"
-        >专员配送</van-radio>
-        <van-radio
-          checked-color="#00bf6f"
-          name="self"
-        >自提</van-radio>
+      <van-radio-group class="van-radio-group" :value="radio" @change="onChange">
+        <van-radio checked-color="#00bf6f" name="delivery">专员配送</van-radio>
+        <van-radio checked-color="#00bf6f" name="self">自提</van-radio>
       </van-radio-group>
     </div>
+    <div class="shop-location" v-if="isSelf">
+      <van-cell title="查看自提商家位置" @click="checkAddressOne">
+        <van-icon slot="right-icon" name="location-o" class="custom-icon" />
+      </van-cell>
+    </div>
     <div class="confirmOrder-notice">
-      购买前请确保您已经阅读<span @click="toBuyerNotice">买家须知</span> , 配送时间为每天上午11:00前的订单，当天下午配送。上午11:00后的订单，第二天上午配送。提交订单即表示同意<span @click="toBuyerNotice">买家须知</span>。
+      购买前请确保您已经阅读
+      <span @click="toBuyerNotice">买家须知</span> , 配送时间为每天上午11:00前的订单，当天下午配送。上午11:00后的订单，第二天上午配送。提交订单即表示同意
+      <span @click="toBuyerNotice">买家须知</span>。
     </div>
     <div class="confirmOrder-submit">
       <div class="confirmOrder-submit-button">
         <div class="confirmOrder-submit-button-center">
-          <p>实付款: ￥ <span class="price">{{total + deliveryMoney}}</span></p>
-          <div
-            class="total"
-            v-if="isDelivery"
-          >
+          <p>
+            实付款:
+            <span class="price">￥{{total + deliveryMoney}}</span>
+          </p>
+          <div class="total" v-if="isDelivery">
             <span>商品总价: ￥{{total}}</span>
             <span>另需配送费: {{deliveryMoney}}元</span>
           </div>
         </div>
-        <div
-          class="confirmOrder-submit-button-right"
-          @click="submitOrder"
-        >提交订单</div>
+        <div class="confirmOrder-submit-button-right" @click="submitOrder">提交订单</div>
       </div>
     </div>
     <van-dialog id="van-dialog" />
@@ -106,7 +89,8 @@ export default {
       message: '',
       deliveryMoney: 5,
       isDelivery: true,
-      bindplaceholder: '请输入留言'
+      bindplaceholder: '请输入留言',
+      isSelf: false
     }
   },
   onShow () {
@@ -114,6 +98,8 @@ export default {
     this.orderData = []
     this.total = 0
     this.message = ''
+    this.radio = 'delivery'
+    this.isSelf = false
     // this.bindplaceholder = '请输入留言'
     this.cartData = JSON.parse(this.$root.$mp.query.data)
     this.cartFun()
@@ -148,9 +134,13 @@ export default {
       if (this.radio === 'delivery') {
         this.isDelivery = true
         this.deliveryMoney = 5
+        this.bindplaceholder = '请输入留言'
+        this.isSelf = false
       } else {
         this.isDelivery = false
         this.deliveryMoney = 0
+        this.bindplaceholder = '请备注您大约提货的时间'
+        this.isSelf = true
       }
     },
     // 获取到留言框内容
@@ -199,9 +189,17 @@ export default {
     // 提交订单
     submitOrder () {
       let _that = this
-      if (this.isAddressNull) {
+      if (!this.isSelf && this.isAddressNull) {
         wx.showToast({
           title: '请先添加收货地址！',
+          icon: 'none',
+          duration: 2000
+        })
+        return false
+      }
+      if (this.isSelf && this.isAddressNull) {
+        wx.showToast({
+          title: '请先添加自提信息！',
           icon: 'none',
           duration: 2000
         })
@@ -215,12 +213,21 @@ export default {
         })
         return false
       }
+      if (this.radio === 'self') {
+        if (this.message === '') {
+          wx.showToast({
+            title: '请备注您大概提货的时间',
+            icon: 'none',
+            duration: 2000
+          })
+          return false
+        }
+      }
       let userList = wx.getStorageSync('userMegList') || {}
       if (userList !== {}) {
         let data = {
           openid: userList.openId
         }
-
         searchOpenid('mini/searchOpenid', data).then(res => {
           if (res.data.data) {
             wx.setStorageSync('userMegList', res.data.data[0])
@@ -285,7 +292,7 @@ export default {
         userPhone: _this.addressData.phone,
         userAddress: _this.addressData.address,
         goodsInfo: JSON.stringify(_this.cartData),
-        deliveryMthods: 'delivery',
+        deliveryMthods: _this.radio,
         remarks: _this.message,
         createdTime: new Date().getTime() + '',
         orderStatus: '1',
@@ -437,12 +444,60 @@ export default {
       wx.showLoading({
         title: '加载中'
       })
+    },
+    // 查看新华店
+    checkAddressOne () {
+      let that = this
+      that.getLocation()
+      wx.getLocation({
+        type: 'gcj02',
+        success: function (res) {
+          wx.openLocation({
+            latitude: that.GLOBAL.ADDRESS_ONE_WEI, // 要去的纬度-地址
+            longitude: that.GLOBAL.ADDRESS_ONE_JING, // 要去的经度-地址
+            name: '新华店',
+            address: that.GLOBAL.ADDRESS_ONE
+          })
+        }
+      })
+    },
+    // 拒绝授权方法
+    getLocation () {
+      wx.getSetting({
+        success (res) {
+          if (!res.authSetting['scope.userLocation']) {
+            wx.authorize({
+              scope: 'scope.userLocation',
+              fail () {
+                wx.hideLoading()
+                wx.showModal({
+                  title: '温馨提示',
+                  content: '您已拒绝授权，是否去设置打开？',
+                  confirmText: '确认',
+                  cancelText: '取消',
+                  success: function (res) {
+                    if (res.confirm) {
+                      wx.openSetting({
+                        success: (res) => {
+                          res.authSetting = {
+                            'scope.userLocation': true
+                          }
+                        }
+                      })
+                    }
+                  }
+                })
+              }
+            })
+          }
+        }
+      })
     }
   }
 
 }
 </script>
-<style scoped>
+<style lang="less" scoped>
 .confirmOrder {
   width: 100%;
   height: auto;
@@ -485,33 +540,50 @@ export default {
   align-items: center;
   border-bottom: 2rpx solid #f4f4f4;
 }
-.confirmOrder-goods img {
-  width: 200rpx;
-  height: 200rpx;
-  border: 1px solid #f4f4f4;
+.confirmOrder-goods .bg {
+  width: 172rpx;
+  height: 172rpx;
+  border-radius: 12rpx;
 }
 .confirmOrder-goods .confirmOrder-goods-right {
   display: flex;
   height: 200rpx;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   margin-left: 20rpx;
-}
-.confirmOrder-goods .confirmOrder-goods-right span {
-  font-size: 14px;
-  color: #888;
-}
-.confirmOrder-goods .confirmOrder-goods-right h3 {
-  font-size: 18px;
+  h3 {
+    width: 486rpx;
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 32rpx;
+    margin-bottom: 20rpx;
+  }
+  p {
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ff443d;
+    line-height: 28rpx;
+    margin-bottom: 20rpx;
+  }
+  span {
+    font-size: 24rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 24rpx;
+  }
 }
 .shipping-methods {
   width: auto;
   height: auto;
   border-top: 10rpx solid #f4f4f4;
-
-  padding: 40rpx 40rpx;
+  padding: 40rpx 32rpx;
   display: flex;
   justify-content: space-between;
+  font-size: 28rpx;
 }
 .shipping-methods .van-radio-group {
   display: flex;
@@ -519,20 +591,30 @@ export default {
 .shipping-methods .van-radio-group ._van-radio {
   margin-right: 20rpx;
 }
+.shop-location {
+  width: auto;
+  height: auto;
+  border-top: 10rpx solid #f4f4f4;
+  font-size: 28rpx;
+}
 .confirmOrder-notice {
   width: auto;
   height: auto;
   border-top: 10rpx solid #f4f4f4;
-  padding: 20rpx 40rpx;
+  padding: 20rpx 32rpx;
   line-height: 60rpx;
   margin-bottom: 170rpx;
+  font-size: 28rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  color: #333333;
 }
 .confirmOrder-notice span {
   color: #00bf6f;
 }
 .confirmOrder-submit {
   width: 100%;
-  height: 160rpx;
+  height: 110rpx;
   position: fixed;
   left: 0;
   bottom: 0;
@@ -546,32 +628,38 @@ export default {
   height: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 0 40rpx;
   align-items: center;
-}
-.confirmOrder-submit .confirmOrder-submit-button .price {
-  font-size: 20px;
+  padding: 0 40rpx;
 }
 .confirmOrder-submit
   .confirmOrder-submit-button
   .confirmOrder-submit-button-center {
   display: flex;
   flex-direction: column;
-}
-.confirmOrder-submit
-  .confirmOrder-submit-button
-  .confirmOrder-submit-button-center
+  p {
+    font-size: 24rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    line-height: 24rpx;
+  }
+  .price {
+    font-size: 32rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 32rpx;
+  }
   .total {
-  font-size: 12px;
+    font-size: 20rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #666666;
+    line-height: 20rpx;
+    padding-right: 10rpx;
+    margin-top: 10rpx;
+  }
 }
-.confirmOrder-submit
-  .confirmOrder-submit-button
-  .confirmOrder-submit-button-center
-  .total
-  span {
-  padding-right: 10rpx;
-}
-
 .confirmOrder-submit
   .confirmOrder-submit-button
   .confirmOrder-submit-button-right {

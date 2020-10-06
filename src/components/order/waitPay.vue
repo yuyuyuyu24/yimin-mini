@@ -1,49 +1,38 @@
 <template>
   <div class="all-order">
-    <div
-      class="order-null"
-      v-if="toBeOrderData.length === 0"
-    >
+    <div class="order-null" v-if="toBeOrderData.length === 0">
       <i class="iconfont iconno_result"></i>
       没有发现内容哦 ~
       <div @click="toIndex">去逛逛</div>
     </div>
     <div v-if="toBeOrderData.length !== 0">
-      <div
-        class="all-order-box"
-        v-for="(item,index) in toBeOrderData"
-        :key="index"
-      >
+      <div class="all-order-box" v-for="(item,index) in toBeOrderData" :key="index">
         <div class="all-order-box-head">
           {{ item.orderStatus }}
+          <p v-if="item.deliveryMthods === 'delivery'">专员配送</p>
+          <p v-if="item.deliveryMthods === 'self'">自提</p>
         </div>
-        <div
-          class="all-order-box-content-box"
-          v-if="isGoods"
-        >
-          <div
-            class="all-order-box-content"
-            v-for="(item1,jIndex) in item.goods"
-            :key="jIndex"
-          >
-            <img :src="item1.coverList.url" />
+        <div class="all-order-box-content-box" v-if="isGoods">
+          <div class="all-order-box-content" v-for="(item1,jIndex) in item.goods" :key="jIndex">
+            <div
+              class="bg"
+              :style="{
+                  background: 'url('+item1.coverList.url+') no-repeat center/cover'
+                }"
+            ></div>
             <div class="all-order-box-content-right">
-              <p>{{item1.goodsName}} /{{item1.goodsUnit}}</p>
+              <h3>{{item1.goodsName}} /{{item1.goodsUnit}}</h3>
+              <p>￥ {{item1.goodsPrice}}</p>
               <span>数量：× {{item.goodsInfo[jIndex].num}}</span>
-              <h3>￥ {{item1.goodsPrice}}</h3>
             </div>
           </div>
         </div>
-        <div
-          class="all-order-box-footer"
-          @click="toOrderDetails(item)"
-        >
+        <div class="all-order-box-footer" @click="toOrderDetails(item)">
           <div>查看详情</div>
         </div>
       </div>
     </div>
     <van-dialog id="van-dialog" />
-
   </div>
 </template>
 <script>
@@ -171,7 +160,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="less" scoped>
 .all-order {
   width: 100%;
   height: auto;
@@ -215,6 +204,13 @@ export default {
   color: #333;
   padding-left: 40rpx;
   line-height: 80rpx;
+  p {
+    font-size: 24rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    margin-left: 10rpx;
+  }
 }
 .all-order .all-order-box .all-order-box-content-box {
   width: 100%;
@@ -227,40 +223,41 @@ export default {
   align-items: center;
   margin: 20rpx 0;
 }
-.all-order .all-order-box .all-order-box-content img {
-  width: 140rpx;
-  height: 140rpx;
-  border: 1px solid #ccc;
-  margin-left: 40rpx;
+.all-order .all-order-box .all-order-box-content .bg {
+  width: 172rpx;
+  height: 172rpx;
+  border-radius: 12rpx;
+  margin-left: 30rpx;
 }
 .all-order .all-order-box .all-order-box-content .all-order-box-content-right {
   width: auto;
   display: flex;
   flex-direction: column;
-  margin-left: 40rpx;
-}
-.all-order
-  .all-order-box
-  .all-order-box-content
-  .all-order-box-content-right
-  p {
-  font-size: 18px;
-}
-.all-order
-  .all-order-box
-  .all-order-box-content
-  .all-order-box-content-right
-  span {
-  font-size: 12px;
-  color: #666;
-  padding: 10rpx 0;
-}
-.all-order
-  .all-order-box
-  .all-order-box-content
-  .all-order-box-content-right
+  margin-left: 30rpx;
   h3 {
-  font-size: 18px;
+    width: 486rpx;
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 32rpx;
+    margin-bottom: 20rpx;
+  }
+  p {
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ff443d;
+    line-height: 28rpx;
+    margin-bottom: 20rpx;
+  }
+  span {
+    font-size: 24rpx;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 24rpx;
+  }
 }
 .all-order .all-order-box .all-order-box-footer {
   width: 100%;
