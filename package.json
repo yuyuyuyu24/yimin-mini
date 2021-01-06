@@ -24,7 +24,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "color-convert": "^2.0.1",
     "fs.realpath": "^1.0.0",
     "less": "^3.9",
